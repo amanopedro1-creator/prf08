@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="format-detection" content="telephone=no">
+    <title>BOPM - PRF Jaguar&eacute;</title>
+    <link rel="icon" type="image/png" href="assets/img/prf.png">
+    <link rel="shortcut icon" type="image/png" href="assets/img/prf.png">
+    <script>
+        (function() {
+            try {
+                const savedTheme = localStorage.getItem('theme') || 'light';
+                if (savedTheme === 'dark') {
+                    document.documentElement.classList.add('dark-mode');
+                }
+            } catch (e) {}
+        })();
+    </script>
+    <link rel="stylesheet" href="/assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header class="top-header">
+        <div class="container">
+            <div class="top-header-content">
+                <div class="logo-governo" style="display: flex; align-items: center; gap: 15px;">
+                    <img src="assets/img/gov_br.png" alt="Governo do Brasil" style="height: 80px; width: auto;">
+                    <div class="text-governo">
+                        <span class="sao-paulo">SÃO PAULO - JAGUARÉ</span>
+                        <span class="governo">MINISTÉRIO DA JUSTIÇA E SEGURANÇA PÚBLICA</span>
+                        <span class="slogan">POLÍCIA RODOVIÁRIA FEDERAL</span>
+                    </div>
+                </div>
+                <div class="top-header-right">
+                    <div class="accessibility">
+                        <button class="acc-btn" id="alert" aria-label="Alertas">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </button>
+                        <button class="acc-btn" id="clear-cache" aria-label="Limpar cache" onclick="if(window.cacheManager) { window.cacheManager.clearAndReload(); } else { window.location.reload(true); }" title="Limpar cache e recarregar p?gina">
+                            <i class="fas fa-broom"></i>
+                        </button>
+                    </div>
+                    <div class="user-auth-header">
+                        <a href="login.html" id="header-login-btn" class="auth-link">
+                            <i class="fas fa-sign-in-alt"></i>
+                            <span>LOGIN</span>
+                        </a>
+                        <a href="criar-conta.html" id="header-register-btn" class="auth-link">
+                            <i class="fas fa-user-plus"></i>
+                            <span>CRIAR CONTA</span>
+                        </a>
+                        <div id="header-user-menu" class="user-menu-header" style="display: none;">
+                            <span class="user-name-header"></span>
+<a href="#" onclick="userProfile.openModal(); return false;" class="auth-link" id="header-edit-profile-link">
+                                <i class="fas fa-user-edit"></i>
+                                <span>EDITAR PERFIL</span>
+                            </a>
+                            <a href="#" onclick="auth.logout(); return false;" class="auth-link">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span>SAIR</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <header class="main-header" id="menu">
+        <div class="container">
+            <div class="main-header-content">
+                <div class="logo-pm">
+                    <div class="pm-emblem">
+                        <img src="assets/img/prf.png" alt="Polícia Rodoviária Federal">
+                    </div>
+                    <div class="pm-text">
+                        <h1>POLÍCIA RODOVIÁRIA FEDERAL</h1>
+                        <p>Ministério da Justiça e Segurança Pública</p>
+                    </div>
+                </div>
+                <nav class="main-nav">
+                    <a href="index.html#noticias">INÍCIO</a>
+                    <span class="nav-divider">|</span>
+                    <div class="nav-dropdown">
+                        <a href="#" class="nav-link-dropdown">INSTITUCIONAL</a>
+                        <div class="dropdown-menu">
+                            <a href="organograma.html">Organograma</a>
+<a href="historia-valores.html">História e Valores</a>
+                        </div>
+                    </div>
+                    <span class="nav-divider">|</span>
+                    <div class="nav-dropdown">
+                        <a href="#" class="nav-link-dropdown">SERVIÇOS</a>
+                        <div class="dropdown-menu">
+                            <a href="documentos.html">Documentos PRF</a>
+                            <a href="preencher-bopm.html">Preencher BOU</a>
+                        </div>
+                    </div>
+                    <span class="nav-divider">|</span>
+                    <a href="concursos.html">CONCURSOS</a>
+                    <span class="nav-divider">|</span>
+                    <a href="capacitacao.html">CAPACITAÇÃO E TREINAMENTO</a>
+                    <span class="nav-divider">|</span>
+                    <a href="#" class="nav-link" onclick="if(typeof window.openCorregedoriaWidget === 'function') { window.openCorregedoriaWidget(); return false; } else { window.openTicketsWidget && window.openTicketsWidget(); return false; }">CORREGEDORIA</a>
+                </nav>
+                <button class="mobile-menu-toggle" aria-label="Menu">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            <div class="red-line"></div>
+        </div>
+    </header>
+
+    <section class="latest-news info-section">
+        <div class="container">
+            <div class="news-header">
+                <h2>Preencher BOU</h2>
+                <div class="red-line-news"></div>
+            </div>
+            <div class="info-grid">
+                <article class="info-card">
+                    <h3>Registro rapido</h3>
+                    <p>Preenchimento objetivo com campos essenciais.</p>
+                </article>
+                <article class="info-card">
+                    <h3>Checklist</h3>
+                    <p>Guia de anexos e informacoes obrigatorias.</p>
+                </article>
+                <article class="info-card">
+                    <h3>Orientacoes</h3>
+                    <p>Padroes de texto e boas praticas.</p>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <script src="app.js" defer></script>
+</body>
+</html>

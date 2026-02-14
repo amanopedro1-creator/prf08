@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="format-detection" content="telephone=no">
+    <title>Organograma - PRF Jaguar&eacute;</title>
+    <link rel="icon" type="image/x-icon" href="assets/img/prflogoico.ico">
+    <script>
+        (function() {
+            try {
+                const savedTheme = localStorage.getItem('theme') || 'light';
+                if (savedTheme === 'dark') {
+                    document.documentElement.classList.add('dark-mode');
+                }
+            } catch (e) {}
+        })();
+    </script>
+    <link rel="stylesheet" href="/assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+            <header class="top-header">
+        <div class="container">
+            <div class="top-header-content">
+                <div class="logo-governo">
+                    <a href="index.html" class="gov-logo-link">
+                        <img src="assets/img/gov_br.png" alt="Governo do Brasil" class="gov-logo">
+                    </a>
+                    <span class="gov-divider" aria-hidden="true"></span>
+                    <div class="gov-identity">
+                        <span class="gov-ministry">MINISTÉRIO DA JUSTIÇA E SEGURANÇA PÚBLICA</span>
+                        <span class="gov-agency">Polícia Rodoviária Federal</span>
+                    </div>
+                </div>
+                <div class="top-header-right">
+                    <div class="user-auth-header">
+                        <a href="login.html" id="header-login-btn" class="auth-link">
+                            <i class="fas fa-sign-in-alt"></i>
+                            <span>LOGIN</span>
+                        </a>
+                        <a href="criar-conta.html" id="header-register-btn" class="auth-link">
+                            <i class="fas fa-user-plus"></i>
+                            <span>CRIAR CONTA</span>
+                        </a>
+                        <div id="header-user-menu" class="user-menu-header is-hidden">
+                            <span class="user-name-header"></span>
+<a href="#" onclick="userProfile.openModal(); return false;" class="auth-link" id="header-edit-profile-link">
+                                <i class="fas fa-user-edit"></i>
+                                <span>EDITAR PERFIL</span>
+                            </a>
+                            <a href="#" onclick="auth.logout(); return false;" class="auth-link">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span>SAIR</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+        <header class="main-header main-header--duna" id="menu">
+        <div class="container">
+            <div class="header-row">
+
+            <!-- ESQUERDA: 3 páginas -->
+            <nav class="mini-nav mini-nav--left" aria-label="Páginas (esquerda)">
+                <a href="index.html">INÍCIO</a>
+                    <div class="nav-dropdown">
+                        <a href="#" class="nav-link-dropdown" aria-haspopup="true" aria-expanded="false">INSTITUCIONAL</a>
+                        <div class="dropdown-menu">
+                            <a href="organograma.html">Organograma</a>
+<a href="historia-valores.html">História e Valores</a>
+                        </div>
+                    </div>
+                    <div class="nav-dropdown">
+                        <a href="#" class="nav-link-dropdown" aria-haspopup="true" aria-expanded="false">SERVIÇOS</a>
+                            <div class="dropdown-menu">
+                            <a href="documentos.html">Documentos PRF</a>
+                        </div>
+                    </div>
+            </nav>
+
+            <!-- CENTRO: informação (logo + textos) -->
+            <div class="main-header-top">
+                <div class="brand-block">
+                <a href="index.html" class="brand-logo-link">
+                <img src="assets/img/prf.png" alt="PRF Jaguaré" class="brand-logo">
+                </a>
+                </div>
+            </div>
+            <!-- DIREITA: +3 páginas -->
+            <nav class="mini-nav mini-nav--right" aria-label="Páginas (direita)">
+                                <a href="concursos.html">CONCURSOS</a>
+                                <a href="capacitacao.html">CAPACITAÇÃO E TREINAMENTO</a>
+                                <a href="/corregedoria.html">CORREGEDORIA</a>
+            </nav>
+            </div>
+            <div class="red-line"></div>
+        </div>
+        </header>
+
+    <section class="latest-news info-section organograma-section">
+        <div class="container">
+            <div class="news-header">
+                <h2>Organograma</h2>
+                <div class="red-line-news"></div>
+            </div>
+            <p>
+                No âmbito da Superintendência Regional da Polícia Rodoviária Federal em São Paulo (PRF/SP), a organização administrativa e operacional deve observar o Regimento Interno da PRF, aprovado por Portaria ministerial, com fundamento no art. 87, parágrafo único, inciso I, da Constituição Federal, e em conformidade com o Decreto nº 9.360, de 7 de maio de 2018, que disciplina estruturas regimentais e quadros demonstrativos de cargos e funções de confiança no âmbito da Administração Pública federal.
+            </p>
+            <br>
+            <p>Em consonância com esse arcabouço, o desenho organizacional institucional da PRF explicita as macroestruturas Diretoria-Executiva (DIREX) e Diretoria de Operações (DIOP), as quais, no plano regional, são reproduzidas como eixos de coordenação para a distribuição de competências e unidades vinculadas (gestão/execução e coordenação/emprego operacional), segundo organogramas oficiais vigentes.</p>
+            <br>
+            <div class="organograma-cards-top">
+                <article class="info-card">
+                     <h3 class="organograma-card-title">Diretor-Geral</h3>
+                     <img src="/assets/img/santhi.png" alt="Diretor-Geral Lucas Santhi"/>
+                     <p class="organograma-card-name">Lucas Santhi</p>
+                </article>
+
+                <div class="organograma-connectors" aria-hidden="true">
+                    <span class="connector-vertical main"></span>
+                </div>            
+
+                <article class="info-card">
+                     <h3 class="organograma-card-title">Superintendente em SP</h3>
+                     <img src="/assets/img/azeredo.png" alt="Superintendente Nando Azeredo"/>
+                    <p class="organograma-card-name">Nando Azeredo</p>
+                </article>
+            </div>
+
+            <div class="organograma-connectors" aria-hidden="true">
+                <span class="connector-vertical main"></span>
+                <span class="connector-horizontal"></span>
+                <span class="connector-vertical left"></span>
+                <span class="connector-vertical right"></span>
+            </div>
+
+            <div class="organograma-cards-bottom">
+                <article class="info-card">
+                    <h3 class="info-card-toggle info-card-toggle-centered" tabindex="0" role="button" aria-expanded="false" aria-controls="organograma-direx">
+                        DIREX
+                    </h3>
+                    <p>Responsável pela organização do patrulhamento rodoviário e preventivo, com enfoque nas atividades operacionais diárias e rotineiras. Atua diretamente
+                        na gestão da Ronda PRF, da Universidade Corporativa da PRF e do Grupo de Patrulhamento Motorizado.</p>
+                </article>
+
+                <article class="info-card">
+                    <h3 class="info-card-toggle info-card-toggle-centered" tabindex="0" role="button" aria-expanded="false" aria-controls="organograma-diop">
+                        DIOP
+                    </h3>
+                    <p>Coordena as atividades operacionais de cunho criminal e especializado, exercendo supervisão sobre o Grupo de Patrulhamento Tático, a Divisão de Operações Aéreas e o Grupo de Resposta Rápida.</p>
+                </article>
+            </div>
+            <div class="organograma-subordinates">
+                <div class="organograma-subgroup organograma-subgroup--direx">
+                    <div class="organograma-connectors organograma-subconnectors" aria-hidden="true">
+                        <span class="connector-vertical main"></span>
+                        <span class="connector-horizontal"></span>
+                        <span class="connector-vertical left"></span>
+                        <span class="connector-vertical right"></span>
+                    </div>
+                    <div class="organograma-subcards organograma-subcards--direx">
+                        <article class="info-card organograma-card-rprf">
+                            <h3 class="info-card-toggle info-card-toggle-centered" tabindex="0" role="button" aria-expanded="false" aria-controls="organograma-rprf">
+                                RPRF
+                            </h3>
+                            <div class="info-card-body" id="organograma-rprf">
+                                <p>A Ronda PRF constitui a base do policiamento ostensivo e preventivo da Polícia Rodoviária Federal. É responsável pela presença constante e visível da instituição nas rodovias federais, atuando na fiscalização de trânsito, prevenção de ilícitos, atendimento a ocorrências, orientação aos usuários da via e pronta resposta a situações emergenciais. A Ronda PRF exerce papel fundamental na preservação da ordem pública, na segurança viária e na garantia da fluidez do tráfego, sendo o eixo central do patrulhamento territorial da corporação.</p>
+                            </div>
+                        </article>
+
+                        <article class="info-card organograma-card-gpm">
+                            <h3 class="info-card-toggle info-card-toggle-centered" tabindex="0" role="button" aria-expanded="false" aria-controls="organograma-gpt">
+                                GPM
+                            </h3>
+                            <div class="info-card-body" id="organograma-gpt">
+                                <p>O Grupo de Patrulhamento Motorizado é uma unidade especializada voltada à atuação dinâmica e de alta mobilidade, utilizando motocicletas de grande porte. Sua atuação se destaca em ações de fiscalização direcionada, escoltas, acompanhamento tático de veículos, apoio a operações especiais e intervenções em áreas de difícil acesso ou com tráfego intenso. O GPM complementa o patrulhamento convencional, oferecendo agilidade, rapidez na resposta e maior capacidade de manobra em cenários complexos.</p>                                
+                            </div>
+                        </article>
+                    </div>
+
+                    <div class="organograma-uniprf organograma-uniprf--direx">
+                        <div class="organograma-connectors organograma-uniprf-connector" aria-hidden="true">
+                            <span class="connector-vertical main"></span>
+                        </div>
+                        <article class="info-card organograma-card-uniprf">
+                            <h3 class="info-card-toggle info-card-toggle-centered" tabindex="0" role="button" aria-expanded="false" aria-controls="organograma-uniprf">
+                                UNIPRF
+                            </h3>
+                            <div class="info-card-body" id="organograma-uniprf">
+                                <p>A Universidade Corporativa da Polícia Rodoviária Federal é responsável pela formação, capacitação, aperfeiçoamento e desenvolvimento contínuo dos servidores da instituição. Atua na formação inicial, treinamentos especializados, cursos de atualização técnica e doutrinária, bem como na difusão de boas práticas operacionais e administrativas. A UNIPRF tem como missão fortalecer o conhecimento institucional, padronizar procedimentos e elevar o nível profissional da corporação, alinhando ensino, inovação e excelência operacional.</p>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+
+                <div class="organograma-subgroup">
+                    <div class="organograma-connectors organograma-subconnectors" aria-hidden="true">
+                        <span class="connector-vertical main"></span>
+                        <span class="connector-horizontal"></span>
+                        <span class="connector-vertical left"></span>
+                        <span class="connector-vertical center"></span>
+                        <span class="connector-vertical right"></span>
+                    </div>
+                    <div class="organograma-subcards">
+                        <article class="info-card">
+                            <h3 class="info-card-toggle info-card-toggle-centered" tabindex="0" role="button" aria-expanded="false" aria-controls="organograma-doa">
+                               DOA
+                            </h3>
+                            <div class="info-card-body" id="organograma-doa">
+                                <p>A Divisão de Operações Aéreas é responsável pelo emprego de meios aéreos no apoio às atividades da Polícia Rodoviária Federal. Sua atuação abrange missões de patrulhamento aéreo, busca e salvamento, apoio a operações terrestres, transporte operacional, inteligência e monitoramento. A DOA amplia o alcance operacional da PRF, proporcionando visão estratégica, rapidez no deslocamento e maior eficiência no gerenciamento de ocorrências de grande vulto.</p>
+                            </div>
+                        </article>
+
+                        <article class="info-card">
+                            <h3 class="info-card-toggle info-card-toggle-centered" tabindex="0" role="button" aria-expanded="false" aria-controls="organograma-gpm">
+                                GPT
+                            </h3>
+                            <div class="info-card-body" id="organograma-gpm">
+                                <p>O Grupo de Patrulhamento Tático é uma unidade operacional especializada destinada ao emprego em ocorrências de maior complexidade e risco. Atua no apoio a operações policiais, ações de repressão qualificada ao crime, intervenções táticas e reforço operacional em situações que demandem técnicas, equipamentos e treinamento diferenciados. O GPT possui capacidade de pronta resposta em cenários críticos, atuando de forma integrada com outras forças e unidades especializadas.</p>
+                            </div>
+                        </article>
+
+                        <article class="info-card">
+                            <h3 class="info-card-toggle info-card-toggle-centered" tabindex="0" role="button" aria-expanded="false" aria-controls="organograma-noe">
+                                NOE
+                            </h3>
+                            <div class="info-card-body" id="organograma-noe">
+                                <p>O Núcleo de Operações Especiais é uma força altamente especializada destinada ao gerenciamento de crises e intervenções de alto risco. Atua em eventos críticos que exigem pronta mobilização, elevado nível de preparo técnico e coordenação tática avançada. O NOE é empregado em situações excepcionais, oferecendo resposta imediata e especializada, com foco na preservação de vidas, restauração da ordem e controle de cenários de alta complexidade operacional.</p>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+        <footer class="diario-footer">
+        <div class="container">
+            <div class="diario-footer-top">
+                <div class="diario-footer-brand">
+                    <img src="assets/img/prf.png" alt="Polícia Rodoviária Federal" class="diario-footer-logo">
+                    <div class="diario-footer-brand-text">
+                        <strong>Polícia Rodoviária Federal</strong>
+                        <span>Unidade Operacional Jaguaré</span>
+                        <span>São Paulo - SP</span>
+                    </div>
+                </div>
+                <div class="diario-footer-contact">
+                    <h4>CONTATO</h4>
+                    <p>PRF — Delegacia de Jaguaré</p>
+                    <p>Telefone: 191 (PRF)</p>
+                    <p>Emergência: 190</p>
+                </div>
+            </div>
+            <div class="diario-footer-divider" aria-hidden="true"></div>
+            <div class="diario-footer-bottom">
+                <span>© 2026 Polícia Rodoviária Federal — Todos os direitos reservados</span>
+                <img src="assets/img/gov_br.png" alt="gov.br" class="diario-footer-gov">
+            </div>
+        </div>
+    </footer>
+    <script src="app.js" defer></script>
+</body>
+</html>
+
