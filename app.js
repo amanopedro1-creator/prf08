@@ -3,6 +3,7 @@
 
   const data = {
     period: 'JANEIRO A DEZEMBRO DE 2026',
+    news: [],
     numbers: [
       { value: '2.810', label: 'ABORDAGENS REALIZADAS', icon: 'assets/img/aim.png' },
       { value: '940', label: 'OCORRÊNCIAS ATENDIDAS', icon: 'assets/img/shield.png' },
@@ -244,7 +245,8 @@
   const renderNews = () => {
     const grid = byId('news-grid');
     if (!grid) return;
-    grid.innerHTML = data.news.map(newsCard).join('');
+    const items = Array.isArray(data.news) ? data.news : [];
+    grid.innerHTML = items.map(newsCard).join('');
   };
 
   const renderVideos = () => {
@@ -293,16 +295,27 @@
     toggle.addEventListener('click', () => nav.classList.toggle('active'));
 
     const dropdowns = document.querySelectorAll('.nav-dropdown > .nav-link-dropdown');
+    const closeAll = (except) => {
+      document.querySelectorAll('.nav-dropdown.active').forEach((wrapper) => {
+        if (except && wrapper === except) return;
+        wrapper.classList.remove('active');
+        const link = wrapper.querySelector('.nav-link-dropdown');
+        if (link) link.setAttribute('aria-expanded', 'false');
+      });
+    };
     dropdowns.forEach((trigger) => {
       trigger.addEventListener('click', (event) => {
-        if (window.innerWidth <= 1024) {
-          event.preventDefault();
-          const wrapper = trigger.closest('.nav-dropdown');
-          if (wrapper) {
-            wrapper.classList.toggle('active');
-          }
-        }
+        event.preventDefault();
+        const wrapper = trigger.closest('.nav-dropdown');
+        if (!wrapper) return;
+        const willOpen = !wrapper.classList.contains('active');
+        closeAll(wrapper);
+        wrapper.classList.toggle('active', willOpen);
+        trigger.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
       });
+    });
+    document.addEventListener('click', (event) => {
+      if (!event.target.closest('.nav-dropdown')) closeAll();
     });
   };
 
@@ -535,6 +548,14 @@
 
       const existing = node.querySelector('.user-shift-header');
       if (existing) existing.remove();
+      const existingPanel = node.querySelector('.user-panel-link');
+      if (existingPanel) existingPanel.remove();
+
+      const painelHref = window.location.pathname.includes('/interno/') ? 'painel.html' : 'interno/painel.html';
+      const painelLink = document.createElement('a');
+      painelLink.className = 'user-panel-link';
+      painelLink.href = painelHref;
+      painelLink.textContent = 'Painel';
 
       const badge = document.createElement('button');
       badge.type = 'button';
@@ -547,6 +568,7 @@
         await shiftControl.toggle();
       });
       node.prepend(badge);
+      node.prepend(painelLink);
 
       const render = (state) => {
         const s = state || shiftControl.getState();
@@ -620,7 +642,11 @@
 
       const profile = profileResult ? profileResult.data : null;
       const profileError = profileResult ? profileResult.error : null;
-      if (profileError || !profile || profile.aprovado !== true) {
+      if (profileError) {
+        await showAuthenticated(user.email || 'Usuario autenticado', '', client, user.id);
+        return;
+      }
+      if (!profile || profile.aprovado !== true) {
         showGuest();
         return;
       }
