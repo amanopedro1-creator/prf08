@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="format-detection" content="telephone=no">
+    <title>AIT Preenchidos - PRF Jaguar&eacute;</title>
+    <link rel="icon" type="image/x-icon" href="assets/img/prflogoico.ico">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        window.SUPABASE_URL = 'https://pssujmmuachdymlwsiuj.supabase.co';
+        window.SUPABASE_ANON_KEY = 'sb_publishable_PYQxZQr_TfVEesG7L4WI4g_-VjPHVpW';
+
+        (async function enforceAuth() {
+            try {
+                if (!window.supabase || !window.supabase.createClient) {
+                    window.location.replace('../login.html');
+                    return;
+                }
+                const client = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
+                const result = await client.auth.getSession();
+                const session = result && result.data ? result.data.session : null;
+                const user = session ? session.user : null;
+                if (!user) {
+                    window.location.replace('../login.html');
+                    return;
+                }
+
+                const profileQuery = await client
+                    .from('profiles')
+                    .select('aprovado, is_admin')
+                    .eq('id', user.id)
+                    .maybeSingle();
+                const profile = profileQuery ? profileQuery.data : null;
+                const profileError = profileQuery ? profileQuery.error : null;
+
+                if (profileError || !profile || profile.aprovado !== true) {
+                    await client.auth.signOut();
+                    window.location.replace('../login.html');
+                    return;
+                }
+                window.__aitFillIsAdmin = profile.is_admin === true;
+            } catch (e) {
+                window.location.replace('../login.html');
+            }
+        })();
+    </script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header class="top-header">
+        <div class="container">
+            <div class="top-header-content">
+                <div class="logo-governo">
+                    <a href="../index.html" class="gov-logo-link">
+                        <img src="assets/img/gov_br.png" alt="Governo do Brasil" class="gov-logo">
+                    </a>
+                    <span class="gov-divider" aria-hidden="true"></span>
+                    <div class="gov-identity">
+                        <span class="gov-ministry">MINISTÉRIO DA JUSTIÇA E SEGURANÇA PÚBLICA</span>
+                        <span class="gov-agency">Polícia Rodoviária Federal</span>
+                    </div>
+                </div>
+                <div class="top-header-right">
+                    <div class="user-auth-header">
+                        <a href="../login.html" id="header-login-btn" class="auth-link">
+                            <i class="fas fa-sign-in-alt"></i>
+                            <span>LOGIN</span>
+                        </a>
+                        <a href="../criar-conta.html" id="header-register-btn" class="auth-link">
+                            <i class="fas fa-user-plus"></i>
+                            <span>CRIAR CONTA</span>
+                        </a>
+                        <div id="header-user-menu" class="user-menu-header is-hidden">
+                            <span class="user-name-header"></span>
+<a href="/interno/perfil.html" class="auth-link" id="header-edit-profile-link">
+                                <i class="fas fa-user-edit"></i>
+                                <span>EDITAR PERFIL</span>
+                            </a>
+                            <a href="#" onclick="auth.logout(); return false;" class="auth-link">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span>SAIR</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <header class="main-header main-header--duna" id="menu">
+        <div class="container">
+            <div class="header-row">
+
+            <!-- ESQUERDA: 3 pÃ¡ginas -->
+            <nav class="mini-nav mini-nav--left" aria-label="PÃ¡ginas (esquerda)">
+                <a href="../index.html">INÍCIO</a>
+                    <div class="nav-dropdown">
+                        <a href="#" class="nav-link-dropdown" aria-haspopup="true" aria-expanded="false">INSTITUCIONAL</a>
+                        <div class="dropdown-menu">
+                            <a href="../organograma.html">Organograma</a>
+<a href="../historia-valores.html">História e Valores</a>
+                        </div>
+                    </div>
+                    <div class="nav-dropdown">
+                        <a href="#" class="nav-link-dropdown" aria-haspopup="true" aria-expanded="false">SERVIÇOS</a>
+                            <div class="dropdown-menu">
+                            <a href="../documentos.html">Documentos PRF</a>
+                        </div>
+                    </div>
+            </nav>
+
+            <!-- CENTRO: informaÃ§Ã£o (logo + textos) -->
+            <div class="main-header-top">
+                <div class="brand-block">
+                <a href="../index.html" class="brand-logo-link">
+                <img src="assets/img/prf.png" alt="PRF JaguarÃ©" class="brand-logo">
+                </a>
+                </div>
+            </div>
+            <!-- DIREITA: +3 pÃ¡ginas -->
+            <nav class="mini-nav mini-nav--right" aria-label="PÃ¡ginas (direita)">
+                <a href="../concursos.html">CONCURSOS</a>
+                <a href="../capacitacao.html">CAPACITAÇÃO E TREINAMENTO</a>
+                <a href="../corregedoria.html">CORREGEDORIA</a>
+            </nav>
+            </div>
+            <div class="red-line"></div>
+        </div>
+        </header>
+
+    <section class="latest-news info-section">
+        <div class="container">
+            <div class="news-header">
+                <h2>AIT Preenchidos</h2>
+                <div class="red-line-news"></div>
+            </div>
+
+            <div class="ace-toolbar">
+                <input type="text" id="ait-fill-search-infrator" class="equipe-search" placeholder="Filtrar por nome/RG do infrator">
+                <input type="text" id="ait-fill-search-relator" class="equipe-search" placeholder="Filtrar por usuário que realizou">
+            </div>
+
+            <div id="ait-fill-admin-actions" class="ace-admin-actions is-hidden">
+                <button type="button" id="ait-fill-select-page" class="bou-btn bou-btn-secondary">Selecionar todos desta página</button>
+                <button type="button" id="ait-fill-delete-selected" class="bou-btn bou-btn-danger">Apagar selecionados</button>
+                <span id="ait-fill-selected-count" class="bou-status">0 selecionados</span>
+            </div>
+
+            <div id="ait-fill-status" class="bou-status">Carregando AITs...</div>
+            <div id="ait-fill-grid" class="ace-results-grid"></div>
+            <div id="ait-fill-p?gination" class="ace-p?gination"></div>
+
+            <div class="bou-actions" style="justify-content:center; margin-top:18px;">
+                <a href="/interno/painel.html" class="bou-btn bou-btn-secondary">Voltar ao Painel</a>
+            </div>
+        </div>
+    </section>
+
+    
+
+    <footer class="diario-footer">
+        <div class="container">
+            <div class="diario-footer-top">
+                <div class="diario-footer-brand">
+                    <img src="assets/img/prf.png" alt="Polícia Rodoviária Federal" class="diario-footer-logo">
+                    <div class="diario-footer-brand-text">
+                        <strong>Polícia Rodoviária Federal</strong>
+                        <span>Unidade Operacional Jaguaré</span>
+                        <span>São Paulo - SP</span>
+                    </div>
+                </div>
+                <div class="diario-footer-contact">
+                    <h4>CONTATO</h4>
+                    <p>PRF — Delegacia de Jaguaré</p>
+                    <p>Telefone: 191 (PRF)</p>
+                    <p>Emergência: 190</p>
+                </div>
+            </div>
+            <div class="diario-footer-divider" aria-hidden="true"></div>
+            <div class="diario-footer-bottom">
+                <span>© 2026 Polícia Rodoviária Federal — Todos os direitos reservados</span>
+                <img src="assets/img/gov_br.png" alt="gov.br" class="diario-footer-gov">
+            </div>
+        </div>
+    </footer>
+
+    <script src="app.js" defer></script>
+    <script>
+        (function () {
+            const el = {
+                status: document.getElementById('ait-fill-status'),
+                grid: document.getElementById('ait-fill-grid'),
+                searchInfrator: document.getElementById('ait-fill-search-infrator'),
+                searchRelator: document.getElementById('ait-fill-search-relator'),
+                p?gination: document.getElementById('ait-fill-p?gination'),
+                adminActions: document.getElementById('ait-fill-admin-actions'),
+                selectPage: document.getElementById('ait-fill-select-page'),
+                deleteSelected: document.getElementById('ait-fill-delete-selected'),
+                selectedCount: document.getElementById('ait-fill-selected-count')
+            };
+            let allRows = [];
+            let filteredRows = [];
+            let currentPage = 1;
+            const pageSize = 20;
+            const selectedIds = new Set();
+            let isAdmin = Boolean(window.__aitFillIsAdmin);
+
+            function normalize(value) {
+                return String(value || '')
+                    .normalize('NFD')
+                    .replace(/[\u0300-\u036f]/g, '')
+                    .toLowerCase()
+                    .trim();
+            }
+
+            function esc(value) {
+                if (value === null || value === undefined) return '';
+                return String(value)
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#39;');
+            }
+
+            function fmtDate(iso) {
+                if (!iso) return '-';
+                try {
+                    return new Date(iso).toLocaleString('pt-BR');
+                } catch (e) {
+                    return '-';
+                }
+            }
+
+            function parseJson(content) {
+                try {
+                    if (!content) return {};
+                    if (typeof content === 'object') return content;
+                    const parsed = JSON.parse(String(content));
+                    return parsed && typeof parsed === 'object' ? parsed : {};
+                } catch (e) {
+                    return {};
+                }
+            }
+
+            function rowTemplate(row) {
+                const rowId = String(row.id || '');
+                const checked = selectedIds.has(rowId) ? 'checked' : '';
+                const selectHtml = isAdmin
+                    ? `<label class="ace-select-wrap"><input type="checkbox" class="ace-select-item" data-id="${esc(rowId)}" ${checked}> <span>Selecionar</span></label>`
+                    : '';
+                return `
+                    <details class="ace-result-card">
+                        <summary class="ace-result-summary">
+                            <div class="ace-result-summary-main">
+                                <strong>${esc('AIT ' + (row.numero_ait || ('#' + rowId)))}</strong>
+                                <span>${esc(fmtDate(row.created_at || row.data_criacao))}</span>
+                                <span>Relator: ${esc(row.relator_nome || 'Usuário não identificado')}</span>
+                                <span>Infrator: ${esc((row.nome_infrator || 'N/A') + ' - ' + (row.rg_infrator || 'N/A'))}</span>
+                            </div>
+                            ${selectHtml}
+                            <i class="fas fa-chevron-down ace-result-arrow" aria-hidden="true"></i>
+                        </summary>
+                        <div class="ace-result-body">
+                            <p><strong>Infrações:</strong> ${esc(row.infracoes || 'N/A')}</p>
+                            <p><strong>Valor da multa:</strong> ${esc(row.valor_multa || 'N/A')}</p>
+                            <p><strong>Apreensão do veículo:</strong> ${esc(row.apreensao_veiculo || 'N/A')}</p>
+                            <p><strong>Data e horário:</strong> ${esc(row.datahora || 'N/A')}</p>
+                            <p><strong>Local de autuação:</strong> ${esc(row.local_autuacao || 'N/A')}</p>
+                            <p><strong>Marca/modelo:</strong> ${esc(row.marca_modelo || 'N/A')}</p>
+                            <p><strong>Emplacamento:</strong> ${esc(row.emplacamento || 'N/A')}</p>
+                        </div>
+                    </details>
+                `;
+            }
+
+            function updateSelectedCount() {
+                if (!el.selectedCount) return;
+                el.selectedCount.textContent = `${selectedIds.size} selecionados`;
+            }
+
+            function renderPagination(totalPages) {
+                if (!el.p?gination) return;
+                if (totalPages <= 1) {
+                    el.p?gination.innerHTML = '';
+                    return;
+                }
+                const prevDisabled = currentPage <= 1 ? 'disabled' : '';
+                const nextDisabled = currentPage >= totalPages ? 'disabled' : '';
+                el.p?gination.innerHTML =
+                    `<button type="button" class="ace-page-btn" data-page="prev" ${prevDisabled}>Anterior</button>` +
+                    `<span class="ace-page-info">Página ${currentPage} de ${totalPages}</span>` +
+                    `<button type="button" class="ace-page-btn" data-page="next" ${nextDisabled}>Próxima</button>`;
+
+                el.p?gination.querySelectorAll('.ace-page-btn').forEach((btn) => {
+                    btn.addEventListener('click', () => {
+                        const dir = btn.getAttribute('data-page');
+                        if (dir === 'prev' && currentPage > 1) currentPage -= 1;
+                        if (dir === 'next' && currentPage < totalPages) currentPage += 1;
+                        renderPage();
+                    });
+                });
+            }
+
+            function bindAdminSelectionHandlers() {
+                if (!isAdmin || !el.grid) return;
+                el.grid.querySelectorAll('.ace-select-wrap').forEach((node) => {
+                    node.addEventListener('click', (event) => {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    });
+                });
+                el.grid.querySelectorAll('.ace-select-item').forEach((node) => {
+                    node.addEventListener('click', (event) => event.stopPropagation());
+                    node.addEventListener('change', () => {
+                        const id = String(node.getAttribute('data-id') || '').trim();
+                        if (!id) return;
+                        if (node.checked) selectedIds.add(id);
+                        else selectedIds.delete(id);
+                        updateSelectedCount();
+                    });
+                });
+            }
+
+            function renderPage() {
+                if (!el.grid) return;
+                const rows = Array.isArray(filteredRows) ? filteredRows : [];
+                if (!rows.length) {
+                    el.grid.innerHTML = '<div class="info-card"><p>Nenhum AIT encontrado.</p></div>';
+                    if (el.p?gination) el.p?gination.innerHTML = '';
+                    return;
+                }
+                const totalPages = Math.max(1, Math.ceil(rows.length / pageSize));
+                if (currentPage > totalPages) currentPage = totalPages;
+                const start = (currentPage - 1) * pageSize;
+                const end = start + pageSize;
+                const pageRows = rows.slice(start, end);
+                el.grid.innerHTML = pageRows.map(rowTemplate).join('');
+                renderPagination(totalPages);
+                bindAdminSelectionHandlers();
+                updateSelectedCount();
+            }
+
+            function getCurrentPageRows() {
+                const rows = Array.isArray(filteredRows) ? filteredRows : [];
+                if (!rows.length) return [];
+                const totalPages = Math.max(1, Math.ceil(rows.length / pageSize));
+                const safePage = Math.min(Math.max(1, currentPage), totalPages);
+                const start = (safePage - 1) * pageSize;
+                const end = start + pageSize;
+                return rows.slice(start, end);
+            }
+
+            function selectCurrentPageRows() {
+                if (!isAdmin) return;
+                const pageRows = getCurrentPageRows();
+                pageRows.forEach((row) => {
+                    const id = String(row && row.id ? row.id : '').trim();
+                    if (id) selectedIds.add(id);
+                });
+                renderPage();
+            }
+
+            function applyFilters() {
+                const qInfrator = normalize(el.searchInfrator && el.searchInfrator.value ? el.searchInfrator.value : '');
+                const qRelator = normalize(el.searchRelator && el.searchRelator.value ? el.searchRelator.value : '');
+                filteredRows = allRows.filter((row) => {
+                    const infratorText = normalize((row.nome_infrator || '') + ' ' + (row.rg_infrator || '') + ' ' + (row.infrator || ''));
+                    const relatorText = normalize(row.relator_nome || '');
+                    const okInf = !qInfrator || infratorText.includes(qInfrator);
+                    const okRel = !qRelator || relatorText.includes(qRelator);
+                    return okInf && okRel;
+                });
+                currentPage = 1;
+                renderPage();
+            }
+
+            async function deleteSelected() {
+                if (!isAdmin) return;
+                const ids = Array.from(selectedIds).map((v) => Number(v)).filter((v) => Number.isFinite(v));
+                if (!ids.length) {
+                    if (el.status) {
+                        el.status.textContent = 'Selecione ao menos um AIT para apagar.';
+                        el.status.style.color = '#b42318';
+                    }
+                    return;
+                }
+                const ok = window.confirm(`Deseja apagar ${ids.length} AIT(s) selecionado(s)?`);
+                if (!ok) return;
+
+                const client = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
+                const del = await client
+                    .from('aits')
+                    .delete()
+                    .in('id', ids);
+
+                if (del.error) {
+                    if (el.status) {
+                        el.status.textContent = `Falha ao apagar: ${del.error.message || 'erro inesperado'}`;
+                        el.status.style.color = '#b42318';
+                    }
+                    return;
+                }
+
+                const removed = new Set(ids.map(String));
+                allRows = allRows.filter((row) => !removed.has(String(row.id)));
+                ids.forEach((id) => selectedIds.delete(String(id)));
+                applyFilters();
+                if (el.status) {
+                    el.status.textContent = `${ids.length} AIT(s) apagado(s) com sucesso.`;
+                    el.status.style.color = '#166534';
+                }
+            }
+
+            async function loadData() {
+                if (!el.status || !el.grid) return;
+                try {
+                    if (!window.supabase || !window.supabase.createClient) {
+                        el.status.textContent = 'Supabase não disponível.';
+                        return;
+                    }
+                    const client = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
+
+                    const [aitsRes, profilesRes, sessionResult] = await Promise.all([
+                        client.from('aits').select('id,user_id,numero_ait,infrator,conteudo_completo,created_at,data_criacao').order('created_at', { ascending: false }),
+                        client.from('profiles').select('id,nome_guerra,rg,is_admin'),
+                        client.auth.getSession()
+                    ]);
+
+                    const session = sessionResult && sessionResult.data ? sessionResult.data.session : null;
+                    const me = session && session.user ? session.user : null;
+                    if (me && Array.isArray(profilesRes.data)) {
+                        const meProfile = profilesRes.data.find((p) => String(p.id) === String(me.id));
+                        isAdmin = meProfile ? (meProfile.is_admin === true) : Boolean(window.__aitFillIsAdmin);
+                    }
+
+                    if (aitsRes.error) throw new Error(aitsRes.error.message || 'Falha ao carregar AIT.');
+
+                    const aits = Array.isArray(aitsRes.data) ? aitsRes.data : [];
+                    const profileRows = Array.isArray(profilesRes.data) ? profilesRes.data : [];
+                    const profileMap = new Map(profileRows.map((p) => [String(p.id), p]));
+
+                    allRows = aits.map((row) => {
+                        const relator = profileMap.get(String(row.user_id || ''));
+                        const parsed = parseJson(row.conteudo_completo);
+                        const campos = parsed && parsed.campos ? parsed.campos : {};
+                        return {
+                            ...row,
+                            relator_nome: relator ? ((relator.nome_guerra || '') + (relator.rg ? (' - ' + relator.rg) : '')).trim() : '',
+                            nome_infrator: campos.nome_infrator || '',
+                            rg_infrator: campos.rg_infrator || '',
+                            infracoes: campos.infracoes || '',
+                            valor_multa: campos.valor_multa || '',
+                            apreensao_veiculo: campos.apreensao_veiculo || '',
+                            datahora: campos.datahora || '',
+                            local_autuacao: campos.local_autuacao || '',
+                            marca_modelo: campos.marca_modelo || '',
+                            emplacamento: campos.emplacamento || ''
+                        };
+                    });
+
+                    if (el.adminActions) el.adminActions.classList.toggle('is-hidden', !isAdmin);
+                    applyFilters();
+                    el.status.textContent = `AITs carregados: ${allRows.length}`;
+                    el.status.style.color = '#166534';
+                } catch (e) {
+                    el.status.textContent = `Falha ao carregar AITs: ${e.message || 'erro inesperado'}`;
+                    el.status.style.color = '#b42318';
+                }
+            }
+
+            if (el.searchInfrator) el.searchInfrator.addEventListener('input', applyFilters);
+            if (el.searchRelator) el.searchRelator.addEventListener('input', applyFilters);
+            if (el.selectPage) el.selectPage.addEventListener('click', selectCurrentPageRows);
+            if (el.deleteSelected) el.deleteSelected.addEventListener('click', deleteSelected);
+            loadData();
+        })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,274 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel DGP - PRF Jaguar&eacute;</title>
+    <link rel="icon" type="image/x-icon" href="assets/img/prflogoico.ico">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        window.SUPABASE_URL = 'https://pssujmmuachdymlwsiuj.supabase.co';
+        window.SUPABASE_ANON_KEY = 'sb_publishable_PYQxZQr_TfVEesG7L4WI4g_-VjPHVpW';
+        window.auth = window.auth || {
+            logout: async function () {
+                try {
+                    const c = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
+                    await c.auth.signOut();
+                } catch (e) {}
+                window.location.replace('../login.html');
+            }
+        };
+    </script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header class="top-header">
+        <div class="container">
+            <div class="top-header-content">
+                <div class="logo-governo">
+                    <a href="../index.html" class="gov-logo-link">
+                        <img src="assets/img/gov_br.png" alt="Governo do Brasil" class="gov-logo">
+                    </a>
+                    <span class="gov-divider" aria-hidden="true"></span>
+                    <div class="gov-identity">
+                        <span class="gov-ministry">MINISTÃ‰RIO DA JUSTIÃ‡A E SEGURANÃ‡A PÃšBLICA</span>
+                        <span class="gov-agency">PolÃ­cia RodoviÃ¡ria Federal</span>
+                    </div>
+                </div>
+                <div class="top-header-right">
+                    <div class="user-auth-header">
+                        <a href="../login.html" id="header-login-btn" class="auth-link"><i class="fas fa-sign-in-alt"></i><span>LOGIN</span></a>
+                        <a href="../criar-conta.html" id="header-register-btn" class="auth-link"><i class="fas fa-user-plus"></i><span>CRIAR CONTA</span></a>
+                        <div id="header-user-menu" class="user-menu-header is-hidden">
+                            <span class="user-name-header" id="admin-name">Administrador</span>
+                            <a href="/interno/perfil.html" class="auth-link" id="header-edit-profile-link"><i class="fas fa-user-edit"></i><span>EDITAR PERFIL</span></a>
+                            <a href="#" onclick="auth.logout(); return false;" class="auth-link"><i class="fas fa-sign-out-alt"></i><span>SAIR</span></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <header class="main-header main-header--duna" id="menu">
+        <div class="container">
+            <div class="header-row">
+                <nav class="mini-nav mini-nav--left" aria-label="PÃ¡ginas (esquerda)">
+                    <a href="../index.html">INÃCIO</a>
+                    <div class="nav-dropdown">
+                        <a href="#" class="nav-link-dropdown" aria-haspopup="true" aria-expanded="false">INSTITUCIONAL</a>
+                        <div class="dropdown-menu">
+                            <a href="../organograma.html">Organograma</a>
+<a href="../historia-valores.html">HistÃ³ria e Valores</a>
+                        </div>
+                    </div>
+                    <div class="nav-dropdown">
+                        <a href="#" class="nav-link-dropdown" aria-haspopup="true" aria-expanded="false">SERVIÃ‡OS</a>
+                        <div class="dropdown-menu"><a href="../documentos.html">Documentos PRF</a></div>
+                    </div>
+                </nav>
+                <div class="main-header-top">
+                    <div class="brand-block">
+                        <a href="../index.html" class="brand-logo-link">
+                            <img src="assets/img/prf.png" alt="PRF JaguarÃ©" class="brand-logo">
+                        </a>
+                    </div>
+                </div>
+                <nav class="mini-nav mini-nav--right" aria-label="PÃ¡ginas (direita)">
+                    <a href="../concursos.html">CONCURSOS</a>
+                    <a href="../capacitacao.html">CAPACITAÃ‡ÃƒO E TREINAMENTO</a>
+                    <a href="../corregedoria.html">CORREGEDORIA</a>
+                </nav>
+            </div>
+            <div class="red-line"></div>
+        </div>
+    </header>
+
+    <section class="latest-news info-section">
+        <div class="container">
+            <div class="news-header approvals-head">
+                <h2>Painel DGP - Aprova??es e Logs</h2>
+                <div class="red-line-news"></div>
+                <p>Somente administradores aprovados podem acessar este painel.</p>
+            </div>
+
+            <div class="approvals-card">
+                <div class="approvals-toolbar">
+                    <button id="aprovacoes-reload" class="approvals-btn">Atualizar lista</button>
+                    <span id="aprovacoes-status" class="approvals-status"></span>
+                </div>
+                <div id="aprovacoes-cards" class="approvals-cards-grid">
+                    <div class="approvals-empty">Carregando usu&aacute;rios...</div>
+                </div>
+            </div>
+
+            <div class="approvals-card" style="margin-top:16px;">
+                <div class="approvals-toolbar">
+                    <button id="logs-reload" class="approvals-btn">Atualizar logs</button>
+                    <span id="logs-status" class="approvals-status"></span>
+                </div>
+                <div class="approvals-table-wrap">
+                    <table class="approvals-table">
+                        <thead>
+                            <tr><th>ID Log</th><th>BOU ID</th><th>Enviado por</th><th>Request ID</th><th>Status</th><th>Erro</th><th>Criado em</th></tr>
+                        </thead>
+                        <tbody id="logs-tbody"><tr><td colspan="7">Carregando...</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="approvals-card" style="margin-top:16px;">
+                <div class="approvals-toolbar">
+                    <div class="approvals-date-filter">
+                        <label for="pontos-date">Calend?rio de ponto (dia)</label>
+                        <input id="pontos-date" type="date">
+                    </div>
+                    <button id="pontos-reload" class="approvals-btn">Atualizar calend&aacute;rio</button>
+                    <span id="pontos-status" class="approvals-status"></span>
+                </div>
+                <div class="approvals-table-wrap">
+                    <table class="approvals-table">
+                        <thead>
+                            <tr>
+                                <th>Usu?rio</th>
+                                <th>RG</th>
+                                <th>Batidas do dia</th>
+                                <th>Tempo total</th>
+                                <th>Status atual</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pontos-tbody"><tr><td colspan="5">Carregando...</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="approvals-card" style="margin-top:16px;">
+                <div class="approvals-toolbar">
+                    <strong>Not&iacute;cias (publica&ccedil;&atilde;o admin)</strong>
+                    <span id="noticias-admin-status" class="approvals-status"></span>
+                </div>
+                <form id="noticias-admin-form" class="noticias-admin-form">
+                    <input type="hidden" id="noticia-id">
+                    <label><span>T?tulo</span><input id="noticia-titulo" type="text" maxlength="180" required></label>
+                    <label><span>Resumo</span><textarea id="noticia-resumo" rows="2" maxlength="400"></textarea></label>
+                    <label><span>Conte&uacute;do completo</span><textarea id="noticia-conteudo" rows="8" required></textarea></label>
+                    <label><span>URL da imagem (opcional)</span><input id="noticia-imagem" type="url" placeholder="https://..."></label>
+                    <label><span>Upload de imagem</span><input id="noticia-imagem-arquivo" type="file" accept="image/*"></label>
+                    <small class="noticias-admin-help">Se selecionar arquivo, o upload ter? prioridade sobre a URL.</small>
+                    <label class="noticias-admin-check"><input id="noticia-publicada" type="checkbox" checked> <span>Publicar imediatamente</span></label>
+                    <div class="noticias-admin-actions">
+                        <button id="noticia-salvar" type="submit" class="approvals-btn success">Salvar not&iacute;cia</button>
+                        <button id="noticia-limpar" type="button" class="approvals-btn">Limpar</button>
+                    </div>
+                </form>
+                <div id="noticias-admin-lista" class="noticias-admin-lista">
+                    <div class="approvals-empty">Carregando not&iacute;cias...</div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <div id="roles-modal" class="modal" aria-hidden="true">
+        <div class="modal-content approvals-role-modal">
+            <div class="modal-header">
+                <h3 class="modal-title" id="roles-edit-title">Editar perfil</h3>
+                <button id="roles-modal-close" type="button" class="modal-close" aria-label="Fechar">&times;</button>
+            </div>
+            <input id="roles-user-id" type="hidden">
+            <p class="approvals-role-user"><strong id="roles-user-name">UsuÃ¡rio</strong> <span id="roles-user-email"></span></p>
+            <div class="approvals-role-grid">
+                <label id="roles-field-cargo">
+                    <span>Cargo</span>
+                    <select id="roles-cargo">
+                        <option value="">Selecione o cargo</option>
+                        <option value="Diretor-Geral">Diretor-Geral</option>
+                        <option value="Superintendente">Superintendente</option>
+                        <option value="Coordenador">Coordenador</option>
+                        <option value="Chefe de DivisÃ£o">Chefe de DivisÃ£o</option>
+                        <option value="Chefe de ServiÃ§o">Chefe de ServiÃ§o</option>
+                        <option value="Chefe de NÃºcleo">Chefe de NÃºcleo</option>
+                        <option value="Agente de Classe Especial">Agente de Classe Especial</option>
+                        <option value="Agente de Primeira Classe">Agente de Primeira Classe</option>
+                        <option value="Agente de Segunda Classe">Agente de Segunda Classe</option>
+                        <option value="Agente de Terceira Classe">Agente de Terceira Classe</option>
+                        <option value="Agente Aluno">Agente Aluno</option>
+                    </select>
+                </label>
+                <label id="roles-field-grupamento">
+                    <span>Grupamento</span>
+                    <select id="roles-grupamento">
+                        <option value="">Selecione o grupamento</option>
+                        <option value="Diretoria de GestÃ£o de Pessoas">Diretoria de GestÃ£o de Pessoas</option>
+                        <option value="Diretoria Executiva">Diretoria Executiva</option>
+                        <option value="Diretoria Operacional">Diretoria Operacional</option>
+                        <option value="Ronda PRF">Ronda PRF</option>
+                        <option value="Grupo de Patrulhamento Motorizado">Grupo de Patrulhamento Motorizado</option>
+                        <option value="Universidade Corporativa da PRF">Universidade Corporativa da PRF</option>
+                        <option value="DivisÃ£o de OperaÃ§Ãµes AÃ©reas">DivisÃ£o de OperaÃ§Ãµes AÃ©reas</option>
+                        <option value="Grupo de Patrulhamento TÃ¡tico">Grupo de Patrulhamento TÃ¡tico</option>
+                        <option value="NÃºcleo de OperaÃ§Ãµes Especiais">NÃºcleo de OperaÃ§Ãµes Especiais</option>
+                    </select>
+                </label>
+                <label id="roles-field-cursos"><span>Cursos</span><div id="roles-cursos" class="approvals-course-options"></div></label>
+            </div>
+            <div class="approvals-role-actions">
+                <button id="roles-modal-cancel" type="button" class="approvals-btn">Cancelar</button>
+                <button id="roles-modal-save" type="button" class="approvals-btn success">Salvar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="history-modal" class="modal" aria-hidden="true">
+        <div class="modal-content approvals-history-modal">
+            <div class="modal-header">
+                <h3 class="modal-title" id="history-title">HistÃ³rico do usuÃ¡rio</h3>
+                <button id="history-modal-close" type="button" class="modal-close" aria-label="Fechar">&times;</button>
+            </div>
+            <p class="approvals-role-user"><strong id="history-user-name">UsuÃ¡rio</strong> <span id="history-user-email"></span></p>
+            <div id="history-filters" class="history-filters"></div>
+            <div id="history-status" class="approvals-status"></div>
+            <div id="history-list" class="history-list">
+                <div class="approvals-empty">Selecione uma visualizaÃ§Ã£o.</div>
+            </div>
+            <div class="approvals-role-actions">
+                <button id="history-modal-close-bottom" type="button" class="approvals-btn">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="diario-footer">
+        <div class="container">
+            <div class="diario-footer-top">
+                <div class="diario-footer-brand">
+                    <img src="assets/img/prf.png" alt="PolÃ­cia RodoviÃ¡ria Federal" class="diario-footer-logo">
+                    <div class="diario-footer-brand-text">
+                        <strong>PolÃ­cia RodoviÃ¡ria Federal</strong>
+                        <span>Unidade Operacional JaguarÃ©</span>
+                        <span>SÃ£o Paulo - SP</span>
+                    </div>
+                </div>
+                <div class="diario-footer-contact">
+                    <h4>CONTATO</h4>
+                    <p>PRF â€” Delegacia de JaguarÃ©</p>
+                    <p>Telefone: 191 (PRF)</p>
+                    <p>EmergÃªncia: 190</p>
+                </div>
+            </div>
+            <div class="diario-footer-divider" aria-hidden="true"></div>
+            <div class="diario-footer-bottom">
+                <span>Â© 2026 PolÃ­cia RodoviÃ¡ria Federal â€” Todos os direitos reservados</span>
+                <img src="assets/img/gov_br.png" alt="gov.br" class="diario-footer-gov">
+            </div>
+        </div>
+    </footer>
+
+    <script src="app.js" defer></script>
+    <script src="aprovacoes.js" defer></script>
+    <script src="noticias-admin.js" defer></script>
+</body>
+</html>
+
+
+

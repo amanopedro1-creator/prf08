@@ -1,0 +1,952 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="format-detection" content="telephone=no">
+    <title>Painel Interno - PRF Jaguar&eacute;</title>
+    <link rel="icon" type="image/x-icon" href="assets/img/prflogoico.ico">
+    <script>
+        (function() {
+            try {
+                const savedTheme = localStorage.getItem('theme') || 'light';
+                if (savedTheme === 'dark') {
+                    document.documentElement.classList.add('dark-mode');
+                }
+            } catch (e) {}
+        })();
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        window.SUPABASE_URL = 'https://pssujmmuachdymlwsiuj.supabase.co';
+        window.SUPABASE_ANON_KEY = 'sb_publishable_PYQxZQr_TfVEesG7L4WI4g_-VjPHVpW';
+
+        (async function enforceAuth() {
+            try {
+                if (!window.supabase || !window.supabase.createClient) {
+                    window.location.replace('../login.html');
+                    return;
+                }
+                const client = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
+                const result = await client.auth.getSession();
+                const session = result && result.data ? result.data.session : null;
+                const user = session ? session.user : null;
+                if (!user) {
+                    window.location.replace('../login.html');
+                    return;
+                }
+
+                const profileQuery = await client
+                    .from('profiles')
+                    .select('aprovado')
+                    .eq('id', user.id)
+                    .maybeSingle();
+                const profile = profileQuery ? profileQuery.data : null;
+                const profileError = profileQuery ? profileQuery.error : null;
+
+                if (profileError || !profile || profile.aprovado !== true) {
+                    await client.auth.signOut();
+                    window.location.replace('../login.html');
+                    return;
+                }
+            } catch (e) {
+                window.location.replace('../login.html');
+            }
+        })();
+    </script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header class="top-header">
+        <div class="container">
+            <div class="top-header-content">
+                <div class="logo-governo">
+                    <a href="../index.html" class="gov-logo-link">
+                        <img src="assets/img/gov_br.png" alt="Governo do Brasil" class="gov-logo">
+                    </a>
+                    <span class="gov-divider" aria-hidden="true"></span>
+                    <div class="gov-identity">
+                        <span class="gov-ministry">MINISTÉRIO DA JUSTIÇA E SEGURANÇA PÚBLICA</span>
+                        <span class="gov-agency">Polícia Rodoviária Federal</span>
+                    </div>
+                </div>
+                <div class="top-header-right">
+                    <div class="user-auth-header">
+                        <a href="../login.html" id="header-login-btn" class="auth-link">
+                            <i class="fas fa-sign-in-alt"></i>
+                            <span>LOGIN</span>
+                        </a>
+                        <a href="../criar-conta.html" id="header-register-btn" class="auth-link">
+                            <i class="fas fa-user-plus"></i>
+                            <span>CRIAR CONTA</span>
+                        </a>
+                        <div id="header-user-menu" class="user-menu-header is-hidden">
+                            <span class="user-name-header"></span>
+<a href="/interno/perfil.html" class="auth-link" id="header-edit-profile-link">
+                                <i class="fas fa-user-edit"></i>
+                                <span>EDITAR PERFIL</span>
+                            </a>
+                            <a href="#" onclick="auth.logout(); return false;" class="auth-link">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span>SAIR</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+        <header class="main-header main-header--duna" id="menu">
+        <div class="container">
+            <div class="header-row">
+
+            <!-- ESQUERDA: 3 pÃ¡ginas -->
+            <nav class="mini-nav mini-nav--left" aria-label="PÃ¡ginas (esquerda)">
+                <a href="../index.html">INÍCIO</a>
+                    <div class="nav-dropdown">
+                        <a href="#" class="nav-link-dropdown" aria-haspopup="true" aria-expanded="false">INSTITUCIONAL</a>
+                        <div class="dropdown-menu">
+                            <a href="../organograma.html">Organograma</a>
+<a href="../historia-valores.html">História e Valores</a>
+                        </div>
+                    </div>
+                    <div class="nav-dropdown">
+                        <a href="#" class="nav-link-dropdown" aria-haspopup="true" aria-expanded="false">SERVIÇOS</a>
+                            <div class="dropdown-menu">
+                            <a href="../documentos.html">Documentos PRF</a>
+                        </div>
+                    </div>
+            </nav>
+
+            <!-- CENTRO: informaÃ§Ã£o (logo + textos) -->
+            <div class="main-header-top">
+                <div class="brand-block">
+                <a href="../index.html" class="brand-logo-link">
+                <img src="assets/img/prf.png" alt="PRF JaguarÃ©" class="brand-logo">
+                </a>
+                </div>
+            </div>
+            <!-- DIREITA: +3 pÃ¡ginas -->
+            <nav class="mini-nav mini-nav--right" aria-label="PÃ¡ginas (direita)">
+                <a href="../concursos.html">CONCURSOS</a>
+                <a href="../capacitacao.html">CAPACITAÇÃO E TREINAMENTO</a>
+                <a href="../corregedoria.html">CORREGEDORIA</a>
+            </nav>
+            </div>
+            <div class="red-line"></div>
+        </div>
+        </header>
+
+    <section class="latest-news info-section">
+        <div class="container">
+            <div class="news-header">
+                <h2>Acesso Interno - PRF</h2>
+                    <div class="red-line-news"></div>
+            </div>
+            <article class="profile-brand-card" id="painel-profile-card">
+                <div class="profile-brand-overlay">
+                    <div class="profile-brand-main">
+                        <div class="profile-brand-identity">
+                            <div class="profile-brand-photo-col">
+                                <div class="profile-brand-photo-wrap">
+                                    <img id="painel-profile-photo" class="profile-brand-photo" src="assets/img/prf.png" alt="Foto do usuário">
+                                </div>
+                                <a href="/interno/perfil.html" class="profile-brand-edit-link">Editar perfil</a>
+                            </div>
+                            <div class="profile-brand-text">
+                                <div class="profile-brand-name" id="painel-profile-name">Usuário</div>
+                                <div class="profile-brand-role" id="painel-profile-cargo">Cargo do agente</div>
+                                <div class="profile-brand-rg" id="painel-profile-rg">RG: -</div>
+                                <div class="profile-shift-wrap">
+                                    <button type="button" id="painel-shift-btn" class="profile-shift-btn profile-shift-btn--idle">
+                                        Entrar em serviço
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <aside class="profile-brand-meta">
+                            <div class="profile-brand-meta-item">
+                                <span>Grupamento</span>
+                                <strong id="painel-profile-grupamento">-</strong>
+                            </div>
+                            <div class="profile-brand-meta-item">
+                                <span>Cursos</span>
+                                <div id="painel-profile-cursos" class="profile-course-list">
+                                    <span class="profile-course-empty">A definir</span>
+                                </div>
+                            </div>
+                        </aside>
+                    </div>
+                </div>
+            </article>
+            <div class="painel-layout">
+                <aside class="painel-side-menu" aria-label="Navegação interna rápida">
+                    <a href="#" class="painel-side-link" id="painel-notificacoes-toggle" rel="noopener">
+                        <i class="fas fa-bell" aria-hidden="true"></i>
+                        <span>Notificações</span>
+                        <strong id="painel-notificacoes-badge" class="painel-side-badge is-hidden">0</strong>
+                    </a>
+                    <a href="/interno/diario-oficial.html" class="painel-side-link" rel="noopener">
+                        <i class="fas fa-newspaper" aria-hidden="true"></i>
+                        <span>Di&aacute;rio Oficial</span>
+                    </a>
+                    <a href="https://docs.google.com/document/d/15VyNPcd7FLcnPPAgikZe_VPWCk1li0S0aE47i_EXH90/edit?usp=sharing" class="painel-side-link" id="painel-regulamento-trigger" rel="noopener">
+                        <i class="fas fa-gavel" aria-hidden="true"></i>
+                        <span>Regulamento Disciplinar</span>
+                    </a>
+                    <a href="https://docs.google.com/document/d/1i4M0SuHjl3hygdDxjdrNIes3jMYzx67hYyB7ZC3XwJk/edit?usp=sharing" class="painel-side-link" id="painel-uniformes-trigger" rel="noopener">
+                        <i class="fas fa-shirt" aria-hidden="true"></i>
+                        <span>Padrão de Uniformes</span>
+                    </a>
+                    <a href="/interno/avisos.html" class="painel-side-link" rel="noopener">
+                        <i class="fas fa-bullhorn" aria-hidden="true"></i>
+                        <span>Painel de Avisos</span>
+                    </a>
+                    <a href="/interno/equipe.html" class="painel-side-link" rel="noopener">
+                        <i class="fas fa-users" aria-hidden="true"></i>
+                        <span>Equipe</span>
+                    </a>
+                    <a href="/interno/concursos-internos.html" class="painel-side-link" rel="noopener">
+                        <i class="fas fa-bullhorn" aria-hidden="true"></i>
+                        <span>Concursos Internos</span>
+                    </a>
+                </aside>
+                <div class="painel-main-content">
+                    <div id="painel-main-default">
+                    <article id="painel-latest-aviso" class="painel-latest-aviso" aria-live="polite">
+                        <h3>Último aviso</h3>
+                        <p class="painel-latest-aviso-empty">Carregando aviso...</p>
+                    </article>
+                <div class="docs-grid" id="painel-main-docs-grid">
+                    <a href="/interno/bou.html" class="docs-card" rel="noopener">
+                        <i class="fas fa-handcuffs docs-card-icon" aria-hidden="true"></i>
+                        <span>BOU - Boletim de Ocorrência Unificado</span>
+                    </a>
+                    <a href="/interno/ait.html" class="docs-card" rel="noopener">
+                        <i class="fas fa-file-invoice-dollar docs-card-icon" aria-hidden="true"></i>
+                        <span>AIT - Auto de Infração de Trânsito</span>
+                    </a>
+                    <a href="/interno/patrulha.html" class="docs-card" rel="noopener">
+                        <i class="fas fa-route docs-card-icon" aria-hidden="true"></i>
+                        <span>RIPAT - Relatório Integrado de Patrulha</span>
+                    </a>
+                    <a href="/interno/relatorio-aluno.html" class="docs-card" id="relatorio-aluno-card" rel="noopener">
+                        <i class="fas fa-user-graduate docs-card-icon" aria-hidden="true"></i>
+                        <span>ACE - Avaliação de Capacitação e Ensino</span>
+                    </a>
+
+                    <a href="/interno/bou-envios.html" class="docs-card" rel="noopener">
+                        <i class="fas fa-paper-plane docs-card-icon" aria-hidden="true"></i>
+                        <span>BOU Enviados</span>
+                    </a>
+                    <a href="/interno/ait-preenchidos.html" class="docs-card" id="ait-preenchidos-card" rel="noopener">
+                        <i class="fas fa-file-circle-check docs-card-icon" aria-hidden="true"></i>
+                        <span>AIT Preenchidos</span>
+                    </a>
+                    <a href="/interno/ripat-publicados.html" class="docs-card" id="ripat-publicados-card" rel="noopener">
+                        <i class="fas fa-folder-open docs-card-icon" aria-hidden="true"></i>
+                        <span>RIPAT Publicados</span>
+                    </a>
+                    <a href="/interno/ace-resultados.html" class="docs-card" id="ace-resultados-card" rel="noopener">
+                        <i class="fas fa-list-check docs-card-icon" aria-hidden="true"></i>
+                        <span>ACE Resultados</span>
+                    </a>
+
+                    <a href="/interno/relatorio-voo.html" class="docs-card" id="relatorio-voo-card" rel="noopener">
+                        <i class="fas fa-helicopter docs-card-icon" aria-hidden="true"></i>
+                        <span>RAVOP - Relatório de Aeronavegação Operacional</span>
+                    </a>
+                    <a href="/interno/aprovacoes.html" class="docs-card" id="painel-dgp-card" rel="noopener">
+                        <i class="fas fa-user-shield docs-card-icon" aria-hidden="true"></i>
+                        <span>Painel DGP</span>
+                    </a>
+                </div>
+                </div>
+                <section id="painel-docs-inline" class="painel-docs-inline is-hidden" aria-hidden="true">
+                    <button type="button" id="painel-docs-inline-close" class="painel-docs-inline-close" aria-label="Fechar documentos">
+                        <i class="fas fa-times" aria-hidden="true"></i>
+                    </button>
+                    <article id="painel-docs-inline-aviso" class="painel-latest-aviso">
+                        <h3>Último aviso</h3>
+                        <p class="painel-latest-aviso-empty">Carregando aviso...</p>
+                    </article>
+                    <article class="info-card painel-docs-frame-wrap">
+                        <h3 id="painel-docs-inline-title">Documento Interno</h3>
+                        <iframe
+                            id="painel-docs-inline-frame"
+                            src=""
+                            title="Documento Interno"
+                            width="100%"
+                            height="1200"
+                            frameborder="0"
+                            marginheight="0"
+                            marginwidth="0"
+                            style="border: 0; border-radius: 12px; background: #fff;"
+                            loading="lazy">
+                            Carregando...
+                        </iframe>
+                    </article>
+                </section>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <aside id="painel-notificacoes-popup" class="painel-notificacoes-popup is-hidden" aria-live="polite">
+        <button type="button" id="painel-notificacoes-mini" class="painel-notificacoes-mini" aria-label="Abrir notificações">
+            <i class="fas fa-bell" aria-hidden="true"></i>
+            <span id="painel-notificacoes-mini-badge" class="painel-notificacoes-mini-badge">0</span>
+        </button>
+        <div class="painel-notificacoes-head">
+            <h3>Notificações</h3>
+            <div class="painel-notificacoes-head-actions">
+                <button type="button" id="painel-notificacoes-clear-all" class="painel-notificacoes-clear-all">
+                    Apagar todas
+                </button>
+                <button type="button" id="painel-notificacoes-close" class="painel-notificacoes-close" aria-label="Fechar notificações">
+                    <i class="fas fa-times" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+        <p class="painel-notificacoes-sub">Cita&ccedil;&otilde;es em BOU, AIT, patrulha, relat&oacute;rio aluno e Di&aacute;rio Oficial.</p>
+        <div id="painel-notificacoes-list" class="painel-notificacoes-list">
+            <p class="painel-notificacoes-empty">Carregando notificações...</p>
+        </div>
+    </aside>
+    <footer class="diario-footer">
+        <div class="container">
+            <div class="diario-footer-top">
+                <div class="diario-footer-brand">
+                    <img src="assets/img/prf.png" alt="Polícia Rodoviária Federal" class="diario-footer-logo">
+                    <div class="diario-footer-brand-text">
+                        <strong>Polícia Rodoviária Federal</strong>
+                        <span>Unidade Operacional Jaguaré</span>
+                        <span>São Paulo - SP</span>
+                    </div>
+                </div>
+                <div class="diario-footer-contact">
+                    <h4>CONTATO</h4>
+                    <p>PRF — Delegacia de Jaguaré</p>
+                    <p>Telefone: 191 (PRF)</p>
+                    <p>Emergência: 190</p>
+                </div>
+            </div>
+            <div class="diario-footer-divider" aria-hidden="true"></div>
+            <div class="diario-footer-bottom">
+                <span>© 2026 Polícia Rodoviária Federal — Todos os direitos reservados</span>
+                <img src="assets/img/gov_br.png" alt="gov.br" class="diario-footer-gov">
+            </div>
+        </div>
+    </footer>
+
+    <script src="app.js" defer></script>
+    <script>
+        (function setupPainelDocsPopup() {
+            function byId(id) { return document.getElementById(id); }
+            const panel = byId('painel-docs-inline');
+            const closeBtn = byId('painel-docs-inline-close');
+            const openReg = byId('painel-regulamento-trigger');
+            const openUni = byId('painel-uniformes-trigger');
+            const avisoSource = byId('painel-latest-aviso');
+            const avisoTarget = byId('painel-docs-inline-aviso');
+            const mainDefault = byId('painel-main-default');
+            const frame = byId('painel-docs-inline-frame');
+            const title = byId('painel-docs-inline-title');
+            if (!panel || !openReg || !openUni || !mainDefault) return;
+            let activeTrigger = null;
+            const docTriggers = [openReg, openUni];
+
+            const setActiveTriggerVisual = function (node) {
+                docTriggers.forEach(function (lnk) {
+                    if (!lnk) return;
+                    lnk.classList.remove('is-open-link');
+                    lnk.style.background = '';
+                    lnk.style.color = '';
+                    lnk.style.borderColor = '';
+                    lnk.removeAttribute('aria-current');
+                    const icon = lnk.querySelector('i');
+                    const label = lnk.querySelector('span');
+                    if (icon) icon.style.color = '';
+                    if (label) label.style.color = '';
+                });
+                if (!node) return;
+                node.classList.add('is-open-link');
+                node.style.background = '#1d4ed8';
+                node.style.color = '#ffffff';
+                node.style.borderColor = '#1d4ed8';
+                node.setAttribute('aria-current', 'page');
+                const icon = node.querySelector('i');
+                const label = node.querySelector('span');
+                if (icon) icon.style.color = '#ffffff';
+                if (label) label.style.color = '#ffffff';
+            };
+
+            const syncAviso = function () {
+                if (!avisoSource || !avisoTarget) return;
+                avisoTarget.innerHTML = avisoSource.innerHTML;
+            };
+
+            const setDocInFrame = function (href, label) {
+                if (frame) frame.src = href || '';
+                if (title) title.textContent = label || 'Documento Interno';
+            };
+
+            const openPopup = function (event, sourceNode) {
+                if (event) event.preventDefault();
+                syncAviso();
+                const href = sourceNode ? sourceNode.getAttribute('href') : '';
+                const labelNode = sourceNode ? sourceNode.querySelector('span') : null;
+                const label = labelNode ? labelNode.textContent.trim() : 'Documento Interno';
+                setDocInFrame(href, label);
+                activeTrigger = sourceNode || null;
+                setActiveTriggerVisual(activeTrigger);
+                mainDefault.classList.add('is-hidden');
+                panel.classList.remove('is-hidden');
+                requestAnimationFrame(function () {
+                    panel.classList.add('is-open');
+                    panel.setAttribute('aria-hidden', 'false');
+                });
+            };
+
+            const closePopup = function () {
+                panel.classList.remove('is-open');
+                panel.setAttribute('aria-hidden', 'true');
+                setTimeout(function () {
+                    panel.classList.add('is-hidden');
+                    mainDefault.classList.remove('is-hidden');
+                    activeTrigger = null;
+                    setActiveTriggerVisual(null);
+                }, 230);
+            };
+
+            openReg.addEventListener('click', function (event) {
+                openPopup(event, openReg);
+            });
+            openUni.addEventListener('click', function (event) {
+                openPopup(event, openUni);
+            });
+            if (closeBtn) closeBtn.addEventListener('click', closePopup);
+
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape' && panel.classList.contains('is-open')) {
+                    closePopup();
+                }
+            });
+        })();
+    </script>
+    <script>
+        (async function loadPainelProfile() {
+            try {
+                if (!window.supabase || !window.supabase.createClient) return;
+                const client = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
+                const sessionResult = await client.auth.getSession();
+                const session = sessionResult && sessionResult.data ? sessionResult.data.session : null;
+                const user = session ? session.user : null;
+                if (!user) return;
+
+                const result = await client
+                    .from('profiles')
+                    .select('nome_guerra, email, rg, cargo, grupamento, cursos, foto_url, is_admin')
+                    .eq('id', user.id)
+                    .maybeSingle();
+
+                if (result.error || !result.data) return;
+                const p = result.data;
+                window.__painelProfile = p;
+
+                const nameNode = document.getElementById('painel-profile-name');
+                const rgNode = document.getElementById('painel-profile-rg');
+                const cargoNode = document.getElementById('painel-profile-cargo');
+                const grupamentoNode = document.getElementById('painel-profile-grupamento');
+                const imgNode = document.getElementById('painel-profile-photo');
+                const relatorioAlunoCard = document.getElementById('relatorio-aluno-card');
+                const aceResultadosCard = document.getElementById('ace-resultados-card');
+                const relatorioVooCard = document.getElementById('relatorio-voo-card');
+                const painelDgpCard = document.getElementById('painel-dgp-card');
+
+                const cursosNode = document.getElementById('painel-profile-cursos');
+                const backgrounds = ['assets/img/fundo_1.png', 'assets/img/fundo_2.png'];
+                const selectedBg = backgrounds[Math.floor(Math.random() * backgrounds.length)];
+                const cardNode = document.getElementById('painel-profile-card');
+                const courseColors = {
+                    'CFP': { bg: '#1e3a8a', fg: '#ffffff' },
+                    'CAFIT': { bg: '#facc15', fg: '#334155' },
+                    'CVP': { bg: '#f9a8d4', fg: '#334155' },
+                    'OP': { bg: '#7f1d1d', fg: '#ffffff' },
+                    'CDP': { bg: '#64748b', fg: '#334155' },
+                    'CAD': { bg: '#374151', fg: '#ffffff' },
+                    'COEsp': { bg: '#111111', fg: '#ffffff' },
+                    'CFMB': { bg: '#d97706', fg: '#334155' },
+                    'CFMT': { bg: '#f4b183', fg: '#334155' },
+                    'TPCC': { bg: '#84cc16', fg: '#334155' },
+                    'COA': { bg: '#166534', fg: '#ffffff' },
+                    'CPPAR': { bg: '#556b2f', fg: '#ffffff' },
+                    'ARP': { bg: '#e5d3b3', fg: '#334155' }
+                };
+                const setLockedCard = (cardEl, locked, message) => {
+                    if (!cardEl) return;
+                    if (locked) {
+                        cardEl.classList.add('docs-card--locked');
+                        cardEl.setAttribute('aria-disabled', 'true');
+                        cardEl.setAttribute('tabindex', '-1');
+                        cardEl.setAttribute('data-lock-message', message || 'Seção indisponível para este perfil');
+                        return;
+                    }
+                    cardEl.classList.remove('docs-card--locked');
+                    cardEl.removeAttribute('aria-disabled');
+                    cardEl.removeAttribute('tabindex');
+                    cardEl.removeAttribute('data-lock-message');
+                };
+                const normalizeText = (value) => String(value || '')
+                    .normalize('NFD')
+                    .replace(/[\u0300-\u036f]/g, '')
+                    .toLowerCase()
+                    .trim();
+
+                if (cardNode) cardNode.style.backgroundImage = `url('${selectedBg}')`;
+                if (nameNode) nameNode.textContent = p.nome_guerra || p.email || user.email || 'Usuário';
+                if (rgNode) rgNode.textContent = `RG: ${p.rg || '-'}`;
+                if (cargoNode) cargoNode.textContent = p.cargo || 'Cargo do agente';
+                const isAgenteAluno = String(p.cargo || '').trim().toLowerCase() === 'agente aluno';
+                const isAdmin = p.is_admin === true;
+                const isDoa = normalizeText(p.grupamento || '') === normalizeText('Divisão de Operações Aéreas');
+                const isDgp = normalizeText(p.grupamento || '') === normalizeText('Diretoria de Gestão de Pessoas');
+                setLockedCard(relatorioAlunoCard, isAgenteAluno, 'Indisponível para Agente Aluno');
+                setLockedCard(aceResultadosCard, !(isDgp || isAdmin), 'Acesso restrito à DGP');
+                setLockedCard(relatorioVooCard, !(isDoa || isAdmin), 'Acesso restrito à Divisão de Operações Aéreas');
+                setLockedCard(painelDgpCard, !isAdmin, 'Indisponível para este perfil');
+                if (grupamentoNode) grupamentoNode.textContent = p.grupamento || '-';
+                if (cursosNode) {
+                    const rawCourses = String(p.cursos || '').trim();
+                    if (!rawCourses) {
+                        cursosNode.innerHTML = '<span class="profile-course-empty">A definir</span>';
+                    } else {
+                        const courses = rawCourses.split(' || ').map((s) => s.trim()).filter(Boolean);
+                        cursosNode.innerHTML = courses.map((course) => {
+                            const code = course.split('|')[0].trim();
+                            const palette = courseColors[code] || { bg: '#334155', fg: '#ffffff' };
+                            return `<span class="profile-course-chip" style="background:${palette.bg}E6;color:${palette.fg};">${course}</span>`;
+                        }).join('');
+                    }
+                }
+                if (imgNode && p.foto_url) imgNode.src = p.foto_url;
+            } catch (e) {
+                /* ignore */
+            }
+        })();
+    </script>
+    <script>
+        (async function loadPainelLatestAviso() {
+            try {
+                if (!window.supabase || !window.supabase.createClient) return;
+                const client = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
+                const box = document.getElementById('painel-latest-aviso');
+                if (!box) return;
+                const esc = function (value) {
+                    if (value === null || value === undefined) return '';
+                    return String(value)
+                        .replace(/&/g, '&amp;')
+                        .replace(/</g, '&lt;')
+                        .replace(/>/g, '&gt;')
+                        .replace(/"/g, '&quot;')
+                        .replace(/'/g, '&#39;');
+                };
+
+                const result = await client
+                    .from('avisos')
+                    .select('*')
+                    .order('created_at', { ascending: false })
+                    .limit(1);
+
+                if (result.error) {
+                    box.innerHTML = '<h3>Último aviso</h3><p class="painel-latest-aviso-empty">Não foi possível carregar os avisos.</p>';
+                    return;
+                }
+
+                const aviso = Array.isArray(result.data) && result.data.length ? result.data[0] : null;
+                if (!aviso) {
+                    box.innerHTML = '<h3>Último aviso</h3><p class="painel-latest-aviso-empty">Nenhum aviso publicado até o momento.</p>';
+                    return;
+                }
+
+                const titulo = esc(aviso.titulo || 'Aviso interno');
+                const subtitulo = esc(aviso.subtitulo || '');
+                const texto = esc(aviso.texto || '');
+                const midia = aviso.midia_url || '';
+                const createdAt = aviso.created_at ? new Date(aviso.created_at).toLocaleString('pt-BR') : '';
+                const mediaHtml = midia
+                    ? '<div class="painel-aviso-media-wrap"><img src="' + esc(midia) + '" alt="Mídia do aviso" class="painel-aviso-media"></div>'
+                    : '';
+
+                box.innerHTML =
+                    '<h3>Último aviso</h3>' +
+                    '<div class="painel-aviso-layout">' +
+                    '<div class="painel-aviso-copy">' +
+                    '<h4>' + titulo + '</h4>' +
+                    (subtitulo ? '<p class="painel-aviso-subtitulo">' + subtitulo + '</p>' : '') +
+                    (texto ? '<p class="painel-aviso-texto">' + texto.replace(/\n/g, '<br>') + '</p>' : '') +
+                    (createdAt ? '<span class="painel-aviso-data">Publicado em ' + esc(createdAt) + '</span>' : '') +
+                    '<a href="/interno/avisos.html" class="painel-aviso-link">Ver todos os avisos</a>' +
+                    '</div>' +
+                    mediaHtml +
+                    '</div>';
+            } catch (e) {
+                const box = document.getElementById('painel-latest-aviso');
+                if (box) {
+                    box.innerHTML = '<h3>Último aviso</h3><p class="painel-latest-aviso-empty">Erro ao carregar avisos.</p>';
+                }
+            }
+        })();
+    </script>
+    <script>
+        (async function loadPainelNotifications() {
+            function byId(id) { return document.getElementById(id); }
+            function esc(value) {
+                if (value === null || value === undefined) return '';
+                return String(value)
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#39;');
+            }
+            function normalize(value) {
+                return String(value || '')
+                    .normalize('NFD')
+                    .replace(/[\u0300-\u036f]/g, '')
+                    .toLowerCase();
+            }
+            function buildTokens(profile, user) {
+                const raw = [
+                    profile && profile.nome_guerra ? profile.nome_guerra : '',
+                    profile && profile.rg ? profile.rg : '',
+                    user && user.email ? user.email : ''
+                ];
+                const tokens = raw
+                    .map(normalize)
+                    .filter(function (v) { return v.length >= 3; });
+                const nomeParts = String(profile && profile.nome_guerra ? profile.nome_guerra : '')
+                    .split(' ')
+                    .map(function (v) { return normalize(v); })
+                    .filter(function (v) { return v.length >= 4; });
+                return Array.from(new Set(tokens.concat(nomeParts)));
+            }
+            function hasMention(row, tokens, userId) {
+                if (!row || !tokens.length) return false;
+                if (row.user_id && String(row.user_id) === String(userId)) return false;
+                const source = normalize([
+                    row.conteudo_completo,
+                    row.texto,
+                    row.observacoes,
+                    row.relato,
+                    row.detalhes,
+                    row.resumo,
+                    row.titulo,
+                    row.subtitulo,
+                    row.infrator,
+                    row.numero_ait
+                ].join(' '));
+                return tokens.some(function (token) { return source.includes(token); });
+            }
+            function getDateLabel(row) {
+                const raw = row.created_at || row.data_criacao || row.data || '';
+                if (!raw) return 'Data não informada';
+                const d = new Date(raw);
+                if (Number.isNaN(d.getTime())) return String(raw);
+                return d.toLocaleString('pt-BR');
+            }
+            function storageKeyForUser(userId) {
+                return 'painel_notificacoes_dismissed_' + String(userId || '');
+            }
+            function loadDismissed(userId) {
+                try {
+                    const raw = localStorage.getItem(storageKeyForUser(userId));
+                    const parsed = raw ? JSON.parse(raw) : [];
+                    return Array.isArray(parsed) ? parsed : [];
+                } catch (e) {
+                    return [];
+                }
+            }
+            function saveDismissed(userId, keys) {
+                try {
+                    localStorage.setItem(storageKeyForUser(userId), JSON.stringify(Array.from(new Set(keys))));
+                } catch (e) {
+                    /* ignore */
+                }
+            }
+            function toNotification(type, row, options) {
+                const id = row && row.id ? String(row.id) : Math.random().toString(36).slice(2);
+                const title = type === 'bou'
+                    ? (row.titulo || 'Cita\u00e7\u00e3o em BOU')
+                    : type === 'ait'
+                        ? ('Cita\u00e7\u00e3o em AIT ' + (row.numero_ait || ('#' + id)))
+                        : type === 'patrulha'
+                            ? (row.titulo || row.area || 'Cita\u00e7\u00e3o em relat\u00f3rio de patrulha')
+                            : type === 'diario'
+                                ? ('Cita\u00e7\u00e3o no Di\u00e1rio Oficial #' + (row.numero_decreto || id))
+                                : (row.titulo || 'Cita\u00e7\u00e3o em relat\u00f3rio aluno');
+                return {
+                    key: type + ':' + id,
+                    type: type,
+                    title: title,
+                    when: getDateLabel(row),
+                    href: options.href,
+                    clickable: options.clickable,
+                    blockedText: options.blockedText || ''
+                };
+            }
+            async function fetchFromTables(client, tables, tokens, userId, options) {
+                for (let i = 0; i < tables.length; i += 1) {
+                    const table = tables[i];
+                    const query = await client.from(table).select('*').limit(200);
+                    if (query.error) continue;
+                    return (query.data || [])
+                        .filter(function (row) { return hasMention(row, tokens, userId); })
+                        .map(function (row) { return toNotification(options.type, row, options); });
+                }
+                return [];
+            }
+
+            try {
+                if (!window.supabase || !window.supabase.createClient) return;
+                const client = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
+                const sessionResult = await client.auth.getSession();
+                const session = sessionResult && sessionResult.data ? sessionResult.data.session : null;
+                const user = session ? session.user : null;
+                if (!user) return;
+
+                let profile = window.__painelProfile || null;
+                if (!profile) {
+                    const profileResult = await client
+                        .from('profiles')
+                        .select('nome_guerra, rg, cargo')
+                        .eq('id', user.id)
+                        .maybeSingle();
+                    profile = profileResult && profileResult.data ? profileResult.data : {};
+                }
+                const cargo = String(profile && profile.cargo ? profile.cargo : '').trim().toLowerCase();
+                const isAgenteAluno = cargo === 'agente aluno';
+                const tokens = buildTokens(profile || {}, user);
+
+                const all = [];
+                const bou = await fetchFromTables(client, ['bous'], tokens, user.id, {
+                    type: 'bou',
+                    href: '/interno/bou-envios.html',
+                    clickable: true
+                });
+                const ait = await fetchFromTables(client, ['aits'], tokens, user.id, {
+                    type: 'ait',
+                    href: '/interno/ait.html',
+                    clickable: true
+                });
+                const patrulha = await fetchFromTables(client, ['patrulhas', 'relatorios_patrulha'], tokens, user.id, {
+                    type: 'patrulha',
+                    href: '/interno/patrulha.html',
+                    clickable: true
+                });
+                const aluno = await fetchFromTables(client, ['relatorios_aluno', 'relatorio_aluno'], tokens, user.id, {
+                    type: 'aluno',
+                    href: '/interno/relatorio-aluno.html',
+                    clickable: !isAgenteAluno,
+                    blockedText: 'Seu perfil não tem acesso ao Relatório aluno'
+                });
+                const diario = await fetchFromTables(client, ['diarios_oficiais'], tokens, user.id, {
+                    type: 'diario',
+                    href: '/interno/diario-oficial.html',
+                    clickable: true
+                });
+                all.push.apply(all, bou);
+                all.push.apply(all, ait);
+                all.push.apply(all, patrulha);
+                all.push.apply(all, aluno);
+                all.push.apply(all, diario);
+
+                const unique = [];
+                const seen = new Set();
+                all.forEach(function (item) {
+                    if (!seen.has(item.key)) {
+                        seen.add(item.key);
+                        unique.push(item);
+                    }
+                });
+
+                const popup = byId('painel-notificacoes-popup');
+                const list = byId('painel-notificacoes-list');
+                const badge = byId('painel-notificacoes-badge');
+                const miniBadge = byId('painel-notificacoes-mini-badge');
+                const toggle = byId('painel-notificacoes-toggle');
+                const miniBtn = byId('painel-notificacoes-mini');
+                const closeBtn = byId('painel-notificacoes-close');
+                const clearAllBtn = byId('painel-notificacoes-clear-all');
+                let dismissedKeys = loadDismissed(user.id);
+
+                if (!popup || !list) return;
+                function renderNotificationList() {
+                    const visible = unique.filter(function (n) {
+                        return dismissedKeys.indexOf(n.key) === -1;
+                    });
+                    if (badge) {
+                        badge.textContent = String(visible.length);
+                        badge.classList.toggle('is-hidden', visible.length === 0);
+                    }
+                    if (miniBadge) miniBadge.textContent = String(visible.length);
+                    if (!visible.length) {
+                        popup.classList.add('is-hidden');
+                        popup.classList.remove('is-minimized');
+                        list.innerHTML = '<p class="painel-notificacoes-empty">Nenhuma citação encontrada no momento.</p>';
+                        return;
+                    }
+                    popup.classList.remove('is-hidden');
+                    popup.classList.add('is-minimized');
+                    list.innerHTML = visible.map(function (item) {
+                        const klass = item.clickable ? 'painel-notificacao-item' : 'painel-notificacao-item is-locked';
+                        const extra = item.clickable ? '' : ('<span class="painel-notificacao-lock">' + esc(item.blockedText) + '</span>');
+                        return '<div class="painel-notificacao-row" data-key="' + esc(item.key) + '">' +
+                            '<a href="' + esc(item.href) + '" class="' + klass + '" data-clickable="' + (item.clickable ? '1' : '0') + '">' +
+                                '<strong>' + esc(item.title) + '</strong>' +
+                                '<span>' + esc(item.when) + '</span>' +
+                                extra +
+                            '</a>' +
+                            '<button type="button" class="painel-notificacao-delete" title="Apagar notificação" aria-label="Apagar notificação">' +
+                                '<i class="fas fa-trash-alt" aria-hidden="true"></i>' +
+                            '</button>' +
+                        '</div>';
+                    }).join('');
+
+                    list.querySelectorAll('.painel-notificacao-item[data-clickable="0"]').forEach(function (node) {
+                        node.addEventListener('click', function (event) {
+                            event.preventDefault();
+                        });
+                    });
+                    list.querySelectorAll('.painel-notificacao-delete').forEach(function (btn) {
+                        btn.addEventListener('click', function () {
+                            const row = btn.closest('.painel-notificacao-row');
+                            if (!row) return;
+                            const key = row.getAttribute('data-key');
+                            if (!key) return;
+                            dismissedKeys.push(key);
+                            dismissedKeys = Array.from(new Set(dismissedKeys));
+                            saveDismissed(user.id, dismissedKeys);
+                            renderNotificationList();
+                        });
+                    });
+                }
+                renderNotificationList();
+
+                if (toggle) {
+                    toggle.addEventListener('click', function (event) {
+                        event.preventDefault();
+                        if (popup.classList.contains('is-hidden')) {
+                            popup.classList.remove('is-hidden');
+                            popup.classList.remove('is-minimized');
+                            return;
+                        }
+                        if (popup.classList.contains('is-minimized')) {
+                            popup.classList.remove('is-minimized');
+                            return;
+                        }
+                        popup.classList.add('is-minimized');
+                    });
+                }
+                if (miniBtn) {
+                    miniBtn.addEventListener('click', function () {
+                        if (popup.classList.contains('is-hidden')) {
+                            popup.classList.remove('is-hidden');
+                        }
+                        popup.classList.remove('is-minimized');
+                    });
+                }
+                if (closeBtn) {
+                    closeBtn.addEventListener('click', function () {
+                        if (popup.classList.contains('is-hidden')) return;
+                        popup.classList.add('is-minimized');
+                    });
+                }
+                if (clearAllBtn) {
+                    clearAllBtn.addEventListener('click', function () {
+                        dismissedKeys = unique.map(function (n) { return n.key; });
+                        saveDismissed(user.id, dismissedKeys);
+                        renderNotificationList();
+                    });
+                }
+
+                if (unique.length > 0) {
+                    popup.classList.remove('is-hidden');
+                    popup.classList.add('is-minimized');
+                } else {
+                    popup.classList.add('is-hidden');
+                }
+            } catch (e) {
+                const list = document.getElementById('painel-notificacoes-list');
+                if (list) {
+                    list.innerHTML = '<p class="painel-notificacoes-empty">Não foi possível carregar as notificações.</p>';
+                }
+            }
+        })();
+    </script>
+    <script>
+        (async function setupPainelShiftButton() {
+            function byId(id) { return document.getElementById(id); }
+            const btn = byId('painel-shift-btn');
+            if (!btn) return;
+
+            const waitShiftControl = async () => {
+                for (let i = 0; i < 40; i += 1) {
+                    if (window.__shiftControl && typeof window.__shiftControl.toggle === 'function') {
+                        return window.__shiftControl;
+                    }
+                    await new Promise((resolve) => setTimeout(resolve, 100));
+                }
+                return null;
+            };
+
+            const shiftControl = await waitShiftControl();
+            if (!shiftControl) return;
+            let showClosedState = false;
+
+            const render = (state) => {
+                const s = state || shiftControl.getState();
+                btn.classList.remove('profile-shift-btn--idle', 'profile-shift-btn--active', 'profile-shift-btn--closed');
+
+                if (s.status === 'active' && s.startAt) {
+                    btn.classList.add('profile-shift-btn--active');
+                    btn.textContent = 'Em serviço • ' + shiftControl.formatHms(Date.now() - Number(s.startAt));
+                    return;
+                }
+
+                if (s.status === 'closed') {
+                    if (!showClosedState) {
+                        btn.classList.add('profile-shift-btn--idle');
+                        btn.textContent = 'Entrar em serviço';
+                        return;
+                    }
+                    btn.classList.add('profile-shift-btn--closed');
+                    btn.textContent = s.totalMs
+                        ? ('Serviço encerrado • ' + shiftControl.formatHms(s.totalMs))
+                        : 'Serviço encerrado';
+                    return;
+                }
+
+                btn.classList.add('profile-shift-btn--idle');
+                btn.textContent = 'Entrar em serviço';
+            };
+
+            btn.addEventListener('click', async function () {
+                const current = shiftControl.getState();
+                showClosedState = current.status === 'active';
+                await shiftControl.toggle();
+            });
+
+            shiftControl.subscribe((state) => render(state));
+            setInterval(() => render(shiftControl.getState()), 1000);
+            render(shiftControl.getState());
+        })();
+    </script>
+</body>
+</html>

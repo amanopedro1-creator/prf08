@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="format-detection" content="telephone=no">
+    <title>Painel de Avisos - PRF Jaguar&eacute;</title>
+    <link rel="icon" type="image/x-icon" href="assets/img/prflogoico.ico">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        window.SUPABASE_URL = 'https://pssujmmuachdymlwsiuj.supabase.co';
+        window.SUPABASE_ANON_KEY = 'sb_publishable_PYQxZQr_TfVEesG7L4WI4g_-VjPHVpW';
+    </script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header class="top-header">
+        <div class="container">
+            <div class="top-header-content">
+                <div class="logo-governo">
+                    <a href="../index.html" class="gov-logo-link">
+                        <img src="assets/img/gov_br.png" alt="Governo do Brasil" class="gov-logo">
+                    </a>
+                    <span class="gov-divider" aria-hidden="true"></span>
+                    <div class="gov-identity">
+                        <span class="gov-ministry">MINIST&Eacute;RIO DA JUSTI&Ccedil;A E SEGURAN&Ccedil;A P&Uacute;BLICA</span>
+                        <span class="gov-agency">Pol&iacute;cia Rodovi&aacute;ria Federal</span>
+                    </div>
+                </div>
+                <div class="top-header-right">
+                    <div class="user-auth-header">
+                        <a href="../login.html" id="header-login-btn" class="auth-link">
+                            <i class="fas fa-sign-in-alt"></i>
+                            <span>LOGIN</span>
+                        </a>
+                        <a href="../criar-conta.html" id="header-register-btn" class="auth-link">
+                            <i class="fas fa-user-plus"></i>
+                            <span>CRIAR CONTA</span>
+                        </a>
+                        <div id="header-user-menu" class="user-menu-header is-hidden">
+                            <span class="user-name-header"></span>
+                            <a href="/interno/perfil.html" class="auth-link" id="header-edit-profile-link">
+                                <i class="fas fa-user-edit"></i>
+                                <span>EDITAR PERFIL</span>
+                            </a>
+                            <a href="#" onclick="auth.logout(); return false;" class="auth-link">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span>SAIR</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <header class="main-header main-header--duna" id="menu">
+        <div class="container">
+            <div class="header-row">
+                <nav class="mini-nav mini-nav--left" aria-label="P&aacute;ginas (esquerda)">
+                    <a href="../index.html">IN&Iacute;CIO</a>
+                    <div class="nav-dropdown">
+                        <a href="#" class="nav-link-dropdown" aria-haspopup="true" aria-expanded="false">INSTITUCIONAL</a>
+                        <div class="dropdown-menu">
+                            <a href="../organograma.html">Organograma</a>
+                            <a href="../historia-valores.html">Hist&oacute;ria e Valores</a>
+                        </div>
+                    </div>
+                    <div class="nav-dropdown">
+                        <a href="#" class="nav-link-dropdown" aria-haspopup="true" aria-expanded="false">SERVI&Ccedil;OS</a>
+                        <div class="dropdown-menu">
+                            <a href="../documentos.html">Documentos PRF</a>
+                        </div>
+                    </div>
+                </nav>
+                <div class="main-header-top">
+                    <div class="brand-block">
+                        <a href="../index.html" class="brand-logo-link">
+                            <img src="assets/img/prf.png" alt="PRF Jaguar&eacute;" class="brand-logo">
+                        </a>
+                    </div>
+                </div>
+                <nav class="mini-nav mini-nav--right" aria-label="P&aacute;ginas (direita)">
+                    <a href="../concursos.html">CONCURSOS</a>
+                    <a href="../capacitacao.html">CAPACITA&Ccedil;&Atilde;O E TREINAMENTO</a>
+                    <a href="../corregedoria.html">CORREGEDORIA</a>
+                </nav>
+            </div>
+            <div class="red-line"></div>
+        </div>
+    </header>
+
+    <section class="latest-news info-section">
+        <div class="container">
+            <div class="news-header">
+                <h2>Painel de Avisos</h2>
+                <div class="red-line-news"></div>
+            </div>
+
+            <article class="approvals-card" id="avisos-form-card" style="display:none; margin-bottom:16px;">
+                <h3 style="margin-bottom:12px;">Publicar novo aviso</h3>
+                <form id="aviso-form" class="aviso-form">
+                    <label><span>T&iacute;tulo</span><input id="aviso-titulo" type="text" placeholder="T&iacute;tulo do aviso" required></label>
+                    <label><span>Subt&iacute;tulo</span><input id="aviso-subtitulo" type="text" placeholder="Subt&iacute;tulo (opcional)"></label>
+                    <label><span>Texto</span><textarea id="aviso-texto" rows="6" placeholder="Texto do aviso" required></textarea></label>
+                    <label><span>URL de imagem/GIF (opcional)</span><input id="aviso-midia-url" type="url" placeholder="https://..."></label>
+                    <label><span>Ou envie imagem/GIF (opcional)</span><input id="aviso-midia-file" type="file" accept="image/*,.gif"></label>
+                    <div class="aviso-form-actions">
+                        <button type="submit" class="approvals-btn success">Publicar aviso</button>
+                        <span id="avisos-status" class="approvals-status"></span>
+                    </div>
+                </form>
+            </article>
+
+            <div id="avisos-lista" class="avisos-lista">
+                <div class="approvals-empty">Carregando avisos...</div>
+            </div>
+
+            <div class="bou-actions" style="justify-content:center; margin-top:18px;">
+                <a href="/interno/painel.html" class="bou-btn bou-btn-secondary">Voltar ao Painel</a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="diario-footer">
+        <div class="container">
+            <div class="diario-footer-top">
+                <div class="diario-footer-brand">
+                    <img src="assets/img/prf.png" alt="Pol&iacute;cia Rodovi&aacute;ria Federal" class="diario-footer-logo">
+                    <div class="diario-footer-brand-text">
+                        <strong>Pol&iacute;cia Rodovi&aacute;ria Federal</strong>
+                        <span>Unidade Operacional Jaguar&eacute;</span>
+                        <span>S&atilde;o Paulo - SP</span>
+                    </div>
+                </div>
+                <div class="diario-footer-contact">
+                    <h4>CONTATO</h4>
+                    <p>PRF &mdash; Delegacia de Jaguar&eacute;</p>
+                    <p>Telefone: 191 (PRF)</p>
+                    <p>Emerg&ecirc;ncia: 190</p>
+                </div>
+            </div>
+            <div class="diario-footer-divider" aria-hidden="true"></div>
+            <div class="diario-footer-bottom">
+                <span>&copy; 2026 Pol&iacute;cia Rodovi&aacute;ria Federal &mdash; Todos os direitos reservados</span>
+                <img src="assets/img/gov_br.png" alt="gov.br" class="diario-footer-gov">
+            </div>
+        </div>
+    </footer>
+
+    <script src="app.js" defer></script>
+    <script src="avisos.js" defer></script>
+</body>
+</html>

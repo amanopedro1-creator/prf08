@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="format-detection" content="telephone=no">
+    <title>RIPAT - PRF Jaguar&eacute;</title>
+    <link rel="icon" type="image/x-icon" href="assets/img/prflogoico.ico">
+    <script>
+        (function() {
+            try {
+                const savedTheme = localStorage.getItem('theme') || 'light';
+                if (savedTheme === 'dark') {
+                    document.documentElement.classList.add('dark-mode');
+                }
+            } catch (e) {}
+        })();
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        window.SUPABASE_URL = 'https://pssujmmuachdymlwsiuj.supabase.co';
+        window.SUPABASE_ANON_KEY = 'sb_publishable_PYQxZQr_TfVEesG7L4WI4g_-VjPHVpW';
+
+        (async function enforceAuth() {
+            try {
+                if (!window.supabase || !window.supabase.createClient) {
+                    window.location.replace('../login.html');
+                    return;
+                }
+                const client = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
+                const result = await client.auth.getSession();
+                const session = result && result.data ? result.data.session : null;
+                const user = session ? session.user : null;
+                if (!user) {
+                    window.location.replace('../login.html');
+                    return;
+                }
+
+                const profileQuery = await client
+                    .from('profiles')
+                    .select('aprovado')
+                    .eq('id', user.id)
+                    .maybeSingle();
+                const profile = profileQuery ? profileQuery.data : null;
+                const profileError = profileQuery ? profileQuery.error : null;
+
+                if (profileError || !profile || profile.aprovado !== true) {
+                    await client.auth.signOut();
+                    window.location.replace('../login.html');
+                    return;
+                }
+            } catch (e) {
+                window.location.replace('../login.html');
+            }
+        })();
+    </script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header class="top-header">
+        <div class="container">
+            <div class="top-header-content">
+                <div class="logo-governo">
+                    <a href="../index.html" class="gov-logo-link">
+                        <img src="assets/img/gov_br.png" alt="Governo do Brasil" class="gov-logo">
+                    </a>
+                    <span class="gov-divider" aria-hidden="true"></span>
+                    <div class="gov-identity">
+                        <span class="gov-ministry">MINISTÉRIO DA JUSTIÇA E SEGURANÇA PÚBLICA</span>
+                        <span class="gov-agency">Polícia Rodoviária Federal</span>
+                    </div>
+                </div>
+                <div class="top-header-right">
+                    <div class="user-auth-header">
+                        <a href="../login.html" id="header-login-btn" class="auth-link">
+                            <i class="fas fa-sign-in-alt"></i>
+                            <span>LOGIN</span>
+                        </a>
+                        <a href="../criar-conta.html" id="header-register-btn" class="auth-link">
+                            <i class="fas fa-user-plus"></i>
+                            <span>CRIAR CONTA</span>
+                        </a>
+                        <div id="header-user-menu" class="user-menu-header is-hidden">
+                            <span class="user-name-header"></span>
+<a href="/interno/perfil.html" class="auth-link" id="header-edit-profile-link">
+                                <i class="fas fa-user-edit"></i>
+                                <span>EDITAR PERFIL</span>
+                            </a>
+                            <a href="#" onclick="auth.logout(); return false;" class="auth-link">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span>SAIR</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <header class="main-header main-header--duna" id="menu">
+        <div class="container">
+            <div class="header-row">
+
+            <!-- ESQUERDA: 3 pÃ¡ginas -->
+            <nav class="mini-nav mini-nav--left" aria-label="PÃ¡ginas (esquerda)">
+                <a href="../index.html">INÍCIO</a>
+                    <div class="nav-dropdown">
+                        <a href="#" class="nav-link-dropdown" aria-haspopup="true" aria-expanded="false">INSTITUCIONAL</a>
+                        <div class="dropdown-menu">
+                            <a href="../organograma.html">Organograma</a>
+<a href="../historia-valores.html">História e Valores</a>
+                        </div>
+                    </div>
+                    <div class="nav-dropdown">
+                        <a href="#" class="nav-link-dropdown" aria-haspopup="true" aria-expanded="false">SERVIÇOS</a>
+                            <div class="dropdown-menu">
+                            <a href="../documentos.html">Documentos PRF</a>
+                        </div>
+                    </div>
+            </nav>
+
+            <!-- CENTRO: informaÃ§Ã£o (logo + textos) -->
+            <div class="main-header-top">
+                <div class="brand-block">
+                <a href="../index.html" class="brand-logo-link">
+                <img src="assets/img/prf.png" alt="PRF JaguarÃ©" class="brand-logo">
+                </a>
+                </div>
+            </div>
+            <!-- DIREITA: +3 pÃ¡ginas -->
+            <nav class="mini-nav mini-nav--right" aria-label="PÃ¡ginas (direita)">
+                <a href="../concursos.html">CONCURSOS</a>
+                <a href="../capacitacao.html">CAPACITAÇÃO E TREINAMENTO</a>
+                <a href="../corregedoria.html">CORREGEDORIA</a>
+            </nav>
+            </div>
+            <div class="red-line"></div>
+        </div>
+        </header>
+
+    <section class="latest-news info-section">
+        <div class="container">
+            <div class="news-header">
+                <h2>RIPAT - Relatório Integrado de Patrulha</h2>
+                <div class="red-line-news"></div>
+            </div>
+            <div class="bou-ait">
+                <section class="bou-ait-panel is-active">
+                    <div class="bou-ait-grid bou-ait-grid--single">
+                        <article class="bou-card">
+                            <header class="bou-card-header">
+                                <h3>Dados do patrulhamento</h3>
+                            </header>
+                            <div class="bou-card-body">
+                                <div class="bou-grid">
+                                    <div class="bou-grid-span"><h4 class="bou-section-title">Equipe da viatura</h4></div>
+                                    <div>
+                                        <label for="patrulha-motorista">Motorista</label>
+                                        <div class="bou-select-modern equipe-dropdown" id="patrulhaMotoristaDropdown">
+                                            <button type="button" class="bou-select-input bou-select-btn" id="patrulhaMotoristaDropdownBtn" aria-haspopup="listbox" aria-expanded="false">
+                                                <span id="patrulhaMotoristaDropdownText">Selecionar policial...</span>
+                                            </button>
+                                            <div class="bou-dd-menu" id="patrulhaMotoristaDropdownMenu" role="listbox"></div>
+                                        </div>
+                                        <input id="patrulha-motorista" type="text" hidden>
+                                    </div>
+                                    <div>
+                                        <label for="patrulha-chefe">Chefe de viatura</label>
+                                        <div class="bou-select-modern equipe-dropdown" id="patrulhaChefeDropdown">
+                                            <button type="button" class="bou-select-input bou-select-btn" id="patrulhaChefeDropdownBtn" aria-haspopup="listbox" aria-expanded="false">
+                                                <span id="patrulhaChefeDropdownText">Selecionar policial...</span>
+                                            </button>
+                                            <div class="bou-dd-menu" id="patrulhaChefeDropdownMenu" role="listbox"></div>
+                                        </div>
+                                        <input id="patrulha-chefe" type="text" hidden>
+                                    </div>
+                                    <div>
+                                        <label for="patrulha-auxiliar-1">Auxiliar</label>
+                                        <div class="bou-select-modern equipe-dropdown" id="patrulhaAuxiliar1Dropdown">
+                                            <button type="button" class="bou-select-input bou-select-btn" id="patrulhaAuxiliar1DropdownBtn" aria-haspopup="listbox" aria-expanded="false">
+                                                <span id="patrulhaAuxiliar1DropdownText">N/A</span>
+                                            </button>
+                                            <div class="bou-dd-menu" id="patrulhaAuxiliar1DropdownMenu" role="listbox"></div>
+                                        </div>
+                                        <input id="patrulha-auxiliar-1" type="text" value="N/A" hidden>
+                                    </div>
+                                    <div>
+                                        <label for="patrulha-auxiliar-2">Auxiliar</label>
+                                        <div class="bou-select-modern equipe-dropdown" id="patrulhaAuxiliar2Dropdown">
+                                            <button type="button" class="bou-select-input bou-select-btn" id="patrulhaAuxiliar2DropdownBtn" aria-haspopup="listbox" aria-expanded="false">
+                                                <span id="patrulhaAuxiliar2DropdownText">N/A</span>
+                                            </button>
+                                            <div class="bou-dd-menu" id="patrulhaAuxiliar2DropdownMenu" role="listbox"></div>
+                                        </div>
+                                        <input id="patrulha-auxiliar-2" type="text" value="N/A" hidden>
+                                    </div>
+
+                                    <div class="bou-grid-span"><div class="bou-section-divider"></div></div>
+                                    <div class="bou-grid-span"><h4 class="bou-section-title">Dados do patrulhamento</h4></div>
+                                    <div>
+                                        <label for="patrulha-unidade">Unidade</label>
+                                        <input id="patrulhaUnidadePreset" type="hidden" value="">
+                                        <div class="bou-select-modern" id="patrulhaUnidadeDropdown">
+                                            <button id="patrulhaUnidadeDropdownBtn" class="bou-select-input bou-select-btn" type="button" aria-expanded="false" aria-controls="patrulhaUnidadeDropdownMenu">
+                                                <span id="patrulhaUnidadeDropdownText">Selecionar unidade...</span>
+                                            </button>
+                                            <div class="bou-dd-menu" id="patrulhaUnidadeDropdownMenu">
+                                                <button type="button" class="bou-dd-item tone-a" data-unidade="Diretoria 100"><span>Diretoria 100</span><i class="fas fa-check"></i></button>
+                                                <button type="button" class="bou-dd-item tone-a" data-unidade="Supervisao 110"><span>Supervisao 110</span><i class="fas fa-check"></i></button>
+                                                <button type="button" class="bou-dd-item tone-a" data-unidade="Supervisao 120"><span>Supervisao 120</span><i class="fas fa-check"></i></button>
+                                                <div class="bou-dd-sep"></div>
+                                                <button type="button" class="bou-dd-item tone-b" data-unidade="RPRF - 200"><span>RPRF - 200</span><i class="fas fa-check"></i></button>
+                                                <button type="button" class="bou-dd-item tone-b" data-unidade="RPRF - 210"><span>RPRF - 210</span><i class="fas fa-check"></i></button>
+                                                <button type="button" class="bou-dd-item tone-b" data-unidade="RPRF - 220"><span>RPRF - 220</span><i class="fas fa-check"></i></button>
+                                                <button type="button" class="bou-dd-item tone-b" data-unidade="RPRF - 230"><span>RPRF - 230</span><i class="fas fa-check"></i></button>
+                                                <button type="button" class="bou-dd-item tone-b" data-unidade="RPRF - 240"><span>RPRF - 240</span><i class="fas fa-check"></i></button>
+                                                <button type="button" class="bou-dd-item tone-b" data-unidade="RPRF - 250"><span>RPRF - 250</span><i class="fas fa-check"></i></button>
+                                                <div class="bou-dd-sep"></div>
+                                                <button type="button" class="bou-dd-item tone-c" data-unidade="GPM Alpha"><span>GPM Alpha</span><i class="fas fa-check"></i></button>
+                                                <button type="button" class="bou-dd-item tone-c" data-unidade="GPM Bravo"><span>GPM Bravo</span><i class="fas fa-check"></i></button>
+                                                <div class="bou-dd-sep"></div>
+                                                <button type="button" class="bou-dd-item tone-d" data-unidade="GPT Alpha"><span>GPT Alpha</span><i class="fas fa-check"></i></button>
+                                                <button type="button" class="bou-dd-item tone-d" data-unidade="GPT Sierra"><span>GPT Sierra</span><i class="fas fa-check"></i></button>
+                                                <button type="button" class="bou-dd-item tone-d" data-unidade="GPT Golf"><span>GPT Golf</span><i class="fas fa-check"></i></button>
+                                                <div class="bou-dd-sep"></div>
+                                                <button type="button" class="bou-dd-item tone-e" data-unidade="Supervisao NOE"><span>Supervisao NOE</span><i class="fas fa-check"></i></button>
+                                                <button type="button" class="bou-dd-item tone-e" data-unidade="Zulu-UNO"><span>Zulu-UNO</span><i class="fas fa-check"></i></button>
+                                                <button type="button" class="bou-dd-item tone-e" data-unidade="Yankee-20"><span>Yankee-20</span><i class="fas fa-check"></i></button>
+                                            </div>
+                                        </div>
+                                        <input id="patrulha-unidade" type="text" placeholder="Ou digite manualmente">
+                                    </div>
+                                    <div>
+                                        <label for="patrulha-area">Area de patrulhamento</label>
+                                        <input id="patrulha-area" type="text" placeholder="Area de patrulhamento">
+                                    </div>
+                                    <div>
+                                        <label for="patrulha-data-inicio">Data de inicio</label>
+                                        <input id="patrulha-data-inicio" type="text" placeholder="Dia/Mes/Ano">
+                                    </div>
+                                    <div>
+                                        <label for="patrulha-hora-inicio">Horario de inicio</label>
+                                        <input id="patrulha-hora-inicio" type="text" placeholder="Horario de inicio">
+                                    </div>
+                                    <div>
+                                        <label for="patrulha-data-termino">Data de termino</label>
+                                        <input id="patrulha-data-termino" type="text" placeholder="Dia/Mes/Ano">
+                                    </div>
+                                    <div>
+                                        <label for="patrulha-hora-termino">Horario de termino</label>
+                                        <input id="patrulha-hora-termino" type="text" placeholder="Horario de termino">
+                                    </div>
+                                    <div>
+                                        <label for="patrulha-ocorr?ncias">Ocorrencias atendidas</label>
+                                        <input id="patrulha-ocorr?ncias" type="text" placeholder="Quantidade/descricao">
+                                    </div>
+                                    <div>
+                                        <label for="patrulha-abordagens">Abordagens realizadas</label>
+                                        <input id="patrulha-abordagens" type="text" placeholder="Quantidade/descricao">
+                                    </div>
+                                    <div>
+                                        <label for="patrulha-prisoes">Prisoes efetuadas</label>
+                                        <input id="patrulha-prisoes" type="text" placeholder="Quantidade/descricao">
+                                    </div>
+                                    <div class="bou-grid-span"><div class="bou-section-divider"></div></div>
+                                    <div class="bou-grid-span patrulha-links-head">
+                                        <h4 class="bou-section-title">Vínculos de prisões efetuadas</h4>
+                                        <p class="bou-help-text">Selecione os registros relacionados à prisão neste patrulhamento. A lista traz registros recentes feitos por você ou em que você foi citado.</p>
+                                    </div>
+                                    <div class="bou-grid-span">
+                                        <div class="patrulha-links-grid">
+                                            <div class="patrulha-links-col">
+                                                <h5>BOU recentes</h5>
+                                                <div id="patrulhaLinksBou" class="patrulha-links-list">
+                                                    <div class="approvals-empty">Carregando BOUs...</div>
+                                                </div>
+                                            </div>
+                                            <div class="patrulha-links-col">
+                                                <h5>AIT recentes</h5>
+                                                <div id="patrulhaLinksAit" class="patrulha-links-list">
+                                                    <div class="approvals-empty">Carregando AITs...</div>
+                                                </div>
+                                            </div>
+                                            <div class="patrulha-links-col">
+                                                <h5>Relatório aluno recentes</h5>
+                                                <div id="patrulhaLinksAluno" class="patrulha-links-list">
+                                                    <div class="approvals-empty">Carregando relatórios...</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="bou-grid-span">
+                                        <label for="patrulha-observacoes">Observacoes</label>
+                                        <textarea id="patrulha-observacoes" placeholder="Observacoes"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+
+                    <div class="bou-actions">
+                        <button id="btnEnviarPatrulha" class="bou-btn bou-btn-primary" type="button">Enviar relatório</button>
+                        <button id="btnLimparPatrulha" class="bou-btn bou-btn-secondary" type="button">Limpar campos</button>
+                        <span id="statusEntradaPatrulha" class="bou-status">Pronto para enviar.</span>
+                    </div>
+                </section>
+            </div>
+            <div class="bou-actions" style="justify-content:center; margin-top:18px;">
+                <a href="painel.html" class="bou-btn bou-btn-secondary">Voltar ao Painel</a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="diario-footer">
+        <div class="container">
+            <div class="diario-footer-top">
+                <div class="diario-footer-brand">
+                    <img src="assets/img/prf.png" alt="Polícia Rodoviária Federal" class="diario-footer-logo">
+                    <div class="diario-footer-brand-text">
+                        <strong>Polícia Rodoviária Federal</strong>
+                        <span>Unidade Operacional Jaguaré</span>
+                        <span>São Paulo - SP</span>
+                    </div>
+                </div>
+                <div class="diario-footer-contact">
+                    <h4>CONTATO</h4>
+                    <p>PRF — Delegacia de Jaguaré</p>
+                    <p>Telefone: 191 (PRF)</p>
+                    <p>Emergência: 190</p>
+                </div>
+            </div>
+            <div class="diario-footer-divider" aria-hidden="true"></div>
+            <div class="diario-footer-bottom">
+                <span>© 2026 Polícia Rodoviária Federal — Todos os direitos reservados</span>
+                <img src="assets/img/gov_br.png" alt="gov.br" class="diario-footer-gov">
+            </div>
+        </div>
+    </footer>
+
+    <script src="app.js" defer></script>
+    <script src="patrulha.js" defer></script>
+</body>
+</html>

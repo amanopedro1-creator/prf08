@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="format-detection" content="telephone=no">
+    <title>Concursos Internos - PRF Jaguar&eacute;</title>
+    <link rel="icon" type="image/x-icon" href="assets/img/prflogoico.ico">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        window.SUPABASE_URL = 'https://pssujmmuachdymlwsiuj.supabase.co';
+        window.SUPABASE_ANON_KEY = 'sb_publishable_PYQxZQr_TfVEesG7L4WI4g_-VjPHVpW';
+
+        (async function enforceAuth() {
+            try {
+                if (!window.supabase || !window.supabase.createClient) {
+                    window.location.replace('../login.html');
+                    return;
+                }
+                const client = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
+                const result = await client.auth.getSession();
+                const session = result && result.data ? result.data.session : null;
+                const user = session ? session.user : null;
+                if (!user) {
+                    window.location.replace('../login.html');
+                    return;
+                }
+
+                const profileQuery = await client
+                    .from('profiles')
+                    .select('aprovado')
+                    .eq('id', user.id)
+                    .maybeSingle();
+                const profile = profileQuery ? profileQuery.data : null;
+                const profileError = profileQuery ? profileQuery.error : null;
+
+                if (profileError || !profile || profile.aprovado !== true) {
+                    await client.auth.signOut();
+                    window.location.replace('../login.html');
+                    return;
+                }
+            } catch (e) {
+                window.location.replace('../login.html');
+            }
+        })();
+    </script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header class="top-header">
+        <div class="container">
+            <div class="top-header-content">
+                <div class="logo-governo">
+                    <a href="../index.html" class="gov-logo-link">
+                        <img src="assets/img/gov_br.png" alt="Governo do Brasil" class="gov-logo">
+                    </a>
+                    <span class="gov-divider" aria-hidden="true"></span>
+                    <div class="gov-identity">
+                        <span class="gov-ministry">MINISTÉRIO DA JUSTIÇA E SEGURANÇA PÚBLICA</span>
+                        <span class="gov-agency">Polícia Rodoviária Federal</span>
+                    </div>
+                </div>
+                <div class="top-header-right">
+                    <div class="user-auth-header">
+                        <a href="../login.html" id="header-login-btn" class="auth-link">
+                            <i class="fas fa-sign-in-alt"></i>
+                            <span>LOGIN</span>
+                        </a>
+                        <a href="../criar-conta.html" id="header-register-btn" class="auth-link">
+                            <i class="fas fa-user-plus"></i>
+                            <span>CRIAR CONTA</span>
+                        </a>
+                        <div id="header-user-menu" class="user-menu-header is-hidden">
+                            <span class="user-name-header"></span>
+<a href="/interno/perfil.html" class="auth-link" id="header-edit-profile-link">
+                                <i class="fas fa-user-edit"></i>
+                                <span>EDITAR PERFIL</span>
+                            </a>
+                            <a href="#" onclick="auth.logout(); return false;" class="auth-link">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span>SAIR</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <header class="main-header main-header--duna" id="menu">
+        <div class="container">
+            <div class="header-row">
+                <nav class="mini-nav mini-nav--left" aria-label="Páginas (esquerda)">
+                    <a href="../index.html">INÍCIO</a>
+                    <div class="nav-dropdown">
+                        <a href="#" class="nav-link-dropdown" aria-haspopup="true" aria-expanded="false">INSTITUCIONAL</a>
+                        <div class="dropdown-menu">
+                            <a href="../organograma.html">Organograma</a>
+<a href="../historia-valores.html">História e Valores</a>
+                        </div>
+                    </div>
+                    <div class="nav-dropdown">
+                        <a href="#" class="nav-link-dropdown" aria-haspopup="true" aria-expanded="false">SERVIÇOS</a>
+                        <div class="dropdown-menu">
+                            <a href="../documentos.html">Documentos PRF</a>
+                        </div>
+                    </div>
+                </nav>
+                <div class="main-header-top">
+                    <div class="brand-block">
+                        <a href="../index.html" class="brand-logo-link">
+                            <img src="assets/img/prf.png" alt="PRF Jaguaré" class="brand-logo">
+                        </a>
+                    </div>
+                </div>
+                <nav class="mini-nav mini-nav--right" aria-label="Páginas (direita)">
+                    <a href="../concursos.html">CONCURSOS</a>
+                    <a href="../capacitacao.html">CAPACITAÇÃO E TREINAMENTO</a>
+                    <a href="../corregedoria.html">CORREGEDORIA</a>
+                </nav>
+            </div>
+            <div class="red-line"></div>
+        </div>
+    </header>
+
+        <section class="latest-news info-section concursos-internos-section">
+        <div class="container">
+            <div class="news-header">
+                <h2>Concursos Internos</h2>
+                <div class="red-line-news"></div>
+            </div>
+            <p class="concursos-internos-intro">
+                Veja abaixo os concursos internos e chamamentos disponíveis para os servidores da PRF, com oportunidades de crescimento e desenvolvimento dentro da instituição.
+            </p>
+
+            <div class="ci-options" id="ci-options" aria-label="Chamamentos por grupamento">
+                <article class="ci-option active" tabindex="0" style="--option-bg:url('assets/img/noe_fundo.png');">
+                    <div class="ci-shadow"></div>
+                    <div class="ci-content">
+                        <div class="ci-label">
+                            <span class="ci-icon"><img src="assets/img/noe.png" alt="Logo NOE" class="ci-group-logo"></span>
+                            <div class="ci-info">
+                                <h3>Núcleo de Operações Especiais</h3>
+                                <p>Equipe de operações especiais, a elite da PRF.</p>
+                            </div>
+                        </div>
+                        <div class="ci-details">
+                            <span class="ci-chip">Inscrições: Fechado</span>
+                            <span class="ci-chip">Vagas: -</span>
+                            <a class="concurso-btn concurso-btn-primary" href="#" role="button">Ver edital interno</a>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="ci-option" tabindex="0" style="--option-bg:url('assets/img/gpm_fundo.png');">
+                    <div class="ci-shadow"></div>
+                    <div class="ci-content">
+                        <div class="ci-label">
+                            <span class="ci-icon"><img src="assets/img/gpm.png" alt="Logo GPM" class="ci-group-logo"></span>
+                            <div class="ci-info">
+                                <h3>Grupo de Patrulhamento Motorizado</h3>
+                                <p>Equipes de resposta rápida e patrulhamento em motocicletas.</p>
+                            </div>
+                        </div>
+                        <div class="ci-details">
+                            <span class="ci-chip">Inscrições: Fechado</span>
+                            <span class="ci-chip">Vagas: -</span>
+                            <a class="concurso-btn concurso-btn-primary" href="https://forms.gle/htPQgtq8tFPvaWcPA" target="_blank" role="button">Ver edital interno</a>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="ci-option" tabindex="0" style="--option-bg:url('assets/img/doa_fundo.png');">
+                    <div class="ci-shadow"></div>
+                    <div class="ci-content">
+                        <div class="ci-label">
+                            <span class="ci-icon"><img src="assets/img/doa.png" alt="Logo DOA" class="ci-group-logo"></span>
+                            <div class="ci-info">
+                                <h3>Divisão de Operações Aéreas</h3>
+                                <p>Seleção para tripulação, apoio técnico e operações de mobilidade aérea.</p>
+                            </div>
+                        </div>
+                        <div class="ci-details">
+                            <span class="ci-chip">Inscrições: Fechado</span>
+                            <span class="ci-chip">Vagas: -</span>
+                            <a class="concurso-btn concurso-btn-primary" href="https://forms.gle/TdzqbPCNXTeB7RSu8" target="_blank" role="button">Ver edital interno</a>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="ci-option" tabindex="0" style="--option-bg:url('assets/img/gpt_fundo.png');">
+                    <div class="ci-shadow"></div>
+                    <div class="ci-content">
+                        <div class="ci-label">
+                            <span class="ci-icon"><img src="assets/img/gpt.png" alt="Logo GPT" class="ci-group-logo"></span>
+                            <div class="ci-info">
+                                <h3>Grupo de Patrulhamento Tático</h3>
+                                <p>Patrulhamento de alto risco e ocorrências de alto vulto.</p>
+                            </div>
+                        </div>
+                        <div class="ci-details">
+                            <span class="ci-chip">Inscrições: Fechado</span>
+                            <span class="ci-chip">Vagas: -</span>
+                            <a class="concurso-btn concurso-btn-primary" href="#" role="button">Ver edital interno</a>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="ci-option" tabindex="0" style="--option-bg:url('assets/img/fundo_1.png');">
+                    <div class="ci-shadow"></div>
+                    <div class="ci-content">
+                        <div class="ci-label">
+                            <span class="ci-icon"><img src="assets/img/uniprf.jpg" alt="Logo UNIPRF" class="ci-group-logo"></span>
+                            <div class="ci-info">
+                                <h3>Universidade Corporativa da PRF</h3>
+                                <p>Instrutores, tutores e desenvolvimento de cursos internos.</p>
+                            </div>
+                        </div>
+                        <div class="ci-details">
+                            <span class="ci-chip">Inscrições: Fechado</span>
+                            <span class="ci-chip">Vagas: -</span>
+                            <a class="concurso-btn concurso-btn-primary" href="#" role="button">Ver edital interno</a>
+                        </div>
+                    </div>
+                </article>
+            </div>
+
+            <div class="bou-actions" style="justify-content:center; margin-top:22px;">
+                <a href="/interno/painel.html" class="bou-btn bou-btn-secondary">Voltar ao Painel</a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="diario-footer">
+        <div class="container">
+            <div class="diario-footer-top">
+                <div class="diario-footer-brand">
+                    <img src="assets/img/prf.png" alt="Polícia Rodoviária Federal" class="diario-footer-logo">
+                    <div class="diario-footer-brand-text">
+                        <strong>Polícia Rodoviária Federal</strong>
+                        <span>Unidade Operacional Jaguaré</span>
+                        <span>São Paulo - SP</span>
+                    </div>
+                </div>
+                <div class="diario-footer-contact">
+                    <h4>CONTATO</h4>
+                    <p>PRF — Delegacia de Jaguaré</p>
+                    <p>Telefone: 191 (PRF)</p>
+                    <p>Emergência: 190</p>
+                </div>
+            </div>
+            <div class="diario-footer-divider" aria-hidden="true"></div>
+            <div class="diario-footer-bottom">
+                <span>© 2026 Polícia Rodoviária Federal — Todos os direitos reservados</span>
+                <img src="assets/img/gov_br.png" alt="gov.br" class="diario-footer-gov">
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        (function () {
+            var root = document.getElementById('ci-options');
+            if (!root) return;
+            var items = Array.prototype.slice.call(root.querySelectorAll('.ci-option'));
+
+            function activate(item) {
+                items.forEach(function (el) { el.classList.remove('active'); });
+                item.classList.add('active');
+            }
+
+            items.forEach(function (item) {
+                item.addEventListener('click', function () {
+                    activate(item);
+                });
+                item.addEventListener('keydown', function (event) {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        activate(item);
+                    }
+                });
+            });
+        })();
+    </script>
+    <script src="app.js" defer></script>
+</body>
+</html>

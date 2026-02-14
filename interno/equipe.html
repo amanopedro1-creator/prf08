@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="format-detection" content="telephone=no">
+    <title>Equipe - PRF Jaguar&eacute;</title>
+    <link rel="icon" type="image/x-icon" href="assets/img/prflogoico.ico">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        window.SUPABASE_URL = 'https://pssujmmuachdymlwsiuj.supabase.co';
+        window.SUPABASE_ANON_KEY = 'sb_publishable_PYQxZQr_TfVEesG7L4WI4g_-VjPHVpW';
+
+        (async function enforceAuth() {
+            try {
+                if (!window.supabase || !window.supabase.createClient) {
+                    window.location.replace('../login.html');
+                    return;
+                }
+                const client = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
+                const result = await client.auth.getSession();
+                const session = result && result.data ? result.data.session : null;
+                const user = session ? session.user : null;
+                if (!user) {
+                    window.location.replace('../login.html');
+                    return;
+                }
+
+                const profileQuery = await client
+                    .from('profiles')
+                    .select('aprovado')
+                    .eq('id', user.id)
+                    .maybeSingle();
+                const profile = profileQuery ? profileQuery.data : null;
+                const profileError = profileQuery ? profileQuery.error : null;
+
+                if (profileError || !profile || profile.aprovado !== true) {
+                    await client.auth.signOut();
+                    window.location.replace('../login.html');
+                }
+            } catch (e) {
+                window.location.replace('../login.html');
+            }
+        })();
+    </script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <section class="latest-news info-section">
+        <div class="container">
+            <div class="news-header">
+                <h2>Equipe PRF</h2>
+                <div class="red-line-news"></div>
+            </div>
+
+            <div class="equipe-toolbar">
+                <input type="text" id="equipe-search" class="equipe-search" placeholder="Buscar por nome, RG, cargo ou grupamento">
+                <span id="equipe-count" class="equipe-count">0 agentes</span>
+            </div>
+
+            <div id="equipe-status" class="bou-status">Carregando equipe...</div>
+            <div id="equipe-grid" class="equipe-grid"></div>
+
+            <div class="bou-actions" style="justify-content:center; margin-top:18px;">
+                <a href="/interno/painel.html" class="bou-btn bou-btn-secondary">Voltar ao Painel</a>
+            </div>
+        </div>
+    </section>
+
+    <script src="app.js" defer></script>
+    <script>
+        (function () {
+            const el = {
+                status: document.getElementById('equipe-status'),
+                grid: document.getElementById('equipe-grid'),
+                search: document.getElementById('equipe-search'),
+                count: document.getElementById('equipe-count')
+            };
+
+            let allAgents = [];
+
+            function fmtDate(iso) {
+                if (!iso) return '-';
+                try {
+                    return new Date(iso).toLocaleDateString('pt-BR');
+                } catch {
+                    return '-';
+                }
+            }
+
+            function safe(v, fallback = '-') {
+                const s = (v || '').toString().trim();
+                return s || fallback;
+            }
+
+            function normalize(value) {
+                return String(value || '')
+                    .normalize('NFD')
+                    .replace(/[\u0300-\u036f]/g, '')
+                    .toLowerCase();
+            }
+
+            function hasMentionForProfile(row, profile) {
+                if (!row || !profile) return false;
+                const nome = normalize(profile.nome_guerra || '');
+                const rg = normalize(profile.rg || '');
+                if (!nome && !rg) return false;
+                const source = normalize([
+                    String(row.conteudo_completo || ''),
+                    String(row.texto || ''),
+                    String(row.detalhes || ''),
+                    String(row.titulo || '')
+                ].join(' '));
+                return (nome && source.includes(nome)) || (rg && source.includes(rg));
+            }
+
+            function cardTemplate(agent) {
+                const nome = safe(agent.nome_guerra, 'Agente');
+                const rg = safe(agent.rg);
+                const cargo = safe(agent.cargo, 'Cargo não definido');
+                const grupamento = safe(agent.grupamento, 'Grupamento não definido');
+                const foto = safe(agent.foto_url, 'assets/img/prf.png');
+                const bous = Number(agent.bou_count || 0);
+                const bousCitados = Number(agent.bou_cited_count || 0);
+                const aits = Number(agent.ait_count || 0);
+                const relatorioAlunoCitados = Number(agent.relatorio_aluno_cited_count || 0);
+                const created = fmtDate(agent.created_at);
+
+                return `
+                    <details class="equipe-card">
+                        <summary class="equipe-card-summary">
+                            <div class="equipe-card-avatar-wrap">
+                                <img src="${foto}" alt="${nome}" class="equipe-card-avatar" onerror="this.src='assets/img/prf.png'">
+                            </div>
+                            <div class="equipe-card-main">
+                                <div class="equipe-card-name">${nome}</div>
+                                <div class="equipe-card-id">RG: ${rg}</div>
+                                <div class="equipe-card-tags">
+                                    <span class="equipe-chip">${cargo}</span>
+                                    <span class="equipe-chip equipe-chip-soft">${grupamento}</span>
+                                </div>
+                            </div>
+                            <i class="fas fa-chevron-down equipe-card-arrow" aria-hidden="true"></i>
+                        </summary>
+                        <div class="equipe-card-body">
+                            <div class="equipe-metrics">
+                                <div class="equipe-metric">
+                                    <i class="fas fa-file-signature"></i>
+                                    <span class="equipe-metric-value">${bous}</span>
+                                    <span class="equipe-metric-label">BOU realizados</span>
+                                </div>
+                                <div class="equipe-metric">
+                                    <i class="fas fa-quote-right"></i>
+                                    <span class="equipe-metric-value">${bousCitados}</span>
+                                    <span class="equipe-metric-label">BOU citados</span>
+                                </div>
+                                <div class="equipe-metric">
+                                    <i class="fas fa-receipt"></i>
+                                    <span class="equipe-metric-value">${aits}</span>
+                                    <span class="equipe-metric-label">AIT realizados</span>
+                                </div>
+                                <div class="equipe-metric">
+                                    <i class="fas fa-user-graduate"></i>
+                                    <span class="equipe-metric-value">${relatorioAlunoCitados}</span>
+                                    <span class="equipe-metric-label">Relatório aluno citados</span>
+                                </div>
+                                <div class="equipe-metric">
+                                    <i class="fas fa-calendar-check"></i>
+                                    <span class="equipe-metric-value">${created}</span>
+                                    <span class="equipe-metric-label">Conta criada em</span>
+                                </div>
+                            </div>
+                        </div>
+                    </details>
+                `;
+            }
+
+            function updateCount(items) {
+                if (!el.count) return;
+                const n = items.length;
+                el.count.textContent = `${n} agente${n === 1 ? '' : 's'}`;
+            }
+
+            function render(list) {
+                if (!el.grid) return;
+                updateCount(list);
+                if (!list.length) {
+                    el.grid.innerHTML = '<div class="info-card"><p>Nenhum agente encontrado.</p></div>';
+                    return;
+                }
+                el.grid.innerHTML = list.map(cardTemplate).join('');
+            }
+
+            function applySearch() {
+                const q = (el.search && el.search.value ? el.search.value : '').trim().toLowerCase();
+                if (!q) {
+                    render(allAgents);
+                    return;
+                }
+                const filtered = allAgents.filter((a) => {
+                    const text = [
+                        safe(a.nome_guerra, ''),
+                        safe(a.rg, ''),
+                        safe(a.cargo, ''),
+                        safe(a.grupamento, '')
+                    ].join(' ').toLowerCase();
+                    return text.includes(q);
+                });
+                render(filtered);
+            }
+
+            async function loadTeam() {
+                if (!el.status || !el.grid) return;
+                try {
+                    if (!window.supabase || !window.supabase.createClient) {
+                        el.status.textContent = 'Supabase não disponível.';
+                        return;
+                    }
+                    const client = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
+
+                    let rows = [];
+                    const rpc = await client.rpc('list_team_dashboard');
+                    if (!rpc.error && Array.isArray(rpc.data)) {
+                        rows = rpc.data;
+                    } else {
+                        const profilesResult = await client
+                            .from('profiles')
+                            .select('id, nome_guerra, rg, cargo, grupamento, foto_url, created_at')
+                            .eq('aprovado', true)
+                            .order('nome_guerra', { ascending: true });
+
+                        if (profilesResult.error) {
+                            throw new Error(profilesResult.error.message || 'Falha ao carregar equipe.');
+                        }
+
+                        const profiles = Array.isArray(profilesResult.data) ? profilesResult.data : [];
+                        const bouListResult = await client
+                            .from('bous')
+                            .select('id, user_id, conteudo_completo');
+                        const bouList = Array.isArray(bouListResult.data) ? bouListResult.data : [];
+                        const alunoListResult = await client
+                            .from('relatorios_aluno')
+                            .select('id, user_id, titulo, texto, detalhes, conteudo_completo');
+                        const alunoList = Array.isArray(alunoListResult.data) ? alunoListResult.data : [];
+                        const rowsTmp = [];
+                        for (const p of profiles) {
+                            const [bousRes, aitsRes] = await Promise.all([
+                                client.from('bous').select('id', { count: 'exact', head: true }).eq('user_id', p.id),
+                                client.from('aits').select('id', { count: 'exact', head: true }).eq('user_id', p.id)
+                            ]);
+                            const bouCitedCount = bouList.filter((row) =>
+                                String(row.user_id || '') !== String(p.id) && hasMentionForProfile(row, p)
+                            ).length;
+                            const relatorioAlunoCitedCount = alunoList.filter((row) =>
+                                String(row.user_id || '') !== String(p.id) && hasMentionForProfile(row, p)
+                            ).length;
+                            rowsTmp.push({
+                                ...p,
+                                bou_count: bousRes.count || 0,
+                                bou_cited_count: bouCitedCount,
+                                ait_count: aitsRes.count || 0,
+                                relatorio_aluno_cited_count: relatorioAlunoCitedCount
+                            });
+                        }
+                        rows = rowsTmp;
+                    }
+
+                    if (Array.isArray(rows) && rows.length) {
+                        const bouListResult = await client
+                            .from('bous')
+                            .select('id, user_id, conteudo_completo');
+                        const bouList = Array.isArray(bouListResult.data) ? bouListResult.data : [];
+                        const alunoListResult = await client
+                            .from('relatorios_aluno')
+                            .select('id, user_id, titulo, texto, detalhes, conteudo_completo');
+                        const alunoList = Array.isArray(alunoListResult.data) ? alunoListResult.data : [];
+                        rows = rows.map((p) => {
+                            const bouCitedCount = bouList.filter((row) =>
+                                String(row.user_id || '') !== String(p.id) && hasMentionForProfile(row, p)
+                            ).length;
+                            const relatorioAlunoCitedCount = alunoList.filter((row) =>
+                                String(row.user_id || '') !== String(p.id) && hasMentionForProfile(row, p)
+                            ).length;
+                            return { ...p, bou_cited_count: bouCitedCount, relatorio_aluno_cited_count: relatorioAlunoCitedCount };
+                        });
+                    }
+
+                    allAgents = rows;
+                    render(allAgents);
+                    el.status.textContent = 'Equipe carregada.';
+                    el.status.style.color = '#166534';
+                } catch (e) {
+                    el.status.textContent = `Falha ao carregar equipe: ${e.message || 'erro inesperado'}`;
+                    el.status.style.color = '#b42318';
+                }
+            }
+
+            if (el.search) el.search.addEventListener('input', applySearch);
+            loadTeam();
+        })();
+    </script>
+</body>
+</html>
