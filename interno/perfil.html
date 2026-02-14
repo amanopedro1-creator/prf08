@@ -18,7 +18,7 @@
         <div class="container">
             <div class="top-header-content">
                 <div class="logo-governo">
-                    <a href="../index.html" class="gov-logo-link">
+                    <a href="painel.html" class="gov-logo-link">
                         <img src="assets/img/gov_br.png" alt="Governo do Brasil" class="gov-logo">
                     </a>
                     <span class="gov-divider" aria-hidden="true"></span>
@@ -85,6 +85,10 @@
                         <input id="perfil-grupamento" type="text" readonly>
                     </div>
                     <div>
+                        <label>Acesso</label>
+                        <input id="perfil-acesso" type="text" readonly>
+                    </div>
+                    <div>
                         <label>Cursos</label>
                         <input id="perfil-cursos" type="text" readonly>
                     </div>
@@ -144,7 +148,7 @@
 
                 const result = await client
                     .from('profiles')
-                    .select('nome_guerra, email, rg, cargo, grupamento, cursos, foto_url, foto_path, aprovado')
+                    .select('nome_guerra, email, rg, cargo, grupamento, acesso, cursos, foto_url, foto_path, aprovado')
                     .eq('id', currentUser.id)
                     .maybeSingle();
 
@@ -160,6 +164,7 @@
                 if (byId('perfil-rg')) byId('perfil-rg').value = p.rg || '';
                 if (byId('perfil-cargo')) byId('perfil-cargo').value = p.cargo || '-';
                 if (byId('perfil-grupamento')) byId('perfil-grupamento').value = p.grupamento || '-';
+                if (byId('perfil-acesso')) byId('perfil-acesso').value = p.acesso || '-';
                 if (byId('perfil-cursos')) byId('perfil-cursos').value = p.cursos ? String(p.cursos).split(' || ').join(' | ') : '-';
                 currentFotoPath = p.foto_path || '';
                 if (p.foto_url) setPreview(p.foto_url);

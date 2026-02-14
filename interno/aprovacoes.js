@@ -343,6 +343,7 @@
         byId('roles-user-email').textContent = profile.email || '-';
         ensureSelectValue('roles-cargo', profile.cargo || '');
         ensureSelectValue('roles-grupamento', profile.grupamento || profile.unidade || '');
+        ensureSelectValue('roles-acesso', profile.acesso || '');
 
         const cursos = parseCursos(profile.cursos);
         document.querySelectorAll('input[name="roles-cursos-opcao"]').forEach(function (node) {
@@ -351,9 +352,11 @@
 
         byId('roles-edit-title').textContent =
             mode === 'cargo' ? 'Editar cargo' :
-            mode === 'grupamento' ? 'Editar grupamento' : 'Editar cursos';
+            mode === 'grupamento' ? 'Editar grupamento' :
+            mode === 'acesso' ? 'Editar acesso' : 'Editar cursos';
         byId('roles-field-cargo').style.display = mode === 'cargo' ? 'flex' : 'none';
         byId('roles-field-grupamento').style.display = mode === 'grupamento' ? 'flex' : 'none';
+        byId('roles-field-acesso').style.display = mode === 'acesso' ? 'flex' : 'none';
         byId('roles-field-cursos').style.display = mode === 'cursos' ? 'flex' : 'none';
         byId('roles-modal').classList.add('active');
     }
@@ -371,6 +374,7 @@
         const payload = {};
         if (activeEditMode === 'cargo') payload.cargo = (byId('roles-cargo').value || '').trim();
         if (activeEditMode === 'grupamento') payload.grupamento = (byId('roles-grupamento').value || '').trim();
+        if (activeEditMode === 'acesso') payload.acesso = (byId('roles-acesso').value || '').trim();
         if (activeEditMode === 'cursos') {
             payload.cursos = Array.from(document.querySelectorAll('input[name="roles-cursos-opcao"]:checked'))
                 .map(function (node) { return node.value; })
@@ -392,6 +396,7 @@
     function buildProfileCard(profile) {
         const coursesText = parseCursos(profile.cursos).join(' | ') || 'Sem cursos';
         const grouped = profile.grupamento || profile.unidade || '-';
+        const acessoLabel = profile.acesso || '-';
         const approved = profile.aprovado === true;
         const statusClass = approved ? 'badge-ok' : 'badge-pending';
         const statusText = approved ? 'Aprovado' : 'Pendente';
@@ -418,6 +423,7 @@
                         '<span><strong>RG:</strong> ' + escapeHtml(profile.rg || '-') + '</span>' +
                         '<span><strong>Cargo:</strong> ' + escapeHtml(profile.cargo || '-') + '</span>' +
                         '<span><strong>Grupamento:</strong> ' + escapeHtml(grouped) + '</span>' +
+                        '<span><strong>Acesso:</strong> ' + escapeHtml(acessoLabel) + '</span>' +
                         '<span><strong>Cursos:</strong> ' + escapeHtml(coursesText) + '</span>' +
                         '<span><strong>Admin:</strong> ' + (profile.is_admin ? 'Sim' : 'Não') + '</span>' +
                         '<span><strong>Ponto:</strong> ' + escapeHtml(shiftStatus) + '</span>' +
@@ -436,6 +442,7 @@
             '<div class="approvals-secondary-actions">' +
                 '<button class="approvals-btn" data-action="edit-cargo" data-id="' + escapeHtml(profile.id) + '">Editar cargo</button>' +
                 '<button class="approvals-btn" data-action="edit-grupamento" data-id="' + escapeHtml(profile.id) + '">Editar grupamento</button>' +
+                '<button class="approvals-btn" data-action="edit-acesso" data-id="' + escapeHtml(profile.id) + '">Editar acesso</button>' +
                 '<button class="approvals-btn" data-action="edit-cursos" data-id="' + escapeHtml(profile.id) + '">Editar cursos</button>' +
             '</div>' +
             '<div class="approvals-history-actions">' +
@@ -472,6 +479,7 @@
                 }
                 if (action === 'edit-cargo') openEditModal(profile, 'cargo');
                 if (action === 'edit-grupamento') openEditModal(profile, 'grupamento');
+                if (action === 'edit-acesso') openEditModal(profile, 'acesso');
                 if (action === 'edit-cursos') openEditModal(profile, 'cursos');
                 if (action === 'history-bou') await openHistoryModal(profile, 'bou');
                 if (action === 'history-ait') await openHistoryModal(profile, 'ait');
@@ -496,7 +504,7 @@
         setStatus('Carregando usuários...');
         const result = await supabaseClient
             .from('profiles')
-            .select('id,email,nome_guerra,rg,cargo,grupamento,cursos,unidade,foto_url,created_at,aprovado,is_admin')
+            .select('id,email,nome_guerra,rg,cargo,grupamento,acesso,cursos,unidade,foto_url,created_at,aprovado,is_admin')
             .order('created_at', { ascending: false });
         if (result.error) {
             setStatus('Falha ao carregar usuários: ' + result.error.message, true);

@@ -163,6 +163,28 @@ p {
     padding: 5px 10px;
 }
 
+.user-panel-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 22px;
+    border-radius: 999px;
+    padding: 0 8px;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.25px;
+    line-height: 1;
+    white-space: nowrap;
+    text-decoration: none;
+    color: #f8fafc;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+.user-panel-link:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
 .user-shift-header {
     display: inline-flex;
     align-items: center;

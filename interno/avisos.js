@@ -4,6 +4,7 @@
     let client = null;
     let currentUser = null;
     let isAdmin = false;
+    let canPublish = false;
     let currentAvisos = [];
 
     function byId(id) { return document.getElementById(id); }
@@ -42,7 +43,7 @@
 
         const profileQuery = await client
             .from('profiles')
-            .select('aprovado, is_admin')
+            .select('aprovado, is_admin, acesso')
             .eq('id', currentUser.id)
             .maybeSingle();
         const profile = profileQuery ? profileQuery.data : null;
@@ -53,9 +54,14 @@
             return false;
         }
 
-        isAdmin = profile.is_admin === true;
+        const adminRaw = String(profile.is_admin || '').trim().toLowerCase();
+        isAdmin = profile.is_admin === true || adminRaw === 'true' || adminRaw === '1' || adminRaw === 'sim';
+        const accessRaw = String(profile.acesso || '').trim().toLowerCase();
+        const hasAcesso = Boolean(accessRaw)
+            && (accessRaw.includes('acesso') || accessRaw === 'sim' || accessRaw === 'true' || accessRaw === '1');
+        canPublish = isAdmin || hasAcesso;
         const formCard = byId('avisos-form-card');
-        if (formCard) formCard.style.display = isAdmin ? 'block' : 'none';
+        if (formCard) formCard.style.display = canPublish ? 'block' : 'none';
         return true;
     }
 
@@ -182,8 +188,8 @@
 
     async function publishAviso(event) {
         event.preventDefault();
-        if (!isAdmin) {
-            setStatus('Somente administradores podem publicar avisos.', true);
+        if (!canPublish) {
+            setStatus('Somente administradores ou perfis com acesso podem publicar avisos.', true);
             return;
         }
 

@@ -41,13 +41,20 @@
 
                 const profileQuery = await client
                     .from('profiles')
-                    .select('aprovado')
+                    .select('aprovado, is_admin, acesso')
                     .eq('id', user.id)
                     .maybeSingle();
                 const profile = profileQuery ? profileQuery.data : null;
                 const profileError = profileQuery ? profileQuery.error : null;
 
-                if (profileError || !profile || profile.aprovado !== true) {
+                const adminRaw = profile ? String(profile.is_admin || '').trim().toLowerCase() : '';
+                const isAdmin = profile && (profile.is_admin === true || adminRaw === 'true' || adminRaw === '1' || adminRaw === 'sim');
+                const accessRaw = profile ? String(profile.acesso || '').trim().toLowerCase() : '';
+                const hasAcesso = Boolean(accessRaw)
+                    && (accessRaw.includes('acesso') || accessRaw === 'sim' || accessRaw === 'true' || accessRaw === '1');
+                const isApproved = profile && profile.aprovado === true;
+
+                if (profileError || !profile || (!isApproved && !isAdmin && !hasAcesso)) {
                     await client.auth.signOut();
                     window.location.replace('../login.html');
                     return;
@@ -65,7 +72,7 @@
         <div class="container">
             <div class="top-header-content">
                 <div class="logo-governo">
-                    <a href="../index.html" class="gov-logo-link">
+                    <a href="painel.html" class="gov-logo-link">
                         <img src="assets/img/gov_br.png" alt="Governo do Brasil" class="gov-logo">
                     </a>
                     <span class="gov-divider" aria-hidden="true"></span>
@@ -235,28 +242,28 @@
                                         <input id="patrulha-unidade" type="text" placeholder="Ou digite manualmente">
                                     </div>
                                     <div>
-                                        <label for="patrulha-area">Area de patrulhamento</label>
-                                        <input id="patrulha-area" type="text" placeholder="Area de patrulhamento">
+                                        <label for="patrulha-area">&Aacute;rea de patrulhamento</label>
+                                        <input id="patrulha-area" type="text" placeholder="&Aacute;rea de patrulhamento">
                                     </div>
                                     <div>
-                                        <label for="patrulha-data-inicio">Data de inicio</label>
-                                        <input id="patrulha-data-inicio" type="text" placeholder="Dia/Mes/Ano">
+                                        <label for="patrulha-data-inicio">Data de in&iacute;cio</label>
+                                        <input id="patrulha-data-inicio" type="text" placeholder="Dia/M&ecirc;s/Ano">
                                     </div>
                                     <div>
-                                        <label for="patrulha-hora-inicio">Horario de inicio</label>
-                                        <input id="patrulha-hora-inicio" type="text" placeholder="Horario de inicio">
+                                        <label for="patrulha-hora-inicio">Hor&aacute;rio de in&iacute;cio</label>
+                                        <input id="patrulha-hora-inicio" type="text" placeholder="Hor&aacute;rio de in&iacute;cio">
                                     </div>
                                     <div>
-                                        <label for="patrulha-data-termino">Data de termino</label>
-                                        <input id="patrulha-data-termino" type="text" placeholder="Dia/Mes/Ano">
+                                        <label for="patrulha-data-termino">Data de t&eacute;rmino</label>
+                                        <input id="patrulha-data-termino" type="text" placeholder="Dia/M&ecirc;s/Ano">
                                     </div>
                                     <div>
-                                        <label for="patrulha-hora-termino">Horario de termino</label>
-                                        <input id="patrulha-hora-termino" type="text" placeholder="Horario de termino">
+                                        <label for="patrulha-hora-termino">Hor&aacute;rio de t&eacute;rmino</label>
+                                        <input id="patrulha-hora-termino" type="text" placeholder="Hor&aacute;rio de t&eacute;rmino">
                                     </div>
                                     <div>
-                                        <label for="patrulha-ocorr?ncias">Ocorrencias atendidas</label>
-                                        <input id="patrulha-ocorr?ncias" type="text" placeholder="Quantidade/descricao">
+                                        <label for="patrulha-ocorrencias">Ocorr&ecirc;ncias atendidas</label>
+                                        <input id="patrulha-ocorrencias" type="text" placeholder="Quantidade/descri&ccedil;&atilde;o">
                                     </div>
                                     <div>
                                         <label for="patrulha-abordagens">Abordagens realizadas</label>
@@ -294,8 +301,8 @@
                                         </div>
                                     </div>
                                     <div class="bou-grid-span">
-                                        <label for="patrulha-observacoes">Observacoes</label>
-                                        <textarea id="patrulha-observacoes" placeholder="Observacoes"></textarea>
+                                        <label for="patrulha-observacoes">Observa&ccedil;&otilde;es</label>
+                                        <textarea id="patrulha-observacoes" placeholder="Observa&ccedil;&otilde;es"></textarea>
                                     </div>
                                 </div>
                             </div>

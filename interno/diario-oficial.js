@@ -4,6 +4,7 @@
     let client = null;
     let currentUser = null;
     let isAdmin = false;
+    let canPublish = false;
     let currentDiarios = [];
 
     function byId(id) { return document.getElementById(id); }
@@ -59,7 +60,7 @@
 
         const profileQuery = await client
             .from("profiles")
-            .select("aprovado, is_admin")
+            .select("aprovado, is_admin, acesso")
             .eq("id", currentUser.id)
             .maybeSingle();
         const profile = profileQuery ? profileQuery.data : null;
@@ -70,9 +71,14 @@
             return false;
         }
 
-        isAdmin = profile.is_admin === true;
+        const adminRaw = String(profile.is_admin || "").trim().toLowerCase();
+        isAdmin = profile.is_admin === true || adminRaw === "true" || adminRaw === "1" || adminRaw === "sim";
+        const accessRaw = String(profile.acesso || "").trim().toLowerCase();
+        const hasAcesso = Boolean(accessRaw)
+            && (accessRaw.includes("acesso") || accessRaw === "sim" || accessRaw === "true" || accessRaw === "1");
+        canPublish = isAdmin || hasAcesso;
         const formCard = byId("diario-form-card");
-        if (formCard) formCard.style.display = isAdmin ? "block" : "none";
+        if (formCard) formCard.style.display = canPublish ? "block" : "none";
         return true;
     }
 
@@ -80,7 +86,7 @@
         return "Publicado em: " + formatPtDate(row.created_at)
             + " | Edi\u00e7\u00e3o: " + String(row.edicao_num || "-")
             + " | Se\u00e7\u00e3o: " + String(row.secao_num || "-")
-            + " | P\u00e1gina: " + String(row.p?gina_num || "-");
+            + " | P\u00e1gina: " + String(row.pagina_num || "-");
     }
 
     function buildDecretoTitle(row) {
@@ -172,8 +178,8 @@
 
     async function publishDiario(event) {
         event.preventDefault();
-        if (!isAdmin) {
-            setStatus("Somente administradores podem publicar Di\u00e1rio Oficial.", true);
+        if (!canPublish) {
+            setStatus("Somente administradores ou perfis com acesso podem publicar Di\u00e1rio Oficial.", true);
             return;
         }
 
@@ -214,13 +220,13 @@
         const edicao = Number(todaysResult.count || 0) + 1;
         const numeroDecreto = Number(totalResult.count || 0) + 1;
         const secao = Math.floor(Math.random() * 20) + 1;
-        const p?gina = Math.floor(Math.random() * 100) + 1;
+        const pagina = Math.floor(Math.random() * 100) + 1;
 
         const payload = {
             texto: complemento,
             edicao_num: edicao,
             secao_num: secao,
-            p?gina_num: p?gina,
+            pagina_num: pagina,
             numero_decreto: numeroDecreto,
             created_by: currentUser ? currentUser.id : null
         };

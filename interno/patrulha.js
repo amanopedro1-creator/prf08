@@ -12,7 +12,7 @@ const el = {
   horaInicio: $('patrulha-hora-inicio'),
   dataTermino: $('patrulha-data-termino'),
   horaTermino: $('patrulha-hora-termino'),
-  ocorr?ncias: $('patrulha-ocorr?ncias'),
+  ocorrencias: $('patrulha-ocorrencias'),
   abordagens: $('patrulha-abordagens'),
   prisoes: $('patrulha-prisoes'),
   observacoes: $('patrulha-observacoes'),
@@ -468,7 +468,7 @@ function buildPayload() {
     hora_inicio: (el.horaInicio.value || '').trim(),
     data_termino: (el.dataTermino.value || '').trim(),
     hora_termino: (el.horaTermino.value || '').trim(),
-    ocorr?ncias: (el.ocorr?ncias.value || '').trim(),
+    ocorrencias: (el.ocorrencias.value || '').trim(),
     abordagens: (el.abordagens.value || '').trim(),
     prisoes: (el.prisoes.value || '').trim(),
     observacoes: (el.observacoes.value || '').trim(),
@@ -495,7 +495,7 @@ function buildPayload() {
     `Auxiliar 1: ${campos.auxiliar_1 || 'N/A'}`,
     `Auxiliar 2: ${campos.auxiliar_2 || 'N/A'}`,
     '',
-    `Ocorrências atendidas: ${campos.ocorr?ncias || 'N/A'}`,
+    `Ocorrências atendidas: ${campos.ocorrencias || 'N/A'}`,
     `Abordagens realizadas: ${campos.abordagens || 'N/A'}`,
     `Prisões efetuadas: ${campos.prisoes || 'N/A'}`,
     `Vínculos BOU: ${(links.bou_ids || []).join(', ') || 'N/A'}`,
@@ -564,7 +564,7 @@ async function submitPatrulha() {
 }
 
 function clearForm() {
-  ['unidade', 'area', 'dataInicio', 'horaInicio', 'dataTermino', 'horaTermino', 'ocorr?ncias', 'abordagens', 'prisoes', 'observacoes'].forEach((key) => {
+  ['unidade', 'area', 'dataInicio', 'horaInicio', 'dataTermino', 'horaTermino', 'ocorrencias', 'abordagens', 'prisoes', 'observacoes'].forEach((key) => {
     if (el[key]) el[key].value = '';
   });
 
@@ -598,7 +598,7 @@ async function applyPayloadToFields(payload) {
   if (el.horaInicio) el.horaInicio.value = c.hora_inicio || '';
   if (el.dataTermino) el.dataTermino.value = c.data_termino || '';
   if (el.horaTermino) el.horaTermino.value = c.hora_termino || '';
-  if (el.ocorr?ncias) el.ocorr?ncias.value = c.ocorr?ncias || '';
+  if (el.ocorrencias) el.ocorrencias.value = c.ocorrencias || c['ocorr?ncias'] || '';
   if (el.abordagens) el.abordagens.value = c.abordagens || '';
   if (el.prisoes) el.prisoes.value = c.prisoes || '';
   if (el.observacoes) el.observacoes.value = c.observacoes || '';

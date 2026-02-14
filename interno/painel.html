@@ -65,7 +65,7 @@
         <div class="container">
             <div class="top-header-content">
                 <div class="logo-governo">
-                    <a href="../index.html" class="gov-logo-link">
+                    <a href="painel.html" class="gov-logo-link">
                         <img src="assets/img/gov_br.png" alt="Governo do Brasil" class="gov-logo">
                     </a>
                     <span class="gov-divider" aria-hidden="true"></span>
@@ -452,7 +452,7 @@
 
                 const result = await client
                     .from('profiles')
-                    .select('nome_guerra, email, rg, cargo, grupamento, cursos, foto_url, is_admin')
+                    .select('nome_guerra, email, rg, cargo, grupamento, acesso, cursos, foto_url, is_admin')
                     .eq('id', user.id)
                     .maybeSingle();
 
@@ -517,8 +517,9 @@
                 const isAdmin = p.is_admin === true;
                 const isDoa = normalizeText(p.grupamento || '') === normalizeText('Divisão de Operações Aéreas');
                 const isDgp = normalizeText(p.grupamento || '') === normalizeText('Diretoria de Gestão de Pessoas');
+                const hasAcesso = normalizeText(p.acesso || '').includes('acesso');
                 setLockedCard(relatorioAlunoCard, isAgenteAluno, 'Indisponível para Agente Aluno');
-                setLockedCard(aceResultadosCard, !(isDgp || isAdmin), 'Acesso restrito à DGP');
+                setLockedCard(aceResultadosCard, !(isDgp || isAdmin || hasAcesso), 'Acesso restrito à DGP ou perfil com acesso');
                 setLockedCard(relatorioVooCard, !(isDoa || isAdmin), 'Acesso restrito à Divisão de Operações Aéreas');
                 setLockedCard(painelDgpCard, !isAdmin, 'Indisponível para este perfil');
                 if (grupamentoNode) grupamentoNode.textContent = p.grupamento || '-';

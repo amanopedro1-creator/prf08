@@ -39,7 +39,7 @@
 
                 const profileQuery = await client
                     .from('profiles')
-                    .select('aprovado, grupamento, is_admin')
+                    .select('aprovado, grupamento, is_admin, acesso')
                     .eq('id', user.id)
                     .maybeSingle();
                 const profile = profileQuery ? profileQuery.data : null;
@@ -54,7 +54,8 @@
                 const isAdmin = profile.is_admin === true;
                 window.__aceIsAdmin = isAdmin;
                 const isDgp = normalizeText(profile.grupamento || '') === normalizeText('Diretoria de Gestão de Pessoas');
-                if (!isAdmin && !isDgp) {
+                const hasAcesso = normalizeText(profile.acesso || '').includes('acesso');
+                if (!isAdmin && !isDgp && !hasAcesso) {
                     window.location.replace('painel.html');
                 }
             } catch (e) {
@@ -70,7 +71,7 @@
         <div class="container">
             <div class="top-header-content">
                 <div class="logo-governo">
-                    <a href="../index.html" class="gov-logo-link">
+                    <a href="painel.html" class="gov-logo-link">
                         <img src="assets/img/gov_br.png" alt="Governo do Brasil" class="gov-logo">
                     </a>
                     <span class="gov-divider" aria-hidden="true"></span>
@@ -512,3 +513,4 @@
     </script>
 </body>
 </html>
+
