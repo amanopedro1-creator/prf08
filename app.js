@@ -5,9 +5,9 @@
     period: 'JANEIRO A DEZEMBRO DE 2026',
     news: [],
     numbers: [
-      { value: '2.810', label: 'ABORDAGENS REALIZADAS', icon: 'assets/img/aim.png' },
+      { value: '2.810', label: 'ABORDAGENS REALIZADAS', icon: 'assets/img/car.png' },
       { value: '940', label: 'OCORRÊNCIAS ATENDIDAS', icon: 'assets/img/shield.png' },
-      { value: '2.375', label: 'VEÍCULOS FISCALIZADOS', icon: 'assets/img/car.png' },
+      { value: '386', label: 'PRISÕES REALIZADAS', icon: 'assets/img/aim.png' },
       { value: '267.509', label: 'REAIS EM MULTAS APLICADAS', icon: 'assets/img/cash.png' },
       { value: '49.911', label: 'KM PATRULHADOS', icon: 'assets/img/road.png' },      
     ],
@@ -247,6 +247,106 @@
     if (!grid) return;
     const items = Array.isArray(data.news) ? data.news : [];
     grid.innerHTML = items.map(newsCard).join('');
+  };
+
+  const MULTAS_LABEL = 'REAIS EM MULTAS APLICADAS';
+  const MULTAS_STORAGE_KEY = 'prf.multas.total';
+  const OCORRENCIAS_LABEL = 'OCORRÊNCIAS ATENDIDAS';
+  const OCORRENCIAS_STORAGE_KEY = 'prf.count.ocorrencias';
+  const ABORDAGENS_LABEL = 'ABORDAGENS REALIZADAS';
+  const ABORDAGENS_STORAGE_KEY = 'prf.count.abordagens';
+  const PRISOES_LABEL = 'PRISÕES REALIZADAS';
+  const PRISOES_STORAGE_KEY = 'prf.count.prisoes';
+  const KM_LABEL = 'KM PATRULHADOS';
+  const KM_STORAGE_KEY = 'prf.count.km';
+
+  const parsePtBrNumber = (value) => {
+    if (value === null || value === undefined) return 0;
+    const raw = String(value).trim();
+    if (!raw) return 0;
+    const normalized = raw
+      .replace(/\s/g, '')
+      .replace(/\./g, '')
+      .replace(',', '.')
+      .replace(/[^0-9.-]/g, '');
+    const num = Number(normalized);
+    return Number.isFinite(num) ? num : 0;
+  };
+
+  const getCounterItem = (label) => data.numbers.find((item) => item.label === label);
+
+  const getCounterBaseValue = (label) => {
+    const item = getCounterItem(label);
+    return item ? Math.round(parsePtBrNumber(item.value)) : 0;
+  };
+
+  const readCounterTotal = (storageKey, baseValue) => {
+    try {
+      const stored = localStorage.getItem(storageKey);
+      const parsed = stored !== null ? Number(stored) : NaN;
+      if (Number.isFinite(parsed) && parsed >= 0) return Math.round(parsed);
+    } catch (err) {
+      /* ignore */
+    }
+    return baseValue;
+  };
+
+  const writeCounterTotal = (label, storageKey, total) => {
+    const item = getCounterItem(label);
+    if (!item) return;
+    const safeTotal = Math.max(0, Math.round(total));
+    item.value = safeTotal.toLocaleString('pt-BR');
+    try {
+      localStorage.setItem(storageKey, String(safeTotal));
+    } catch (err) {
+      /* ignore */
+    }
+  };
+
+  const initCounter = (label, storageKey, bases) => {
+    const base = getCounterBaseValue(label);
+    const storedTotal = readCounterTotal(storageKey, base);
+    const resolved = storedTotal >= base ? storedTotal : base;
+    if (bases) bases[storageKey] = base;
+    writeCounterTotal(label, storageKey, resolved);
+  };
+
+  const incrementCounter = (label, storageKey, delta) => {
+    const value = Number(delta);
+    const base = getCounterBaseValue(label);
+    if (!Number.isFinite(value)) return readCounterTotal(storageKey, base);
+    const nextTotal = readCounterTotal(storageKey, base) + Math.round(value);
+    writeCounterTotal(label, storageKey, nextTotal);
+    return nextTotal;
+  };
+
+  const initAllCounters = () => {
+    const bases = {};
+    initCounter(MULTAS_LABEL, MULTAS_STORAGE_KEY, bases);
+    initCounter(OCORRENCIAS_LABEL, OCORRENCIAS_STORAGE_KEY, bases);
+    initCounter(ABORDAGENS_LABEL, ABORDAGENS_STORAGE_KEY, bases);
+    initCounter(PRISOES_LABEL, PRISOES_STORAGE_KEY, bases);
+    initCounter(KM_LABEL, KM_STORAGE_KEY, bases);
+    window.PRF_COUNTER_BASES = bases;
+  };
+
+  const incrementMultasTotal = (delta) => incrementCounter(MULTAS_LABEL, MULTAS_STORAGE_KEY, delta);
+
+  window.incrementMultasTotal = incrementMultasTotal;
+  window.PRFMULTAS_STORAGE_KEY = MULTAS_STORAGE_KEY;
+  window.PRFMULTAS_BASE_VALUE = getCounterBaseValue(MULTAS_LABEL);
+  window.incrementPatrulhaTotals = (deltas = {}) => {
+    if (deltas.ocorrencias) incrementCounter(OCORRENCIAS_LABEL, OCORRENCIAS_STORAGE_KEY, deltas.ocorrencias);
+    if (deltas.abordagens) incrementCounter(ABORDAGENS_LABEL, ABORDAGENS_STORAGE_KEY, deltas.abordagens);
+    if (deltas.prisoes) incrementCounter(PRISOES_LABEL, PRISOES_STORAGE_KEY, deltas.prisoes);
+    if (deltas.km) incrementCounter(KM_LABEL, KM_STORAGE_KEY, deltas.km);
+  };
+  window.PRF_COUNTER_KEYS = {
+    multas: MULTAS_STORAGE_KEY,
+    ocorrencias: OCORRENCIAS_STORAGE_KEY,
+    abordagens: ABORDAGENS_STORAGE_KEY,
+    prisoes: PRISOES_STORAGE_KEY,
+    km: KM_STORAGE_KEY
   };
 
   const renderVideos = () => {
@@ -1123,6 +1223,8 @@
       content.textContent = text;
       modal.style.display = 'flex';
     };
+
+    window.incrementMultasTotal = incrementMultasTotal;
   };
 
   const setupModalClose = () => {
@@ -1171,6 +1273,7 @@
     setupGlobals();
     setupSwappedImages();
     setupBannerSlider();
+    initAllCounters();
     renderNumbers();
     renderNews();
     renderVideos();
