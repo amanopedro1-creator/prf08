@@ -250,15 +250,10 @@
   };
 
   const MULTAS_LABEL = 'REAIS EM MULTAS APLICADAS';
-  const MULTAS_STORAGE_KEY = 'prf.multas.total';
   const OCORRENCIAS_LABEL = 'OCORRÊNCIAS ATENDIDAS';
-  const OCORRENCIAS_STORAGE_KEY = 'prf.count.ocorrencias';
   const ABORDAGENS_LABEL = 'ABORDAGENS REALIZADAS';
-  const ABORDAGENS_STORAGE_KEY = 'prf.count.abordagens';
   const PRISOES_LABEL = 'PRISÕES REALIZADAS';
-  const PRISOES_STORAGE_KEY = 'prf.count.prisoes';
   const KM_LABEL = 'KM PATRULHADOS';
-  const KM_STORAGE_KEY = 'prf.count.km';
 
   const parsePtBrNumber = (value) => {
     if (value === null || value === undefined) return 0;
@@ -275,78 +270,72 @@
 
   const getCounterItem = (label) => data.numbers.find((item) => item.label === label);
 
-  const getCounterBaseValue = (label) => {
-    const item = getCounterItem(label);
-    return item ? Math.round(parsePtBrNumber(item.value)) : 0;
-  };
-
-  const readCounterTotal = (storageKey, baseValue) => {
-    try {
-      const stored = localStorage.getItem(storageKey);
-      const parsed = stored !== null ? Number(stored) : NaN;
-      if (Number.isFinite(parsed) && parsed >= 0) return Math.round(parsed);
-    } catch (err) {
-      /* ignore */
-    }
-    return baseValue;
-  };
-
-  const writeCounterTotal = (label, storageKey, total) => {
+  const applyCounterValue = (label, value) => {
     const item = getCounterItem(label);
     if (!item) return;
-    const safeTotal = Math.max(0, Math.round(total));
+    const safeTotal = Math.max(0, Math.round(Number(value) || 0));
     item.value = safeTotal.toLocaleString('pt-BR');
+  };
+
+  const applyKpisToNumbers = (kpis) => {
+    if (!kpis) return;
+    if (kpis.abordagens !== undefined) applyCounterValue(ABORDAGENS_LABEL, kpis.abordagens);
+    if (kpis.ocorrencias !== undefined) applyCounterValue(OCORRENCIAS_LABEL, kpis.ocorrencias);
+    if (kpis.prisoes !== undefined) applyCounterValue(PRISOES_LABEL, kpis.prisoes);
+    if (kpis.multas !== undefined) applyCounterValue(MULTAS_LABEL, kpis.multas);
+    if (kpis.km !== undefined) applyCounterValue(KM_LABEL, kpis.km);
+  };
+
+  const applyKpisDeltaLocal = (deltas = {}) => {
+    const next = {
+      abordagens: parsePtBrNumber(getCounterItem(ABORDAGENS_LABEL)?.value || 0) + (Number(deltas.abordagens) || 0),
+      ocorrencias: parsePtBrNumber(getCounterItem(OCORRENCIAS_LABEL)?.value || 0) + (Number(deltas.ocorrencias) || 0),
+      prisoes: parsePtBrNumber(getCounterItem(PRISOES_LABEL)?.value || 0) + (Number(deltas.prisoes) || 0),
+      multas: parsePtBrNumber(getCounterItem(MULTAS_LABEL)?.value || 0) + (Number(deltas.multas) || 0),
+      km: parsePtBrNumber(getCounterItem(KM_LABEL)?.value || 0) + (Number(deltas.km) || 0)
+    };
+    applyKpisToNumbers(next);
+  };
+
+  const syncKpisFromServer = async () => {
     try {
-      localStorage.setItem(storageKey, String(safeTotal));
+      const client = await createSupabaseClient();
+      if (!client) return;
+      const result = await client
+        .from('kpis')
+        .select('abordagens, ocorrencias, prisoes, multas, km')
+        .eq('id', 1)
+        .maybeSingle();
+      if (result.error || !result.data) return;
+      applyKpisToNumbers(result.data);
     } catch (err) {
       /* ignore */
     }
   };
 
-  const initCounter = (label, storageKey, bases) => {
-    const base = getCounterBaseValue(label);
-    const storedTotal = readCounterTotal(storageKey, base);
-    const resolved = storedTotal >= base ? storedTotal : base;
-    if (bases) bases[storageKey] = base;
-    writeCounterTotal(label, storageKey, resolved);
+  const incrementKpisRemote = async (deltas = {}) => {
+    try {
+      const client = await createSupabaseClient();
+      if (!client) return;
+      const rpc = await client.rpc('increment_kpis', { p_delta: deltas });
+      if (rpc && rpc.data) {
+        applyKpisToNumbers(rpc.data);
+      }
+    } catch (err) {
+      /* ignore */
+    }
   };
 
-  const incrementCounter = (label, storageKey, delta) => {
-    const value = Number(delta);
-    const base = getCounterBaseValue(label);
-    if (!Number.isFinite(value)) return readCounterTotal(storageKey, base);
-    const nextTotal = readCounterTotal(storageKey, base) + Math.round(value);
-    writeCounterTotal(label, storageKey, nextTotal);
-    return nextTotal;
+  const incrementMultasTotal = (delta) => {
+    const deltas = { multas: Number(delta) || 0 };
+    applyKpisDeltaLocal(deltas);
+    incrementKpisRemote(deltas);
   };
-
-  const initAllCounters = () => {
-    const bases = {};
-    initCounter(MULTAS_LABEL, MULTAS_STORAGE_KEY, bases);
-    initCounter(OCORRENCIAS_LABEL, OCORRENCIAS_STORAGE_KEY, bases);
-    initCounter(ABORDAGENS_LABEL, ABORDAGENS_STORAGE_KEY, bases);
-    initCounter(PRISOES_LABEL, PRISOES_STORAGE_KEY, bases);
-    initCounter(KM_LABEL, KM_STORAGE_KEY, bases);
-    window.PRF_COUNTER_BASES = bases;
-  };
-
-  const incrementMultasTotal = (delta) => incrementCounter(MULTAS_LABEL, MULTAS_STORAGE_KEY, delta);
 
   window.incrementMultasTotal = incrementMultasTotal;
-  window.PRFMULTAS_STORAGE_KEY = MULTAS_STORAGE_KEY;
-  window.PRFMULTAS_BASE_VALUE = getCounterBaseValue(MULTAS_LABEL);
   window.incrementPatrulhaTotals = (deltas = {}) => {
-    if (deltas.ocorrencias) incrementCounter(OCORRENCIAS_LABEL, OCORRENCIAS_STORAGE_KEY, deltas.ocorrencias);
-    if (deltas.abordagens) incrementCounter(ABORDAGENS_LABEL, ABORDAGENS_STORAGE_KEY, deltas.abordagens);
-    if (deltas.prisoes) incrementCounter(PRISOES_LABEL, PRISOES_STORAGE_KEY, deltas.prisoes);
-    if (deltas.km) incrementCounter(KM_LABEL, KM_STORAGE_KEY, deltas.km);
-  };
-  window.PRF_COUNTER_KEYS = {
-    multas: MULTAS_STORAGE_KEY,
-    ocorrencias: OCORRENCIAS_STORAGE_KEY,
-    abordagens: ABORDAGENS_STORAGE_KEY,
-    prisoes: PRISOES_STORAGE_KEY,
-    km: KM_STORAGE_KEY
+    applyKpisDeltaLocal(deltas);
+    incrementKpisRemote(deltas);
   };
 
   const renderVideos = () => {
@@ -1268,12 +1257,12 @@
     });
   };
 
-  document.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener('DOMContentLoaded', async () => {
     rewriteNavLinks();
     setupGlobals();
     setupSwappedImages();
     setupBannerSlider();
-    initAllCounters();
+    await syncKpisFromServer();
     renderNumbers();
     renderNews();
     renderVideos();
