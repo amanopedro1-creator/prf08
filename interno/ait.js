@@ -19,8 +19,6 @@ const el = {
 
 const currentEditId = new URLSearchParams(window.location.search).get("edit");
 let originalValorMulta = 0;
-const MULTAS_STORAGE_KEY = "prf.multas.total";
-const MULTAS_BASE_FALLBACK = 267509;
 
 function setStatus(msg, isError = false) {
   if (!el.statusEntradaAit) return;
@@ -60,24 +58,6 @@ function parseValorMulta(value) {
     .replace(/[^0-9.-]/g, "");
   const parsed = Number(normalized);
   return Number.isFinite(parsed) && parsed > 0 ? parsed : 0;
-}
-
-function getStoredMultasTotal() {
-  const key = window.PRFMULTAS_STORAGE_KEY || MULTAS_STORAGE_KEY;
-  const stored = localStorage.getItem(key);
-  const parsed = stored !== null ? Number(stored) : NaN;
-  if (Number.isFinite(parsed) && parsed >= 0) return Math.round(parsed);
-  const base = Number(window.PRFMULTAS_BASE_VALUE);
-  if (Number.isFinite(base) && base >= 0) return Math.round(base);
-  return MULTAS_BASE_FALLBACK;
-}
-
-function updateStoredMultasTotal(delta) {
-  const key = window.PRFMULTAS_STORAGE_KEY || MULTAS_STORAGE_KEY;
-  const total = getStoredMultasTotal() + Math.round(delta);
-  const safeTotal = Math.max(0, total);
-  localStorage.setItem(key, String(safeTotal));
-  return safeTotal;
 }
 
 function formatDatePt(value = new Date()) {
@@ -232,12 +212,8 @@ async function enviarAit() {
     await enviarAitParaDiscord(client, aitId);
     const valorAtual = parseValorMulta(v(el.valorMulta));
     const diff = currentEditId ? (valorAtual - originalValorMulta) : valorAtual;
-    if (diff !== 0) {
-      if (typeof window.incrementMultasTotal === "function") {
-        window.incrementMultasTotal(diff);
-      } else {
-        updateStoredMultasTotal(diff);
-      }
+    if (diff !== 0 && typeof window.incrementMultasTotal === "function") {
+      window.incrementMultasTotal(diff);
       if (currentEditId) originalValorMulta = valorAtual;
     }
     setStatus(currentEditId ? `AIT #${aitId} atualizado e enviado ao Discord.` : `AIT #${el.numeroAit} salvo e enviado ao Discord.`);

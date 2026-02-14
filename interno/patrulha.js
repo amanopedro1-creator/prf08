@@ -30,13 +30,6 @@ const el = {
 
 const currentEditId = new URLSearchParams(window.location.search).get('edit');
 const originalCounts = { ocorrencias: 0, abordagens: 0, prisoes: 0 };
-const COUNTER_DEFAULTS = { ocorrencias: 940, abordagens: 2810, prisoes: 386, km: 49911 };
-const COUNTER_KEYS = {
-  ocorrencias: (window.PRF_COUNTER_KEYS && window.PRF_COUNTER_KEYS.ocorrencias) || 'prf.count.ocorrencias',
-  abordagens: (window.PRF_COUNTER_KEYS && window.PRF_COUNTER_KEYS.abordagens) || 'prf.count.abordagens',
-  prisoes: (window.PRF_COUNTER_KEYS && window.PRF_COUNTER_KEYS.prisoes) || 'prf.count.prisoes',
-  km: (window.PRF_COUNTER_KEYS && window.PRF_COUNTER_KEYS.km) || 'prf.count.km'
-};
 const equipeConfig = {
   motorista: { allowNA: false, root: 'patrulhaMotoristaDropdown', btn: 'patrulhaMotoristaDropdownBtn', text: 'patrulhaMotoristaDropdownText', menu: 'patrulhaMotoristaDropdownMenu', input: 'patrulha-motorista' },
   chefe: { allowNA: false, root: 'patrulhaChefeDropdown', btn: 'patrulhaChefeDropdownBtn', text: 'patrulhaChefeDropdownText', menu: 'patrulhaChefeDropdownMenu', input: 'patrulha-chefe' },
@@ -102,27 +95,6 @@ function parseCount(value) {
     .map((val) => Number(val))
     .filter((val) => Number.isFinite(val) && val >= 0)
     .reduce((sum, val) => sum + val, 0);
-}
-
-function getCounterBase(key, fallback) {
-  const bases = window.PRF_COUNTER_BASES || {};
-  const base = Number(bases[key]);
-  if (Number.isFinite(base) && base >= 0) return Math.round(base);
-  return fallback;
-}
-
-function readCounterTotal(key, fallbackBase) {
-  const stored = localStorage.getItem(key);
-  const parsed = stored !== null ? Number(stored) : NaN;
-  if (Number.isFinite(parsed) && parsed >= 0) return Math.round(parsed);
-  return getCounterBase(key, fallbackBase);
-}
-
-function updateCounterTotal(key, delta, fallbackBase) {
-  const next = readCounterTotal(key, fallbackBase) + Math.round(delta);
-  const safe = Math.max(0, next);
-  localStorage.setItem(key, String(safe));
-  return safe;
 }
 
 function randomKm() {
@@ -628,19 +600,6 @@ async function submitPatrulha() {
 
     if (typeof window.incrementPatrulhaTotals === 'function') {
       window.incrementPatrulhaTotals(deltas);
-    } else {
-      if (deltas.ocorrencias) {
-        updateCounterTotal(COUNTER_KEYS.ocorrencias, deltas.ocorrencias, COUNTER_DEFAULTS.ocorrencias);
-      }
-      if (deltas.abordagens) {
-        updateCounterTotal(COUNTER_KEYS.abordagens, deltas.abordagens, COUNTER_DEFAULTS.abordagens);
-      }
-      if (deltas.prisoes) {
-        updateCounterTotal(COUNTER_KEYS.prisoes, deltas.prisoes, COUNTER_DEFAULTS.prisoes);
-      }
-      if (deltas.km) {
-        updateCounterTotal(COUNTER_KEYS.km, deltas.km, COUNTER_DEFAULTS.km);
-      }
     }
 
     if (currentEditId) {
