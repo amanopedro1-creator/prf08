@@ -18,6 +18,9 @@ const el = {
 };
 
 const currentEditId = new URLSearchParams(window.location.search).get("edit");
+let originalValorMulta = 0;
+const MULTAS_STORAGE_KEY = "prf.multas.total";
+const MULTAS_BASE_FALLBACK = 267509;
 
 function setStatus(msg, isError = false) {
   if (!el.statusEntradaAit) return;
@@ -45,6 +48,36 @@ function v(inputEl, fallback = "") {
   if (!inputEl) return fallback;
   const value = (inputEl.value || "").trim();
   return value || fallback;
+}
+
+function parseValorMulta(value) {
+  const raw = String(value || "").trim();
+  if (!raw) return 0;
+  const normalized = raw
+    .replace(/\s/g, "")
+    .replace(/\./g, "")
+    .replace(",", ".")
+    .replace(/[^0-9.-]/g, "");
+  const parsed = Number(normalized);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : 0;
+}
+
+function getStoredMultasTotal() {
+  const key = window.PRFMULTAS_STORAGE_KEY || MULTAS_STORAGE_KEY;
+  const stored = localStorage.getItem(key);
+  const parsed = stored !== null ? Number(stored) : NaN;
+  if (Number.isFinite(parsed) && parsed >= 0) return Math.round(parsed);
+  const base = Number(window.PRFMULTAS_BASE_VALUE);
+  if (Number.isFinite(base) && base >= 0) return Math.round(base);
+  return MULTAS_BASE_FALLBACK;
+}
+
+function updateStoredMultasTotal(delta) {
+  const key = window.PRFMULTAS_STORAGE_KEY || MULTAS_STORAGE_KEY;
+  const total = getStoredMultasTotal() + Math.round(delta);
+  const safeTotal = Math.max(0, total);
+  localStorage.setItem(key, String(safeTotal));
+  return safeTotal;
 }
 
 function formatDatePt(value = new Date()) {
@@ -117,7 +150,7 @@ function buildPayload() {
       `Valor da multa em R$: ${v(el.valorMulta, "N/A")}`,
       `Houve apreensão do veículo?: ${v(el.apreensao, "N/A")}`,
       `Data e horário: ${v(el.datahora, "N/A")}`,
-      `Local de Autuação: ${v(el.local, "N/A")}`,
+      `Local de autuação: ${v(el.local, "N/A")}`,
       `Marca e modelo do veículo: ${v(el.marcaModelo, "N/A")}`,
       `Emplacamento: ${v(el.emplacamento, "N/A")}`
     ].join("\n"),
@@ -197,7 +230,17 @@ async function enviarAit() {
     const aitId = await salvarAitNoBanco(payload);
     setStatus("AIT salvo no banco. Enviando para Discord...");
     await enviarAitParaDiscord(client, aitId);
-    setStatus(currentEditId ? `AIT #${aitId} atualizado e enviado ao Discord.` : `AIT #${aitId} salvo e enviado ao Discord.`);
+    const valorAtual = parseValorMulta(v(el.valorMulta));
+    const diff = currentEditId ? (valorAtual - originalValorMulta) : valorAtual;
+    if (diff !== 0) {
+      if (typeof window.incrementMultasTotal === "function") {
+        window.incrementMultasTotal(diff);
+      } else {
+        updateStoredMultasTotal(diff);
+      }
+      if (currentEditId) originalValorMulta = valorAtual;
+    }
+    setStatus(currentEditId ? `AIT #${aitId} atualizado e enviado ao Discord.` : `AIT #${el.numeroAit} salvo e enviado ao Discord.`);
   } catch (err) {
     setStatus(err.message || "Falha ao enviar AIT.", true);
   }
@@ -243,6 +286,7 @@ async function carregarAitParaEdicao() {
     if (el.marcaModelo) el.marcaModelo.value = campos.marca_modelo || "";
     if (el.emplacamento) el.emplacamento.value = campos.emplacamento || "";
   }
+  originalValorMulta = parseValorMulta(campos && campos.valor_multa ? campos.valor_multa : "");
 
   if (el.btnEnviarAit) el.btnEnviarAit.textContent = "Atualizar AIT";
   setStatus(`Editando AIT #${currentEditId}. Atualize e envie novamente.`);

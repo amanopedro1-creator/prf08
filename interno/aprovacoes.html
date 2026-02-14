@@ -120,6 +120,76 @@
 
             <div class="approvals-card" style="margin-top:16px;">
                 <div class="approvals-toolbar">
+                    <button id="logs-ait-reload" class="approvals-btn">Atualizar logs AIT</button>
+                    <span id="logs-ait-status" class="approvals-status"></span>
+                </div>
+                <div class="approvals-table-wrap">
+                    <table class="approvals-table">
+                        <thead>
+                            <tr><th>ID Log</th><th>AIT ID</th><th>Enviado por</th><th>Request ID</th><th>Status</th><th>Erro</th><th>Criado em</th></tr>
+                        </thead>
+                        <tbody id="logs-ait-tbody"><tr><td colspan="7">Carregando...</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="approvals-card" style="margin-top:16px;">
+                <div class="approvals-toolbar">
+                    <button id="logs-ripat-reload" class="approvals-btn">Atualizar logs RIPAT</button>
+                    <span id="logs-ripat-status" class="approvals-status"></span>
+                </div>
+                <div class="approvals-table-wrap">
+                    <table class="approvals-table">
+                        <thead>
+                            <tr><th>ID Log</th><th>RIPAT ID</th><th>Enviado por</th><th>Request ID</th><th>Status</th><th>Erro</th><th>Criado em</th></tr>
+                        </thead>
+                        <tbody id="logs-ripat-tbody"><tr><td colspan="7">Carregando...</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="approvals-card" style="margin-top:16px;">
+                <div class="approvals-toolbar">
+                    <button id="logs-ace-reload" class="approvals-btn">Atualizar logs ACE</button>
+                    <span id="logs-ace-status" class="approvals-status"></span>
+                </div>
+                <div class="approvals-table-wrap">
+                    <table class="approvals-table">
+                        <thead>
+                            <tr><th>ID Log</th><th>ACE ID</th><th>Enviado por</th><th>Request ID</th><th>Status</th><th>Erro</th><th>Criado em</th></tr>
+                        </thead>
+                        <tbody id="logs-ace-tbody"><tr><td colspan="7">Carregando...</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="approvals-card" style="margin-top:16px;">
+                <div class="approvals-toolbar">
+                    <button id="logs-ravop-reload" class="approvals-btn">Atualizar logs RAVOP</button>
+                    <span id="logs-ravop-status" class="approvals-status"></span>
+                </div>
+                <div class="approvals-table-wrap">
+                    <table class="approvals-table">
+                        <thead>
+                            <tr><th>ID Log</th><th>RAVOP ID</th><th>Enviado por</th><th>Request ID</th><th>Status</th><th>Erro</th><th>Criado em</th></tr>
+                        </thead>
+                        <tbody id="logs-ravop-tbody"><tr><td colspan="7">Carregando...</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="approvals-card" style="margin-top:16px;">
+                <div class="approvals-toolbar">
+                    <strong>Incongruências SQL x Frontend</strong>
+                    <span id="logs-incongruencias-status" class="approvals-status"></span>
+                </div>
+                <div id="logs-incongruencias" class="history-list">
+                    <div class="approvals-empty">Nenhuma incongruência identificada.</div>
+                </div>
+            </div>
+
+            <div class="approvals-card" style="margin-top:16px;">
+                <div class="approvals-toolbar">
                     <div class="approvals-date-filter">
                         <label for="pontos-date">Calend?rio de ponto (dia)</label>
                         <input id="pontos-date" type="date">

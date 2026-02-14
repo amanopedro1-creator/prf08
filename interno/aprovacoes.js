@@ -52,6 +52,13 @@
         node.className = isError ? 'approvals-status is-error' : 'approvals-status';
     }
 
+    function setTypedLogStatus(nodeId, message, isError) {
+        const node = byId(nodeId);
+        if (!node) return;
+        node.textContent = message || '';
+        node.className = isError ? 'approvals-status is-error' : 'approvals-status';
+    }
+
     function setPontosStatus(message, isError) {
         const node = byId('pontos-status');
         if (!node) return;
@@ -571,6 +578,65 @@
         }).join('');
     }
 
+    function getLogStatusClass(statusText) {
+        const raw = String(statusText || '').toLowerCase();
+        if (raw.includes('fail') || raw.includes('error')) return 'badge-failed';
+        if (raw.includes('queued') || raw.includes('pending')) return 'badge-pending';
+        return 'badge-ok';
+    }
+
+    function pickFirstField(row, fields) {
+        for (let i = 0; i < fields.length; i += 1) {
+            const key = fields[i];
+            if (row && row[key] !== null && row[key] !== undefined) return row[key];
+        }
+        return null;
+    }
+
+    function normalizeLogRow(row, idFields) {
+        const reportId = pickFirstField(row, idFields);
+        const triggeredBy = row.triggered_by || row.user_id || row.created_by || row.owner_id || '-';
+        const requestId = row.request_id || row.http_request_id || row.net_request_id || '-';
+        const statusRaw = row.status || (row.http_status ? 'http' : '-') || '-';
+        const httpSuffix = row.http_status ? (' (HTTP ' + String(row.http_status) + ')') : '';
+        const statusText = (statusRaw === 'http' ? 'status' : String(statusRaw)) + httpSuffix;
+        const errorMsg = row.error_msg || row.error_message || row.error || '-';
+        const createdAt = row.created_at || row.data_criacao || row.data || null;
+        return {
+            id: row.id || '-',
+            reportId: reportId !== null && reportId !== undefined ? reportId : '-',
+            triggeredBy,
+            requestId,
+            statusText,
+            statusClass: getLogStatusClass(statusText),
+            errorMsg,
+            createdAt
+        };
+    }
+
+    function renderTypedLogs(tbodyId, logs, usersById, idLabel) {
+        const tbody = byId(tbodyId);
+        if (!tbody) return;
+        if (!Array.isArray(logs) || !logs.length) {
+            tbody.innerHTML = '<tr><td colspan="7">Nenhum log encontrado.</td></tr>';
+            return;
+        }
+
+        tbody.innerHTML = logs.map(function (row) {
+            const userInfo = usersById[row.triggeredBy] || null;
+            const userLabel = userInfo ? (userInfo.nome_guerra || userInfo.email || row.triggeredBy) : row.triggeredBy;
+            return '<tr>' +
+                '<td>' + escapeHtml(String(row.id || '-')) + '</td>' +
+                '<td>' + escapeHtml(String(row.reportId || '-')) + '</td>' +
+                '<td>' + escapeHtml(String(userLabel || '-')) + '</td>' +
+                '<td>' + escapeHtml(String(row.requestId || '-')) + '</td>' +
+                '<td><span class="approvals-badge ' + row.statusClass + '">' + escapeHtml(String(row.statusText || '-')) + '</span></td>' +
+                '<td>' + escapeHtml(String(row.errorMsg || '-')) + '</td>' +
+                '<td>' + escapeHtml(formatDate(row.createdAt)) + '</td>' +
+            '</tr>';
+        }).join('');
+    }
+
     function formatTimeOnly(value) {
         if (!value) return '-';
         const d = new Date(value);
@@ -700,21 +766,34 @@
         setPontosStatus('');
     }
 
-    async function loadLogs() {
-        setLogStatus('Carregando logs...');
-        const logsResult = await supabaseClient
-            .from('bou_dispatch_log')
-            .select('id,bou_id,triggered_by,request_id,status,error_msg,created_at')
-            .order('created_at', { ascending: false })
-            .limit(200);
+    function isRelationMissing(error) {
+        if (!error) return false;
+        const msg = String(error.message || error).toLowerCase();
+        return msg.includes('does not exist') || msg.includes('relation') && msg.includes('does not exist');
+    }
 
-        if (logsResult.error) {
-            setLogStatus('Falha ao carregar logs: ' + logsResult.error.message, true);
+    async function fetchLogsFromTable(table, limit) {
+        return supabaseClient
+            .from(table)
+            .select('*')
+            .order('created_at', { ascending: false })
+            .limit(limit || 200);
+    }
+
+    async function loadTypedLogs(typeKey, config, incongruencias) {
+        setTypedLogStatus(config.statusId, 'Carregando logs...');
+
+        const result = await fetchLogsFromTable(config.table, config.limit || 200);
+        if (result.error) {
+            setTypedLogStatus(config.statusId, 'Falha ao carregar logs: ' + result.error.message, true);
+            const tbody = byId(config.tbodyId);
+            if (tbody) tbody.innerHTML = '<tr><td colspan="7">Falha ao carregar logs.</td></tr>';
+            incongruencias.push(config.label + ': erro ao consultar logs (' + (result.error.message || result.error) + ').');
             return;
         }
 
-        const logs = logsResult.data || [];
-        const ids = Array.from(new Set(logs.map(function (r) { return r.triggered_by; }).filter(Boolean)));
+        const normalized = (result.data || []).map(function (row) { return normalizeLogRow(row, config.idFields); });
+        const ids = Array.from(new Set(normalized.map(function (r) { return r.triggeredBy; }).filter(Boolean)));
         const usersById = {};
         if (ids.length) {
             const usersResult = await supabaseClient.from('profiles').select('id,nome_guerra,email').in('id', ids);
@@ -722,8 +801,74 @@
                 usersResult.data.forEach(function (u) { usersById[u.id] = u; });
             }
         }
-        renderLogs(logs, usersById);
-        setLogStatus('');
+        renderTypedLogs(config.tbodyId, normalized, usersById, config.idLabel);
+        setTypedLogStatus(config.statusId, '');
+    }
+
+    function renderIncongruencias(list) {
+        const node = byId('logs-incongruencias');
+        const status = byId('logs-incongruencias-status');
+        if (!node) return;
+        if (!list || !list.length) {
+            node.innerHTML = '<div class="approvals-empty">Nenhuma incongruência identificada.</div>';
+            if (status) status.textContent = '';
+            return;
+        }
+        node.innerHTML = list.map(function (item) {
+            return '<div class="history-item"><p>' + escapeHtml(item) + '</p></div>';
+        }).join('');
+        if (status) status.textContent = 'Incongruências detectadas: ' + list.length;
+    }
+
+    async function loadAllLogs() {
+        const incongruencias = [];
+        const configs = [
+            {
+                key: 'bou',
+                label: 'BOU',
+                tbodyId: 'logs-tbody',
+                statusId: 'logs-status',
+                idFields: ['bou_id', 'registro_id', 'id_registro'],
+                table: 'bou_dispatch_log'
+            },
+            {
+                key: 'ait',
+                label: 'AIT',
+                tbodyId: 'logs-ait-tbody',
+                statusId: 'logs-ait-status',
+                idFields: ['ait_id', 'registro_id', 'id_registro'],
+                table: 'ait_dispatch_log'
+            },
+            {
+                key: 'ripat',
+                label: 'RIPAT',
+                tbodyId: 'logs-ripat-tbody',
+                statusId: 'logs-ripat-status',
+                idFields: ['patrulha_id', 'ripat_id', 'registro_id', 'id_registro'],
+                table: 'patrulha_dispatch_log'
+            },
+            {
+                key: 'ace',
+                label: 'ACE',
+                tbodyId: 'logs-ace-tbody',
+                statusId: 'logs-ace-status',
+                idFields: ['ace_id', 'relatorio_id', 'registro_id', 'id_registro'],
+                table: 'ace_dispatch_log'
+            },
+            {
+                key: 'ravop',
+                label: 'RAVOP',
+                tbodyId: 'logs-ravop-tbody',
+                statusId: 'logs-ravop-status',
+                idFields: ['relatorio_id', 'ravop_id', 'registro_id', 'id_registro'],
+                table: 'ravop_dispatch_log'
+            }
+        ];
+
+        for (let i = 0; i < configs.length; i += 1) {
+            await loadTypedLogs(configs[i].key, configs[i], incongruencias);
+        }
+        renderIncongruencias(incongruencias);
     }
 
     function renderCursosCheckboxes() {
@@ -740,7 +885,11 @@
         if (!ok) return;
 
         byId('aprovacoes-reload').addEventListener('click', function () { loadProfiles(); });
-        byId('logs-reload').addEventListener('click', function () { loadLogs(); });
+        byId('logs-reload').addEventListener('click', function () { loadAllLogs(); });
+        if (byId('logs-ait-reload')) byId('logs-ait-reload').addEventListener('click', function () { loadAllLogs(); });
+        if (byId('logs-ripat-reload')) byId('logs-ripat-reload').addEventListener('click', function () { loadAllLogs(); });
+        if (byId('logs-ace-reload')) byId('logs-ace-reload').addEventListener('click', function () { loadAllLogs(); });
+        if (byId('logs-ravop-reload')) byId('logs-ravop-reload').addEventListener('click', function () { loadAllLogs(); });
         if (byId('pontos-date')) byId('pontos-date').value = new Date().toISOString().slice(0, 10);
         byId('pontos-reload').addEventListener('click', function () { loadPontosCalendar(); });
         byId('pontos-date').addEventListener('change', function () { loadPontosCalendar(); });
@@ -757,7 +906,7 @@
         });
 
         await loadProfiles();
-        await loadLogs();
+        await loadAllLogs();
         await loadPontosCalendar();
     });
 })();

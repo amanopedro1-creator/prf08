@@ -6056,3 +6056,242 @@ body {
     margin-top: -4px;
     display: block;
 }
+
+.mapa-interativo-section .info-card {
+    background: #ffffff;
+}
+
+.mapa-interativo-layout {
+    display: grid;
+    grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
+    gap: 20px;
+    align-items: start;
+}
+
+.mapa-interativo-panel {
+    padding: 18px;
+}
+
+.mapa-interativo-header h3 {
+    margin-bottom: 6px;
+}
+
+.mapa-interativo-note {
+    margin: 0 0 8px;
+    color: #475569;
+    font-size: 0.95rem;
+}
+
+.mapa-setores {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 10px 0 6px;
+    padding: 10px;
+    border-radius: 10px;
+    background: rgba(15, 23, 42, 0.06);
+}
+
+.mapa-setores--top {
+    margin: 0 0 12px;
+}
+
+.mapa-setores h4 {
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+.mapa-setores-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 16px;
+}
+
+.mapa-setores-list label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.9rem;
+    color: #1f2937;
+}
+
+.mapa-form-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.mapa-form-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.mapa-form.is-disabled {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.mapa-filters {
+    margin-top: 18px;
+    padding-top: 12px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.mapa-filters h4 {
+    margin-bottom: 10px;
+    font-size: 1rem;
+}
+
+.mapa-filter-list {
+    display: grid;
+    gap: 8px;
+    margin-bottom: 12px;
+    color: #1f2937;
+}
+
+.mapa-filter-list label {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    font-size: 0.95rem;
+}
+
+.mapa-interativo-map-wrap {
+    padding: 14px;
+}
+
+.mapa-interativo-canvas {
+    width: 100%;
+    height: 560px;
+    border-radius: 14px;
+    border: 1px solid #dbe3f6;
+    overflow: hidden;
+}
+
+.mapa-popup .painel-docs-frame-wrap {
+    padding: 10px 12px 12px;
+    margin-top: 0;
+}
+
+.mapa-popup h3 {
+    margin-bottom: 8px;
+    text-align: left;
+}
+
+.mapa-popup-details {
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 8px 10px;
+    background: #f8fafc;
+}
+
+.mapa-popup-details summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 6px;
+}
+
+.mapa-popup-body p {
+    margin: 4px 0;
+    color: #1f2937;
+}
+
+.mapa-popup-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.mapa-leaflet-popup .leaflet-popup-content-wrapper {
+    border-radius: 14px;
+    padding: 0;
+    box-shadow: 0 18px 36px rgba(15, 23, 42, 0.2);
+}
+
+.mapa-leaflet-popup .leaflet-popup-content {
+    margin: 0;
+    width: 320px;
+}
+
+.mapa-leaflet-popup .leaflet-popup-tip {
+    background: #ffffff;
+}
+
+@media (max-width: 1024px) {
+    .mapa-interativo-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .mapa-interativo-canvas {
+        height: 480px;
+    }
+}
+
+@media (max-width: 640px) {
+    .mapa-form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .mapa-interativo-canvas {
+        height: 360px;
+    }
+}
+
+.mapa-interativo-layout.is-vertical {
+    grid-template-columns: 1fr;
+}
+
+.mapa-interativo-layout.is-vertical .mapa-interativo-map-wrap {
+    order: 1;
+}
+
+.mapa-interativo-layout.is-vertical .mapa-interativo-panel {
+    order: 2;
+}
+
+.mapa-categorias-dinamicas {
+    margin: 12px 0;
+    display: grid;
+    gap: 10px;
+}
+
+.mapa-categorias-lista {
+    display: grid;
+    gap: 8px;
+}
+
+.mapa-categoria-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 10px;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+    background: #f8fafc;
+    font-size: 0.9rem;
+}
+
+.mapa-categoria-remove {
+    border: 0;
+    background: #ef4444;
+    color: #fff;
+    border-radius: 8px;
+    padding: 4px 8px;
+    cursor: pointer;
+}
+
+.mapa-categoria-empty {
+    color: #64748b;
+    font-size: 0.9rem;
+}
+
+.mapa-popup-list {
+    margin: 6px 0 10px 16px;
+    padding: 0;
+}
+
+.mapa-popup-list li {
+    margin-bottom: 4px;
+}

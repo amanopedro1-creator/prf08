@@ -58,6 +58,7 @@
         })();
     </script>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -200,9 +201,17 @@
                         <i class="fas fa-gavel" aria-hidden="true"></i>
                         <span>Regulamento Disciplinar</span>
                     </a>
+                    <a href="https://docs.google.com/spreadsheets/d/1ysSkZjzHLhCYbEYdWCY8BPKnfQ6NvZs1Bu-TthDqgrk/edit?usp=sharing" class="painel-side-link" id="painel-ctb-trigger" rel="noopener">
+                        <i class="fas fa-road" aria-hidden="true"></i>
+                        <span>C&oacute;digo de Tr&acirc;nsito Brasileiro</span>
+                    </a>
                     <a href="https://docs.google.com/document/d/1i4M0SuHjl3hygdDxjdrNIes3jMYzx67hYyB7ZC3XwJk/edit?usp=sharing" class="painel-side-link" id="painel-uniformes-trigger" rel="noopener">
                         <i class="fas fa-shirt" aria-hidden="true"></i>
                         <span>Padrão de Uniformes</span>
+                    </a>
+                    <a href="#" class="painel-side-link" id="painel-mapa-trigger">
+                        <i class="fas fa-map-location-dot" aria-hidden="true"></i>
+                        <span>Mapa Interativo</span>
                     </a>
                     <a href="/interno/avisos.html" class="painel-side-link" rel="noopener">
                         <i class="fas fa-bullhorn" aria-hidden="true"></i>
@@ -276,6 +285,89 @@
                         <h3>Último aviso</h3>
                         <p class="painel-latest-aviso-empty">Carregando aviso...</p>
                     </article>
+                    <div id="painel-docs-map" class="painel-docs-map-wrap is-hidden">
+                        <div class="mapa-interativo-layout is-vertical">
+                            <article class="info-card mapa-interativo-panel">
+                                <div class="mapa-interativo-header">
+                                    <h3>Registrar ponto</h3>
+                                    <p class="mapa-interativo-note">Clique no mapa para preencher X/Y automaticamente.</p>
+                                    <p id="mapa-admin-warning" class="bou-status is-hidden">Somente administradores podem adicionar, editar ou excluir pontos.</p>
+                                </div>
+                                <form id="mapa-form" class="mapa-form">
+                                    <label class="modal-form-group">
+                                        <span>Cor do marcador</span>
+                                        <input type="color" id="mapa-cor" value="#0ea5e9">
+                                    </label>
+                                    <label class="modal-form-group">
+                                        <span>Título</span>
+                                        <input type="text" id="mapa-titulo" placeholder="Identificador do ponto" required>
+                                    </label>
+                                    <label class="modal-form-group">
+                                        <span>Descrição (opcional)</span>
+                                        <textarea id="mapa-descricao" rows="3" placeholder="Detalhes adicionais"></textarea>
+                                    </label>
+                                    <div class="mapa-categorias-dinamicas">
+                                        <label class="modal-form-group">
+                                            <span>Categoria</span>
+                                            <select id="mapa-categoria">
+                                                <option value="">Selecione</option>
+                                                <option value="Denúncia realizadas">Denúncia realizadas</option>
+                                                <option value="Roubo de veículo">Roubo de veículo</option>
+                                                <option value="Tráfico">Tráfico</option>
+                                                <option value="Disparos">Disparos</option>
+                                                <option value="Outros">Outros</option>
+                                            </select>
+                                        </label>
+                                        <label class="modal-form-group">
+                                            <span>Quantidade</span>
+                                            <input type="number" id="mapa-quantidade" min="1" step="1" value="1">
+                                        </label>
+                                        <button type="button" id="mapa-add-categoria" class="approvals-btn">Adicionar categoria</button>
+                                        <div id="mapa-categorias-lista" class="mapa-categorias-lista"></div>
+                                    </div>
+                                    <div class="mapa-form-row">
+                                        <label class="modal-form-group">
+                                            <span>X</span>
+                                            <input type="number" id="mapa-x" step="0.01" placeholder="0" required>
+                                        </label>
+                                        <label class="modal-form-group">
+                                            <span>Y</span>
+                                            <input type="number" id="mapa-y" step="0.01" placeholder="0" required>
+                                        </label>
+                                    </div>
+                                    <div class="mapa-form-actions">
+                                        <button type="submit" id="mapa-submit" class="approvals-btn success">Publicar ponto</button>
+                                        <button type="button" id="mapa-cancel" class="approvals-btn is-hidden">Cancelar</button>
+                                    </div>
+                                </form>
+                                <div class="mapa-filters">
+                                    <h4>Filtros</h4>
+                                    <div class="mapa-filter-list">
+                                        <label><input type="checkbox" class="mapa-filter" value="Denúncia realizadas" checked> Denúncia realizadas</label>
+                                        <label><input type="checkbox" class="mapa-filter" value="Roubo de veículo" checked> Roubo de veículo</label>
+                                        <label><input type="checkbox" class="mapa-filter" value="Tráfico" checked> Tráfico</label>
+                                        <label><input type="checkbox" class="mapa-filter" value="Disparos" checked> Disparos</label>
+                                        <label><input type="checkbox" class="mapa-filter" value="Outros" checked> Outros</label>
+                                    </div>
+                                    <input type="text" id="mapa-search" class="equipe-search" placeholder="Buscar por título ou descrição">
+                                </div>
+                            </article>
+
+                            <article class="info-card mapa-interativo-map-wrap">
+                                <div class="mapa-setores mapa-setores--top">
+                                    <h4>Setores</h4>
+                                    <div class="mapa-setores-list">
+                                        <label><input type="checkbox" class="mapa-setor" value="0"> Setor 0</label>
+                                        <label><input type="checkbox" class="mapa-setor" value="1"> Setor 1</label>
+                                        <label><input type="checkbox" class="mapa-setor" value="2"> Setor 2</label>
+                                    </div>
+                                    <button type="button" id="mapa-setores-clear" class="approvals-btn">Limpar seleção</button>
+                                </div>
+                                <div id="mapa-interativo" class="mapa-interativo-canvas" aria-label="Mapa interativo"></div>
+                                <p id="mapa-status" class="bou-status">Carregando mapa...</p>
+                            </article>
+                        </div>
+                    </div>
                     <article class="info-card painel-docs-frame-wrap">
                         <h3 id="painel-docs-inline-title">Documento Interno</h3>
                         <iframe
@@ -346,21 +438,27 @@
     </footer>
 
     <script src="app.js" defer></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="" defer></script>
+    <script src="mapa-interativo.js" defer></script>
     <script>
         (function setupPainelDocsPopup() {
             function byId(id) { return document.getElementById(id); }
             const panel = byId('painel-docs-inline');
             const closeBtn = byId('painel-docs-inline-close');
             const openReg = byId('painel-regulamento-trigger');
+            const openCtb = byId('painel-ctb-trigger');
             const openUni = byId('painel-uniformes-trigger');
+            const openMap = byId('painel-mapa-trigger');
             const avisoSource = byId('painel-latest-aviso');
             const avisoTarget = byId('painel-docs-inline-aviso');
             const mainDefault = byId('painel-main-default');
             const frame = byId('painel-docs-inline-frame');
+            const frameWrap = frame ? frame.closest('.painel-docs-frame-wrap') : null;
+            const mapWrap = byId('painel-docs-map');
             const title = byId('painel-docs-inline-title');
             if (!panel || !openReg || !openUni || !mainDefault) return;
             let activeTrigger = null;
-            const docTriggers = [openReg, openUni];
+            const docTriggers = [openReg, openCtb, openUni, openMap];
 
             const setActiveTriggerVisual = function (node) {
                 docTriggers.forEach(function (lnk) {
@@ -392,9 +490,17 @@
                 avisoTarget.innerHTML = avisoSource.innerHTML;
             };
 
-            const setDocInFrame = function (href, label) {
+            const setDocInFrame = function (href, label, useMap) {
+                if (title) title.textContent = label || (useMap ? 'Mapa Interativo' : 'Documento Interno');
+                if (useMap) {
+                    if (frame) frame.src = '';
+                    if (frameWrap) frameWrap.classList.add('is-hidden');
+                    if (mapWrap) mapWrap.classList.remove('is-hidden');
+                    return;
+                }
+                if (mapWrap) mapWrap.classList.add('is-hidden');
+                if (frameWrap) frameWrap.classList.remove('is-hidden');
                 if (frame) frame.src = href || '';
-                if (title) title.textContent = label || 'Documento Interno';
             };
 
             const openPopup = function (event, sourceNode) {
@@ -403,7 +509,8 @@
                 const href = sourceNode ? sourceNode.getAttribute('href') : '';
                 const labelNode = sourceNode ? sourceNode.querySelector('span') : null;
                 const label = labelNode ? labelNode.textContent.trim() : 'Documento Interno';
-                setDocInFrame(href, label);
+                const useMap = sourceNode === openMap;
+                setDocInFrame(href, label, useMap);
                 activeTrigger = sourceNode || null;
                 setActiveTriggerVisual(activeTrigger);
                 mainDefault.classList.add('is-hidden');
@@ -411,6 +518,9 @@
                 requestAnimationFrame(function () {
                     panel.classList.add('is-open');
                     panel.setAttribute('aria-hidden', 'false');
+                    if (useMap && window.__mapaInterativoRefresh) {
+                        setTimeout(function () { window.__mapaInterativoRefresh(); }, 120);
+                    }
                 });
             };
 
@@ -428,9 +538,19 @@
             openReg.addEventListener('click', function (event) {
                 openPopup(event, openReg);
             });
+            if (openCtb) {
+                openCtb.addEventListener('click', function (event) {
+                    openPopup(event, openCtb);
+                });
+            }
             openUni.addEventListener('click', function (event) {
                 openPopup(event, openUni);
             });
+            if (openMap) {
+                openMap.addEventListener('click', function (event) {
+                    openPopup(event, openMap);
+                });
+            }
             if (closeBtn) closeBtn.addEventListener('click', closePopup);
 
             document.addEventListener('keydown', function (e) {
@@ -459,6 +579,7 @@
                 if (result.error || !result.data) return;
                 const p = result.data;
                 window.__painelProfile = p;
+                window.__painelIsAdmin = p.is_admin === true;
 
                 const nameNode = document.getElementById('painel-profile-name');
                 const rgNode = document.getElementById('painel-profile-rg');
