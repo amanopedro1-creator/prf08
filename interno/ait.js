@@ -47,6 +47,31 @@ function v(inputEl, fallback = "") {
   return value || fallback;
 }
 
+function formatDatePt(value = new Date()) {
+  const d = value instanceof Date ? value : new Date(value);
+  if (Number.isNaN(d.getTime())) return "";
+  const day = String(d.getDate()).padStart(2, "0");
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const year = String(d.getFullYear());
+  return `${day}/${month}/${year}`;
+}
+
+function formatDateTimePt(value = new Date()) {
+  const d = value instanceof Date ? value : new Date(value);
+  if (Number.isNaN(d.getTime())) return "";
+  const datePart = formatDatePt(d);
+  const hours = String(d.getHours()).padStart(2, "0");
+  const minutes = String(d.getMinutes()).padStart(2, "0");
+  return `${datePart} ${hours}:${minutes}`;
+}
+
+function prefillDataHora() {
+  if (currentEditId) return;
+  if (!el.datahora) return;
+  if ((el.datahora.value || "").trim()) return;
+  el.datahora.value = formatDateTimePt(new Date());
+}
+
 async function preencherPolicialResponsavel() {
   if (!el.policial) return;
   const { client, user } = await getCurrentUser();
@@ -244,4 +269,5 @@ if (el.btnLimparCampos) el.btnLimparCampos.addEventListener("click", limparCampo
 
 setStatus("Pronto para enviar.");
 preencherPolicialResponsavel();
+prefillDataHora();
 carregarAitParaEdicao();

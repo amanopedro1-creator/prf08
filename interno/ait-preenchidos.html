@@ -153,7 +153,7 @@
 
             <div id="ait-fill-status" class="bou-status">Carregando AITs...</div>
             <div id="ait-fill-grid" class="ace-results-grid"></div>
-            <div id="ait-fill-p?gination" class="ace-p?gination"></div>
+            <div id="ait-fill-pagination" class="ace-pagination"></div>
 
             <div class="bou-actions" style="justify-content:center; margin-top:18px;">
                 <a href="/interno/painel.html" class="bou-btn bou-btn-secondary">Voltar ao Painel</a>
@@ -197,7 +197,7 @@
                 grid: document.getElementById('ait-fill-grid'),
                 searchInfrator: document.getElementById('ait-fill-search-infrator'),
                 searchRelator: document.getElementById('ait-fill-search-relator'),
-                p?gination: document.getElementById('ait-fill-p?gination'),
+                pagination: document.getElementById('ait-fill-pagination'),
                 adminActions: document.getElementById('ait-fill-admin-actions'),
                 selectPage: document.getElementById('ait-fill-select-page'),
                 deleteSelected: document.getElementById('ait-fill-delete-selected'),
@@ -285,19 +285,19 @@
             }
 
             function renderPagination(totalPages) {
-                if (!el.p?gination) return;
+                if (!el.pagination) return;
                 if (totalPages <= 1) {
-                    el.p?gination.innerHTML = '';
+                    el.pagination.innerHTML = '';
                     return;
                 }
                 const prevDisabled = currentPage <= 1 ? 'disabled' : '';
                 const nextDisabled = currentPage >= totalPages ? 'disabled' : '';
-                el.p?gination.innerHTML =
+                el.pagination.innerHTML =
                     `<button type="button" class="ace-page-btn" data-page="prev" ${prevDisabled}>Anterior</button>` +
                     `<span class="ace-page-info">Página ${currentPage} de ${totalPages}</span>` +
                     `<button type="button" class="ace-page-btn" data-page="next" ${nextDisabled}>Próxima</button>`;
 
-                el.p?gination.querySelectorAll('.ace-page-btn').forEach((btn) => {
+                el.pagination.querySelectorAll('.ace-page-btn').forEach((btn) => {
                     btn.addEventListener('click', () => {
                         const dir = btn.getAttribute('data-page');
                         if (dir === 'prev' && currentPage > 1) currentPage -= 1;
@@ -332,7 +332,7 @@
                 const rows = Array.isArray(filteredRows) ? filteredRows : [];
                 if (!rows.length) {
                     el.grid.innerHTML = '<div class="info-card"><p>Nenhum AIT encontrado.</p></div>';
-                    if (el.p?gination) el.p?gination.innerHTML = '';
+                    if (el.pagination) el.pagination.innerHTML = '';
                     return;
                 }
                 const totalPages = Math.max(1, Math.ceil(rows.length / pageSize));

@@ -153,7 +153,7 @@
 
             <div id="ripat-status" class="bou-status">Carregando relatórios...</div>
             <div id="ripat-grid" class="ace-results-grid"></div>
-            <div id="ripat-p?gination" class="ace-p?gination"></div>
+            <div id="ripat-pagination" class="ace-pagination"></div>
 
             <div class="bou-actions" style="justify-content:center; margin-top:18px;">
                 <a href="/interno/painel.html" class="bou-btn bou-btn-secondary">Voltar ao Painel</a>
@@ -197,7 +197,7 @@
                 grid: document.getElementById('ripat-grid'),
                 searchCitado: document.getElementById('ripat-search-citado'),
                 searchRelator: document.getElementById('ripat-search-relator'),
-                p?gination: document.getElementById('ripat-p?gination'),
+                pagination: document.getElementById('ripat-pagination'),
                 adminActions: document.getElementById('ripat-admin-actions'),
                 selectPage: document.getElementById('ripat-select-page'),
                 deleteSelected: document.getElementById('ripat-delete-selected'),
@@ -272,7 +272,7 @@
                             <p><strong>Unidade:</strong> ${esc(row.unidade || 'N/A')}</p>
                             <p><strong>Área:</strong> ${esc(row.area || 'N/A')}</p>
                             <p><strong>Período:</strong> ${esc((row.data_inicio || 'N/A') + ' ' + (row.hora_inicio || '') + ' - ' + (row.data_termino || 'N/A') + ' ' + (row.hora_termino || ''))}</p>
-                            <p><strong>Ocorrências:</strong> ${esc(row.ocorr?ncias || 'N/A')}</p>
+                            <p><strong>Ocorrências:</strong> ${esc(row.ocorrencias || 'N/A')}</p>
                             <p><strong>Abordagens:</strong> ${esc(row.abordagens || 'N/A')}</p>
                             <p><strong>Prisões:</strong> ${esc(row.prisoes || 'N/A')}</p>
                             <p><strong>Observações:</strong></p>
@@ -288,19 +288,19 @@
             }
 
             function renderPagination(totalPages) {
-                if (!el.p?gination) return;
+                if (!el.pagination) return;
                 if (totalPages <= 1) {
-                    el.p?gination.innerHTML = '';
+                    el.pagination.innerHTML = '';
                     return;
                 }
                 const prevDisabled = currentPage <= 1 ? 'disabled' : '';
                 const nextDisabled = currentPage >= totalPages ? 'disabled' : '';
-                el.p?gination.innerHTML =
+                el.pagination.innerHTML =
                     `<button type="button" class="ace-page-btn" data-page="prev" ${prevDisabled}>Anterior</button>` +
                     `<span class="ace-page-info">Página ${currentPage} de ${totalPages}</span>` +
                     `<button type="button" class="ace-page-btn" data-page="next" ${nextDisabled}>Próxima</button>`;
 
-                el.p?gination.querySelectorAll('.ace-page-btn').forEach((btn) => {
+                el.pagination.querySelectorAll('.ace-page-btn').forEach((btn) => {
                     btn.addEventListener('click', () => {
                         const dir = btn.getAttribute('data-page');
                         if (dir === 'prev' && currentPage > 1) currentPage -= 1;
@@ -335,7 +335,7 @@
                 const rows = Array.isArray(filteredRows) ? filteredRows : [];
                 if (!rows.length) {
                     el.grid.innerHTML = '<div class="info-card"><p>Nenhum relatório encontrado.</p></div>';
-                    if (el.p?gination) el.p?gination.innerHTML = '';
+                    if (el.pagination) el.pagination.innerHTML = '';
                     return;
                 }
                 const totalPages = Math.max(1, Math.ceil(rows.length / pageSize));
@@ -468,7 +468,7 @@
                             hora_inicio: campos.hora_inicio || '',
                             data_termino: campos.data_termino || '',
                             hora_termino: campos.hora_termino || '',
-                            ocorr?ncias: campos.ocorr?ncias || '',
+                            ocorrencias: campos.ocorrencias || '',
                             abordagens: campos.abordagens || '',
                             prisoes: campos.prisoes || ''
                         };

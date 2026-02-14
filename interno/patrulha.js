@@ -50,6 +50,22 @@ function setStatus(msg, isError = false) {
   el.status.style.color = isError ? '#b42318' : '#166534';
 }
 
+function formatDatePt(value = new Date()) {
+  const d = value instanceof Date ? value : new Date(value);
+  if (Number.isNaN(d.getTime())) return '';
+  const day = String(d.getDate()).padStart(2, '0');
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const year = String(d.getFullYear());
+  return `${day}/${month}/${year}`;
+}
+
+function prefillDates() {
+  if (currentEditId) return;
+  const today = formatDatePt(new Date());
+  if (el.dataInicio && !(el.dataInicio.value || '').trim()) el.dataInicio.value = today;
+  if (el.dataTermino && !(el.dataTermino.value || '').trim()) el.dataTermino.value = today;
+}
+
 function getSupabaseClient() {
   if (!window.supabase || !window.supabase.createClient || !window.SUPABASE_URL || !window.SUPABASE_ANON_KEY) return null;
   return window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
@@ -666,6 +682,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   setupRelatedInfiniteScroll('aluno', el.linksAluno);
 
   setStatus('Pronto para enviar.');
+  prefillDates();
   await loadEquipeOptions();
   await loadRelatedRecords({});
   await loadForEdit();

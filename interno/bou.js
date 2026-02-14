@@ -90,6 +90,31 @@ function setStatusEntradaCompleta(msg, isError = false) {
   el.statusEntradaCompleta.style.color = isError ? '#b42318' : '#166534';
 }
 
+function formatDatePt(value = new Date()) {
+  const d = value instanceof Date ? value : new Date(value);
+  if (Number.isNaN(d.getTime())) return '';
+  const day = String(d.getDate()).padStart(2, '0');
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const year = String(d.getFullYear());
+  return `${day}/${month}/${year}`;
+}
+
+function formatDateTimePt(value = new Date()) {
+  const d = value instanceof Date ? value : new Date(value);
+  if (Number.isNaN(d.getTime())) return '';
+  const datePart = formatDatePt(d);
+  const hours = String(d.getHours()).padStart(2, '0');
+  const minutes = String(d.getMinutes()).padStart(2, '0');
+  return `${datePart} ${hours}:${minutes}`;
+}
+
+function prefillDataHora() {
+  if (currentEditId) return;
+  if (!el.datahora) return;
+  if ((el.datahora.value || '').trim()) return;
+  el.datahora.value = formatDateTimePt(new Date());
+}
+
 function v(inputEl, fallback = 'N/A') {
   if (!inputEl) return fallback;
   const val = (inputEl.value || '').trim();
@@ -904,5 +929,6 @@ sincronizarAcoesCombinadas();
 (async () => {
   await carregarEquipeDropdowns();
   await preencherAssinaturaAutomatica();
+  prefillDataHora();
   await carregarBouParaEdicao();
 })();
