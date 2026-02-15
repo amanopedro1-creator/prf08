@@ -1257,6 +1257,33 @@
     });
   };
 
+  const setupAuthFloatingLabels = () => {
+    const inputs = document.querySelectorAll('.auth-siga .input-field');
+    if (!inputs.length) return;
+
+    const updateInput = (input) => {
+      const box = input.closest('.input_box');
+      if (!box) return;
+      if (input.value && input.value.trim().length > 0) {
+        box.classList.add('has-value');
+      } else {
+        box.classList.remove('has-value');
+      }
+    };
+
+    inputs.forEach((input) => {
+      const handler = () => updateInput(input);
+      updateInput(input);
+      input.addEventListener('input', handler);
+      input.addEventListener('change', handler);
+      input.addEventListener('blur', handler);
+    });
+
+    setTimeout(() => {
+      inputs.forEach((input) => updateInput(input));
+    }, 300);
+  };
+
   document.addEventListener('DOMContentLoaded', async () => {
     rewriteNavLinks();
     setupGlobals();
@@ -1272,6 +1299,7 @@
     setupAccessibility();
     setupSupabaseLogin();
     setupSupabaseRegister();
+    setupAuthFloatingLabels();
     setupHeaderAuthState();
     setupModalClose();
     setupInfoCardDropdowns();

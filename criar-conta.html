@@ -19,8 +19,9 @@
             } catch (e) {}
         })();
     </script>
-    <link rel="stylesheet" href="/assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins&display=swap">
 </head>
 <body>
     <header class="top-header">
@@ -74,7 +75,7 @@
                         <a href="#" class="nav-link-dropdown" aria-haspopup="true" aria-expanded="false">INSTITUCIONAL</a>
                         <div class="dropdown-menu">
                             <a href="organograma.html">Organograma</a>
-<a href="historia-valores.html">História e Valores</a>
+                            <a href="historia-valores.html">História e Valores</a>
                         </div>
                     </div>
                     <div class="nav-dropdown">
@@ -104,54 +105,58 @@
         </div>
         </header>
 
-    <section class="latest-news info-section auth-section auth-sei">
-        <div class="container auth-sei-container">
-            <div class="auth-card-sei auth-card-sei--wide">
-                <div class="auth-tabs">
-                    <a class="auth-tab" href="login.html">ENTRAR</a>
-                    <a class="auth-tab is-active" href="criar-conta.html">CREDENCIAMENTO</a>
-                </div>
-                <div class="auth-panel auth-panel--scroll">
+                <section class="auth-siga">
+        <div class="wrapper auth-siga-wrapper">
+            <div class="auth-siga-head">
+                <img src="assets/img/siga_prf.png" alt="SIGA PRF" class="auth-logo-siga">
+                <h2>Sistema Integrado de Gestão Administrativa</h2>
+            </div>
+            <div class="login_box login_box--wide">
+                <div class="auth-siga-title">Criar conta</div>
+                <form class="auth-form-siga" id="auth-register-form">
                     <div class="auth-photo">
                         <button class="auth-photo-btn" type="button" id="register-photo-btn">
                             <img id="register-photo-preview" class="auth-photo-preview is-hidden" alt="Prévia da foto do perfil">
                             <i class="fas fa-camera"></i>
-                            <span>FOTO</span>
+                            <span>Foto</span>
                         </button>
                         <input id="register-photo-file" type="file" accept="image/*" class="auth-photo-file-input">
                     </div>
-                    <form class="auth-form-sei" id="auth-register-form">
-                        <label class="auth-label" for="register-name">NOME OFICIAL</label>
-                        <div class="auth-input">
-                            <i class="fas fa-user"></i>
-                            <input type="text" id="register-name" name="name" placeholder="Ex: Joao Silva" autocomplete="name" required>
-                        </div>
 
-                        <label class="auth-label" for="register-email">EMAIL INSTITUCIONAL</label>
-                        <div class="auth-input auth-input-suffix">
-                            <i class="fas fa-envelope"></i>
-                            <input type="text" id="register-email" name="email" placeholder="nome.sobrenome" autocomplete="email" required>
-                            <span class="auth-suffix">@prf.gov</span>
-                        </div>
+                    <div class="input_box">
+                        <input type="text" id="register-name" name="name" class="input-field" autocomplete="name" placeholder=" " required>
+                        <label for="register-name" class="label">Nome oficial</label>
+                        <i class="fas fa-user icon"></i>
+                    </div>
 
-                        <label class="auth-label" for="register-password">SENHA</label>
-                        <div class="auth-input">
-                            <i class="fas fa-lock"></i>
-                            <input type="password" id="register-password" name="password" placeholder="********" autocomplete="new-password" required>
-                        </div>
+                    <div class="input_box input_box--suffix">
+                        <input type="text" id="register-email" name="email" class="input-field" autocomplete="email" placeholder=" " required>
+                        <label for="register-email" class="label">Email institucional</label>
+                        <span class="input-suffix">@prf.gov</span>
+                        <i class="fas fa-envelope icon"></i>
+                    </div>
 
-                        <label class="auth-label" for="register-rg">RG</label>
-                        <div class="auth-input">
-                            <i class="fas fa-id-card"></i>
-                            <input type="text" id="register-rg" name="rg" placeholder="Ex: 12.345.678-9" autocomplete="off" required>
-                        </div>
+                    <div class="input_box">
+                        <input type="password" id="register-password" name="password" class="input-field" autocomplete="new-password" placeholder=" " required>
+                        <label for="register-password" class="label">Senha</label>
+                        <i class="fas fa-lock icon"></i>
+                    </div>
 
-                        <button type="submit" class="auth-btn-sei auth-btn-sei--gold" id="auth-register-submit">
-                            SOLICITAR ACESSO
-                        </button>
-                        <p id="auth-register-feedback" aria-live="polite"></p>
-                    </form>
-                </div>
+                    <div class="input_box">
+                        <input type="text" id="register-rg" name="rg" class="input-field" autocomplete="off" placeholder=" " required>
+                        <label for="register-rg" class="label">RG</label>
+                        <i class="fas fa-id-card icon"></i>
+                    </div>
+
+                    <div class="input_box">
+                        <button type="submit" class="input-submit input-submit--gold" id="auth-register-submit">Solicitar acesso</button>
+                    </div>
+                    <p id="auth-register-feedback" class="auth-feedback" aria-live="polite"></p>
+
+                    <div class="register">
+                        <span>Já tem conta? <a href="login.html">Entrar</a></span>
+                    </div>
+                </form>
             </div>
         </div>
     </section>
@@ -189,4 +194,6 @@
     <script src="app.js" defer></script>
 </body>
 </html>
+
+
 

@@ -19,8 +19,9 @@
             } catch (e) {}
         })();
     </script>
-    <link rel="stylesheet" href="/assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins&display=swap">
 </head>
 <body>
             <header class="top-header">
@@ -104,41 +105,46 @@
         </div>
         </header>
 
-    <section class="latest-news info-section auth-section auth-sei">
-        <div class="container auth-sei-container">
-            <div class="auth-card-sei">
-                <div class="auth-tabs">
-                    <a class="auth-tab is-active" href="login.html">ENTRAR</a>
-                    <a class="auth-tab" href="criar-conta.html">CREDENCIAMENTO</a>
-                </div>
-                <div class="auth-panel">
-                    <form class="auth-form-sei" id="auth-login-form">
-                        <label class="auth-label" for="login-email">EMAIL INSTITUCIONAL</label>
-                        <div class="auth-input">
-                            <i class="fas fa-envelope"></i>
-                            <input type="email" id="login-email" name="email" placeholder="seu.email@prf.gov" autocomplete="username" required>
-                        </div>
+                <section class="auth-siga">
+        <div class="wrapper auth-siga-wrapper">
+            <div class="auth-siga-head">
+                <img src="assets/img/siga_prf.png" alt="SIGA PRF" class="auth-logo-siga">
+                <h2>Sistema Integrado de Gestão Administrativa</h2>
+            </div>
+            <br>
+            <div class="login_box">
+                <div class="auth-siga-title">Login</div>
+                <form class="auth-form-siga" id="auth-login-form">
+                    <br>
+                    <div class="input_box">
+                        <input type="email" id="login-email" name="email" class="input-field" autocomplete="username" placeholder=" " required>
+                        <label for="login-email" class="label">Email institucional</label>
+                        <i class="fas fa-envelope icon"></i>
+                    </div>
 
-                        <div class="auth-row">
-                            <label class="auth-label" for="login-password">SENHA DE ACESSO</label>
-                            <a class="auth-forgot" href="#">Esqueceu a senha?</a>
-                        </div>
-                        <div class="auth-input">
-                            <i class="fas fa-lock"></i>
-                            <input type="password" id="login-password" name="password" placeholder="********" autocomplete="current-password" required>
-                        </div>
+                    <div class="input_box">
+                        <input type="password" id="login-password" name="password" class="input-field" autocomplete="current-password" placeholder=" " required>
+                        <label for="login-password" class="label">Senha de acesso</label>
+                        <i class="fas fa-lock icon"></i>
+                    </div>
 
-                        <label class="auth-check">
+                    <div class="remember-forgot">
+                        <label class="remember-me">
                             <input type="checkbox" id="login-remember" checked>
                             Manter conectado
                         </label>
+                        <a class="forgot" href="#">Esqueceu a senha?</a>
+                    </div>
 
-                        <button type="submit" class="auth-btn-sei" id="auth-login-submit">
-                            REALIZAR LOGIN <i class="fas fa-arrow-right"></i>
-                        </button>
-                        <p id="auth-login-feedback" aria-live="polite"></p>
-                    </form>
-                </div>
+                    <div class="input_box">
+                        <button type="submit" class="input-submit" id="auth-login-submit">Realizar login</button>
+                    </div>
+                    <p id="auth-login-feedback" class="auth-feedback" aria-live="polite"></p>
+
+                    <div class="register">
+                        <span>Não tem conta? <a href="criar-conta.html">Cadastrar</a></span>
+                    </div>
+                </form>
             </div>
         </div>
     </section>
@@ -176,4 +182,6 @@
     <script src="app.js" defer></script>
 </body>
 </html>
+
+
 
