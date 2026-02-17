@@ -8,7 +8,7 @@
       { value: '2.810', label: 'ABORDAGENS REALIZADAS', icon: 'assets/img/car.png' },
       { value: '940', label: 'OCORRÊNCIAS ATENDIDAS', icon: 'assets/img/shield.png' },
       { value: '386', label: 'PRISÕES REALIZADAS', icon: 'assets/img/aim.png' },
-      { value: '267.509', label: 'REAIS EM MULTAS APLICADAS', icon: 'assets/img/cash.png' },
+      { value: '268.509', label: 'REAIS EM MULTAS APLICADAS', icon: 'assets/img/cash.png' },
       { value: '49.911', label: 'KM PATRULHADOS', icon: 'assets/img/road.png' },      
     ],
 
