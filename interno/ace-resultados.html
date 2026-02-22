@@ -53,7 +53,8 @@
 
                 const isAdmin = profile.is_admin === true;
                 window.__aceIsAdmin = isAdmin;
-                const isDgp = normalizeText(profile.grupamento || '') === normalizeText('Diretoria de Gestão de Pessoas');
+                const grupos = String(profile.grupamento || '').split(' || ').map(v => v.trim()).filter(Boolean);
+                const isDgp = grupos.some(g => normalizeText(g) === normalizeText('Diretoria de Gestão de Pessoas'));
                 const hasAcesso = normalizeText(profile.acesso || '').includes('acesso');
                 if (!isAdmin && !isDgp && !hasAcesso) {
                     window.location.replace('painel.html');

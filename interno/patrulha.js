@@ -44,6 +44,7 @@ const relatedView = {
   ait: { visible: 3, batch: 3, selected: new Set() },
   aluno: { visible: 3, batch: 3, selected: new Set() }
 };
+const relatedDays = { bou: 1, ait: 1, aluno: 5 };
 
 function setStatus(msg, isError = false) {
   if (!el.status) return;
@@ -126,6 +127,7 @@ function isWithinDays(row, days) {
   const limit = days * 24 * 60 * 60 * 1000;
   return (now - ms) <= limit && now >= ms;
 }
+
 
 function formatEquipeOption(profile) {
   const nome = profile && profile.nome_guerra ? String(profile.nome_guerra).trim() : '';
@@ -442,18 +444,31 @@ async function loadRelatedRecords(prefilled) {
     return q.data;
   };
 
-  const bouRows = await fetchRecent('bous', 'id,user_id,titulo,conteudo_completo,created_at,data_criacao', 'data_criacao');
-  const aitRows = await fetchRecent('aits', 'id,user_id,numero_ait,infrator,conteudo_completo,created_at,data_criacao', 'data_criacao');
+  const fetchRecentBous = async () => {
+    const rpc = await client.rpc('list_recent_bous_for_user', { p_days: relatedDays.bou });
+    if (!rpc.error && Array.isArray(rpc.data)) return rpc.data;
+    return fetchRecent('bous', 'id,user_id,titulo,conteudo_completo,created_at,data_criacao,sent_to_discord_at', 'data_criacao');
+  };
+
+  const fetchRecentAits = async () => {
+    const rpc = await client.rpc('list_recent_aits_for_user', { p_days: relatedDays.ait });
+    if (!rpc.error && Array.isArray(rpc.data)) return rpc.data;
+    return fetchRecent('aits', 'id,user_id,numero_ait,infrator,conteudo_completo,created_at,data_criacao', 'data_criacao');
+  };
+
+  const bouRows = await fetchRecentBous();
+  const aitRows = await fetchRecentAits();
   const alunoRows = await fetchRecent('relatorios_aluno', 'id,user_id,titulo,texto,detalhes,conteudo_completo,created_at', null);
 
   relatedState.bou = bouRows
-    .filter((row) => (String(row.user_id || '') === String(user.id) || hasMention(row, tokens)) && isWithinDays(row, 5))
+    .filter((row) => Boolean(row.sent_to_discord_at))
+    .filter((row) => (String(row.user_id || '') === String(user.id) || hasMention(row, tokens)) && isWithinDays(row, relatedDays.bou))
     .slice(0, 60);
   relatedState.ait = aitRows
-    .filter((row) => (String(row.user_id || '') === String(user.id) || hasMention(row, tokens)) && isWithinDays(row, 5))
+    .filter((row) => (String(row.user_id || '') === String(user.id) || hasMention(row, tokens)) && isWithinDays(row, relatedDays.ait))
     .slice(0, 60);
   relatedState.aluno = alunoRows
-    .filter((row) => (String(row.user_id || '') === String(user.id) || hasMention(row, tokens)) && isWithinDays(row, 5))
+    .filter((row) => (String(row.user_id || '') === String(user.id) || hasMention(row, tokens)) && isWithinDays(row, relatedDays.aluno))
     .slice(0, 60);
 
   renderRelatedList('bou', el.linksBou, relatedState.bou);
@@ -509,9 +524,11 @@ function buildPayload() {
     links: links
   };
 
-  const titulo = `Relatório de Patrulha - ${campos.area || 'Área não informada'}`;
+  const titulo = `Relatório de Patrulha - ${campos.unidade || 'Unidade não informada'}`;
   const texto = [
     '# RELATORIO DE PATRULHA',
+    '',
+    '# Dados do patrulhamento',
     '',
     `Unidade: ${campos.unidade || 'N/A'}`,
     `Área de patrulhamento: ${campos.area || 'N/A'}`,
@@ -520,10 +537,14 @@ function buildPayload() {
     `Data de término: ${campos.data_termino || 'N/A'}`,
     `Hora de término: ${campos.hora_termino || 'N/A'}`,
     '',
+    '# Dados da equipe',
+    '',
     `Motorista: ${campos.motorista || 'N/A'}`,
     `Chefe de viatura: ${campos.chefe || 'N/A'}`,
     `Auxiliar 1: ${campos.auxiliar_1 || 'N/A'}`,
     `Auxiliar 2: ${campos.auxiliar_2 || 'N/A'}`,
+    '',
+    '# Atuação',
     '',
     `Ocorrências atendidas: ${campos.ocorrencias || 'N/A'}`,
     `Abordagens realizadas: ${campos.abordagens || 'N/A'}`,

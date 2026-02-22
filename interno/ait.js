@@ -14,7 +14,9 @@ const el = {
   emplacamento: $("emplacamento"),
   btnEnviarAit: $("btnEnviarAit"),
   btnLimparCampos: $("btnLimparCampos"),
-  statusEntradaAit: $("statusEntradaAit")
+  statusEntradaAit: $("statusEntradaAit"),
+  lastTitleWrap: $("aitLastTitle"),
+  lastTitleText: $("aitLastTitleText")
 };
 
 const currentEditId = new URLSearchParams(window.location.search).get("edit");
@@ -24,6 +26,19 @@ function setStatus(msg, isError = false) {
   if (!el.statusEntradaAit) return;
   el.statusEntradaAit.textContent = msg;
   el.statusEntradaAit.style.color = isError ? "#b42318" : "#166534";
+}
+
+function setUltimoTituloAit(numero) {
+  if (!el.lastTitleWrap || !el.lastTitleText) return;
+  const safe = (numero || "").trim();
+  el.lastTitleWrap.classList.remove("is-hidden");
+  if (!safe) {
+    el.lastTitleWrap.classList.add("is-empty");
+    el.lastTitleText.textContent = "—";
+    return;
+  }
+  el.lastTitleWrap.classList.remove("is-empty");
+  el.lastTitleText.textContent = safe;
 }
 
 function getSupabaseClient() {
@@ -40,6 +55,22 @@ async function getCurrentUser() {
   const session = sessionResult && sessionResult.data ? sessionResult.data.session : null;
   const user = session ? session.user : null;
   return { client, user, error: user ? null : "Usuário não autenticado." };
+}
+
+function extrairNumeroAit(row) {
+  if (!row) return "";
+  let numero = row.numero_ait || "";
+  if (row.conteudo_completo) {
+    try {
+      const payload = JSON.parse(row.conteudo_completo);
+      if (payload && payload.campos && payload.campos.numero_ait) {
+        numero = payload.campos.numero_ait;
+      }
+    } catch {
+      /* ignore */
+    }
+  }
+  return String(numero || "").trim();
 }
 
 function v(inputEl, fallback = "") {
@@ -268,6 +299,35 @@ async function carregarAitParaEdicao() {
   setStatus(`Editando AIT #${currentEditId}. Atualize e envie novamente.`);
 }
 
+async function carregarUltimoTituloAit() {
+  if (!el.lastTitleWrap) return;
+  const { client, user } = await getCurrentUser();
+  if (!client || !user) return;
+
+  const baseQuery = client
+    .from("aits")
+    .select("numero_ait, conteudo_completo, data_criacao, created_at")
+    .limit(1);
+
+  let result = await baseQuery
+    .order("data_criacao", { ascending: false })
+    .maybeSingle();
+
+  if (result.error) {
+    result = await baseQuery
+      .order("created_at", { ascending: false })
+      .maybeSingle();
+  }
+
+  if (result.error || !result.data) {
+    setUltimoTituloAit("");
+    return;
+  }
+
+  const numero = extrairNumeroAit(result.data);
+  setUltimoTituloAit(numero);
+}
+
 function limparCampos() {
   const ids = [
     "numeroAit", "nomeInfrator", "rgInfrator", "infracao", "valorMulta",
@@ -290,4 +350,5 @@ if (el.btnLimparCampos) el.btnLimparCampos.addEventListener("click", limparCampo
 setStatus("Pronto para enviar.");
 preencherPolicialResponsavel();
 prefillDataHora();
+carregarUltimoTituloAit();
 carregarAitParaEdicao();

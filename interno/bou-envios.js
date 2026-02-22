@@ -15,8 +15,11 @@
   let currentUser = null;
   let bous = [];
   const hiddenStoragePrefix = 'bouEnviosHiddenIds:';
+  const sentStoragePrefix = 'bouEnviosSentIds:';
+  const lastSentStorageKey = 'bouLastSentTitle';
 
   const hiddenKey = () => `${hiddenStoragePrefix}${currentUser ? currentUser.id : 'anon'}`;
+  const sentKey = () => `${sentStoragePrefix}${currentUser ? currentUser.id : 'anon'}`;
 
   const readHiddenIds = () => {
     try {
@@ -31,6 +34,24 @@
   const writeHiddenIds = (ids) => {
     try {
       localStorage.setItem(hiddenKey(), JSON.stringify(ids));
+    } catch (err) {
+      // noop
+    }
+  };
+
+  const readSentIds = () => {
+    try {
+      const raw = localStorage.getItem(sentKey());
+      const parsed = raw ? JSON.parse(raw) : [];
+      return Array.isArray(parsed) ? parsed.map((v) => Number(v)).filter((v) => Number.isFinite(v)) : [];
+    } catch (err) {
+      return [];
+    }
+  };
+
+  const writeSentIds = (ids) => {
+    try {
+      localStorage.setItem(sentKey(), JSON.stringify(ids));
     } catch (err) {
       // noop
     }
@@ -72,6 +93,57 @@
     } catch (err) {
       return { texto_original: String(conteudoCompleto), campos: {} };
     }
+  };
+
+  const getTituloFromItem = (item) => {
+    if (!item) return '';
+    const payload = parseConteudo(item.conteudo_completo);
+    const c = payload.campos || {};
+    return String(c.titulo || item.titulo || '').trim();
+  };
+
+  const pickMostRecent = (items) => {
+    if (!Array.isArray(items) || !items.length) return null;
+    const withTs = items.map((item) => {
+      const ts = item && item.data_criacao ? new Date(item.data_criacao).getTime() : NaN;
+      return { item, ts };
+    });
+    withTs.sort((a, b) => {
+      if (Number.isFinite(a.ts) && Number.isFinite(b.ts)) return b.ts - a.ts;
+      if (Number.isFinite(a.ts)) return -1;
+      if (Number.isFinite(b.ts)) return 1;
+      const aId = Number(a.item && a.item.id);
+      const bId = Number(b.item && b.item.id);
+      if (Number.isFinite(aId) && Number.isFinite(bId)) return bId - aId;
+      return 0;
+    });
+    return withTs[0].item || null;
+  };
+
+  const storeLastSent = (items) => {
+    const chosen = pickMostRecent(items);
+    if (!chosen) return;
+    const titulo = getTituloFromItem(chosen);
+    try {
+      localStorage.setItem(lastSentStorageKey, JSON.stringify({
+        titulo,
+        id: chosen.id || null,
+        data_criacao: chosen.data_criacao || null,
+        stored_at: new Date().toISOString()
+      }));
+    } catch (err) {
+      // noop
+    }
+  };
+
+  const storeSentIds = (ids) => {
+    const safeIds = (Array.isArray(ids) ? ids : [])
+      .map((id) => Number(id))
+      .filter((id) => Number.isFinite(id));
+    if (!safeIds.length) return;
+    const current = new Set(readSentIds());
+    safeIds.forEach((id) => current.add(id));
+    writeSentIds(Array.from(current));
   };
 
   const getSelectedItems = () => {
@@ -221,6 +293,8 @@
 
       const logPart = requestIds.length ? ` ReqIDs: ${requestIds.join(', ')}.` : '';
       setStatus(`Envio enfileirado com sucesso (${queuedCount}).${logPart}`);
+      storeLastSent(items);
+      storeSentIds(ids);
     } catch (err) {
       setStatus(`Falha no envio ao Discord: ${err.message}`, true);
     }

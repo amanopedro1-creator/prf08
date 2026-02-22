@@ -155,14 +155,20 @@
                             <h3>Entrada de Dados</h3>
                             <span class="bou-badge bou-badge-alt">AIT</span>
                         </header>
-                        <div class="bou-card-body">
-                            <div class="bou-grid">
-                                <div class="bou-grid-span"><h4 class="bou-section-title">Dados da Autua&ccedil;&atilde;o</h4></div>
+                            <div class="bou-card-body">
+                                <div class="bou-grid">
+                                    <div class="bou-grid-span"><h4 class="bou-section-title">Dados da Autua&ccedil;&atilde;o</h4></div>
 
-                                <div>
-                                    <label for="numeroAit">N&uacute;mero do AIT</label>
-                                    <input id="numeroAit" type="text" placeholder="xxx/2026">
-                                </div>
+                                    <div class="bou-grid-span">
+                                        <div id="aitLastTitle" class="bou-last-title-hint is-hidden">
+                                            <span class="bou-last-title-label">Último AIT enviado:</span>
+                                            <strong class="bou-last-title-text" id="aitLastTitleText"></strong>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label for="numeroAit">N&uacute;mero do AIT</label>
+                                        <input id="numeroAit" type="text" placeholder="xxx/2026">
+                                    </div>
                                 <div>
                                     <label for="policial">Policial respons&aacute;vel</label>
                                     <input id="policial" type="text" placeholder="Autom&aacute;tico pelo perfil logado" readonly>

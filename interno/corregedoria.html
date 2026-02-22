@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="format-detection" content="telephone=no">
+    <title>Corregedoria - PRF Jaguaré</title>
+    <link rel="icon" type="image/x-icon" href="assets/img/prflogoico.ico">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        window.SUPABASE_URL = 'https://pssujmmuachdymlwsiuj.supabase.co';
+        window.SUPABASE_ANON_KEY = 'sb_publishable_PYQxZQr_TfVEesG7L4WI4g_-VjPHVpW';
+
+        (async function enforceAuth() {
+            try {
+                if (!window.supabase || !window.supabase.createClient) {
+                    window.location.replace('../login.html');
+                    return;
+                }
+                const client = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
+                const result = await client.auth.getSession();
+                const session = result && result.data ? result.data.session : null;
+                const user = session ? session.user : null;
+                if (!user) {
+                    window.location.replace('../login.html');
+                    return;
+                }
+
+                const profileQuery = await client
+                    .from('profiles')
+                    .select('aprovado')
+                    .eq('id', user.id)
+                    .maybeSingle();
+                const profile = profileQuery ? profileQuery.data : null;
+                const profileError = profileQuery ? profileQuery.error : null;
+
+                if (profileError || !profile || profile.aprovado !== true) {
+                    await client.auth.signOut();
+                    window.location.replace('../login.html');
+                    return;
+                }
+            } catch (e) {
+                window.location.replace('../login.html');
+            }
+        })();
+    </script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header class="top-header">
+        <div class="container">
+            <div class="top-header-content">
+                <div class="logo-governo">
+                    <a href="painel.html" class="gov-logo-link">
+                        <img src="assets/img/gov_br.png" alt="Governo do Brasil" class="gov-logo">
+                    </a>
+                    <span class="gov-divider" aria-hidden="true"></span>
+                    <div class="gov-identity">
+                        <span class="gov-ministry">MINISTÉRIO DA JUSTIÇA E SEGURANÇA PÚBLICA</span>
+                        <span class="gov-agency">Polícia Rodoviária Federal</span>
+                    </div>
+                </div>
+                <div class="top-header-right">
+                    <div class="user-auth-header">
+                        <a href="../login.html" id="header-login-btn" class="auth-link">
+                            <i class="fas fa-sign-in-alt"></i>
+                            <span>LOGIN</span>
+                        </a>
+                        <a href="../criar-conta.html" id="header-register-btn" class="auth-link">
+                            <i class="fas fa-user-plus"></i>
+                            <span>CRIAR CONTA</span>
+                        </a>
+                        <div id="header-user-menu" class="user-menu-header is-hidden">
+                            <span class="user-name-header"></span>
+                            <a href="painel.html#meu-perfil" class="auth-link" id="header-edit-profile-link">
+                                <i class="fas fa-user-edit"></i>
+                                <span>EDITAR PERFIL</span>
+                            </a>
+                            <a href="#" onclick="auth.logout(); return false;" class="auth-link">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span>SAIR</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <header class="main-header main-header--duna" id="menu">
+        <div class="container">
+            <div class="header-row">
+                <nav class="mini-nav mini-nav--left" aria-label="Páginas (esquerda)">
+                    <a href="../index.html">INÍCIO</a>
+                    <div class="nav-dropdown">
+                        <a href="#" class="nav-link-dropdown" aria-haspopup="true" aria-expanded="false">INSTITUCIONAL</a>
+                        <div class="dropdown-menu">
+                            <a href="../organograma.html">Organograma</a>
+                            <a href="../historia-valores.html">História e Valores</a>
+                        </div>
+                    </div>
+                    <div class="nav-dropdown">
+                        <a href="#" class="nav-link-dropdown" aria-haspopup="true" aria-expanded="false">SERVIÇOS</a>
+                        <div class="dropdown-menu">
+                            <a href="../documentos.html">Documentos PRF</a>
+                        </div>
+                    </div>
+                </nav>
+                <div class="main-header-top">
+                    <div class="brand-block">
+                        <a href="../index.html" class="brand-logo-link">
+                            <img src="assets/img/prf.png" alt="PRF Jaguaré" class="brand-logo">
+                        </a>
+                    </div>
+                </div>
+                <nav class="mini-nav mini-nav--right" aria-label="Páginas (direita)">
+                    <a href="../concursos.html">CONCURSOS</a>
+                    <a href="../capacitacao.html">CAPACITAÇÃO E TREINAMENTO</a>
+                    <a href="../corregedoria.html">CORREGEDORIA</a>
+                </nav>
+            </div>
+            <div class="red-line"></div>
+        </div>
+    </header>
+
+    <section class="latest-news info-section corregedoria-page">
+        <div class="container">
+            <div class="news-header">
+                <h2>Corregedoria</h2>
+                <div class="red-line-news"></div>
+            </div>
+
+            <div class="corregedoria-quick-links">
+                <a class="docs-card" href="https://docs.google.com/document/d/15VyNPcd7FLcnPPAgikZe_VPWCk1li0S0aE47i_EXH90/edit?tab=t.0#heading=h.558rzib2r5xc" target="_blank" rel="noopener">
+                    <i class="fas fa-gavel docs-card-icon" aria-hidden="true"></i>
+                    <span>Regulamento Disciplinar</span>
+                </a>
+                <a class="docs-card" href="https://docs.google.com/document/d/10L_qv_I_ng2WY029jInKc7bmM-VGKkEogByrpbASS4Q/edit?tab=t.0#heading=h.558rzib2r5xc" target="_blank" rel="noopener">
+                    <i class="fas fa-scale-balanced docs-card-icon" aria-hidden="true"></i>
+                    <span>Estatuto Corregedoria</span>
+                </a>
+            </div>
+
+            <article id="corregedoria-form-card" class="approvals-card corregedoria-form-card" style="display:none; margin-bottom:18px;">
+                <h3>Postar publicação</h3>
+                <form id="corregedoria-form" class="aviso-form">
+                    <div class="corregedoria-inline">
+                        <label>
+                            <span>Tipo de publicação</span>
+                            <select id="corregedoria-tipo" required>
+                                <option value="">Selecione</option>
+                                <option value="Resolução de Mérito de Inquérito Policial Disciplinar">Resolução de Mérito de Inquérito Policial Disciplinar</option>
+                                <option value="Instauração de Inquérito Policial Disciplinar">Instauração de Inquérito Policial Disciplinar</option>
+                                <option value="Convocação de Inquérito Policial Disciplinar">Convocação de Inquérito Policial Disciplinar</option>
+                                <option value="Alteração e publicação do Estatuto da Corregedoria">Alteração e publicação do Estatuto da Corregedoria</option>
+                                <option value="Alteração e publicação do Regulamento Disciplinar">Alteração e publicação do Regulamento Disciplinar</option>
+                            </select>
+                        </label>
+                        <label>
+                            <span>Número do Inquérito</span>
+                            <input id="corregedoria-numero" type="text" placeholder="Ex.: 001/2026" required>
+                        </label>
+                    </div>
+                    <label>
+                        <span>Visibilidade</span>
+                        <select id="corregedoria-privacidade" required>
+                            <option value="publica">Pública</option>
+                            <option value="privada">Privada</option>
+                        </select>
+                    </label>
+                    <div id="corregedoria-citados-wrap" class="corregedoria-citados-wrap is-hidden">
+                        <span>Usuários citados (acesso privado)</span>
+                        <input type="text" id="corregedoria-search" class="equipe-search" placeholder="Buscar por nome ou RG">
+                        <div id="corregedoria-citados" class="corregedoria-citados-list"></div>
+                    </div>
+                    <label>
+                        <span>Texto</span>
+                        <textarea id="corregedoria-texto" rows="6" placeholder="Digite o texto completo..." required></textarea>
+                    </label>
+                    <div class="aviso-form-actions">
+                        <button type="submit" class="approvals-btn success">Publicar</button>
+                        <span id="corregedoria-status" class="approvals-status"></span>
+                    </div>
+                </form>
+            </article>
+
+            <div id="corregedoria-lista" class="corregedoria-lista">
+                <div class="approvals-empty">Carregando publicações...</div>
+            </div>
+
+            <div class="bou-actions" style="justify-content:center; margin-top:18px;">
+                <a href="/interno/painel.html" class="bou-btn bou-btn-secondary">Voltar ao Painel</a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="diario-footer">
+        <div class="container">
+            <div class="diario-footer-top">
+                <div class="diario-footer-brand">
+                    <img src="assets/img/prf.png" alt="Polícia Rodoviária Federal" class="diario-footer-logo">
+                    <div class="diario-footer-brand-text">
+                        <strong>Polícia Rodoviária Federal</strong>
+                        <span>Unidade Operacional Jaguaré</span>
+                        <span>São Paulo - SP</span>
+                    </div>
+                </div>
+                <div class="diario-footer-contact">
+                    <h4>CONTATO</h4>
+                    <p>PRF — Delegacia de Jaguaré</p>
+                    <p>Telefone: 191 (PRF)</p>
+                    <p>Emergência: 190</p>
+                </div>
+            </div>
+            <div class="diario-footer-divider" aria-hidden="true"></div>
+            <div class="diario-footer-bottom">
+                <span>© 2026 Polícia Rodoviária Federal — Todos os direitos reservados</span>
+                <img src="assets/img/gov_br.png" alt="gov.br" class="diario-footer-gov">
+            </div>
+        </div>
+    </footer>
+
+    <script src="app.js" defer></script>
+    <script src="corregedoria.js" defer></script>
+</body>
+</html>

@@ -54,6 +54,8 @@ const el = {
   status: $('status'),
   entradaCompleta: $('entradaBouCompleto'),
   statusEntradaCompleta: $('statusEntradaCompleta'),
+  lastTitleWrap: $('bouLastTitle'),
+  lastTitleText: $('bouLastTitleText'),
   btnGerar: $('btnGerar'),
   btnCopiar: $('btnCopiar'),
   btnLimparSaida: $('btnLimparSaida'),
@@ -65,6 +67,7 @@ const el = {
   btnCopiarBou: $('btnCopiarBou')
 };
 
+const lastSentStorageKey = 'bouLastSentTitle';
 const currentEditId = new URLSearchParams(window.location.search).get('edit');
 const equipeConfigs = {
   motorista: { allowNA: false },
@@ -88,6 +91,31 @@ function setStatusEntradaCompleta(msg, isError = false) {
   if (!el.statusEntradaCompleta) return;
   el.statusEntradaCompleta.textContent = msg;
   el.statusEntradaCompleta.style.color = isError ? '#b42318' : '#166534';
+}
+
+function setUltimoTituloBou(titulo) {
+  if (!el.lastTitleWrap || !el.lastTitleText) return;
+  const safe = (titulo || '').trim();
+  el.lastTitleWrap.classList.remove('is-hidden');
+  if (!safe) {
+    el.lastTitleWrap.classList.add('is-empty');
+    el.lastTitleText.textContent = '—';
+    return;
+  }
+  el.lastTitleWrap.classList.remove('is-empty');
+  el.lastTitleText.textContent = safe;
+}
+
+function readLastSentTitle() {
+  try {
+    const raw = localStorage.getItem(lastSentStorageKey);
+    if (!raw) return '';
+    const parsed = JSON.parse(raw);
+    if (parsed && parsed.titulo) return String(parsed.titulo).trim();
+  } catch (err) {
+    // noop
+  }
+  return '';
 }
 
 function formatDatePt(value = new Date()) {
@@ -507,22 +535,22 @@ function gerarTexto() {
     '',
     `Relato dos Fatos: ${v(el.relato, '')}`,
     '',
-    `Data e horario aproximado: ${v(el.datahora)}`,
+    `Data e horário aproximado: ${v(el.datahora)}`,
     '',
     `Local exato: ${v(el.local)}`,
     '',
     `Pessoas envolvidas: ${v(el.envolvidos)}`,
     '',
-    `Acoes dos policiais e do individuo: ${v(el.acoes, '')}`,
+    `Ações dos policiais e do individuo: ${v(el.acoes, '')}`,
     '',
     `Resultado da abordagem: ${v(el.resultado)}`,
     '',
     `Material Apreendido: ${v(el.material, 'NIHIL')}`,
     '',
-    `Veiculo Apreendido: ${v(el.veiculo)}`,
-    `Coloracao: ${v(el.corVeiculo)}`,
+    `Veículo Apreendido: ${v(el.veiculo)}`,
+    `Coloraçãoo: ${v(el.corVeiculo)}`,
     '',
-    'Assinatura do responsavel:',
+    'Assinatura do responsável:',
     `${v(el.assinatura)}`,
     ''
   );
@@ -600,6 +628,25 @@ function parseCampo(texto, label) {
 function parseTitulo(texto) {
   const match = texto.match(/T[IÍ]TULO DO BOU \/ BO:\s*[\r\n]+([\s\S]*?)(?:[\r\n]{2,}|$)/i);
   return match ? match[1].trim() : '';
+}
+
+function extrairTituloBou(row) {
+  if (!row) return '';
+  let titulo = row.titulo || '';
+  if (row.conteudo_completo) {
+    try {
+      const payload = JSON.parse(row.conteudo_completo);
+      if (payload && payload.campos && payload.campos.titulo) {
+        titulo = payload.campos.titulo;
+      } else if (payload && payload.texto_original) {
+        const parsed = parseTitulo(payload.texto_original);
+        if (parsed) titulo = parsed;
+      }
+    } catch {
+      /* ignore */
+    }
+  }
+  return String(titulo || '').trim();
 }
 
 function parseCampoMulti(texto, labels) {
@@ -819,6 +866,12 @@ async function carregarBouParaEdicao() {
   setStatusEntradaCompleta(`Editando BOU #${currentEditId}. Atualize e envie novamente.`);
 }
 
+async function carregarUltimoTituloBou() {
+  if (!el.lastTitleWrap) return;
+  const storedTitle = readLastSentTitle();
+  setUltimoTituloBou(storedTitle);
+}
+
 async function enviarTextoCompleto() {
   sincronizarAcoesCombinadas();
   const submissao = {
@@ -930,5 +983,6 @@ sincronizarAcoesCombinadas();
   await carregarEquipeDropdowns();
   await preencherAssinaturaAutomatica();
   prefillDataHora();
+  await carregarUltimoTituloBou();
   await carregarBouParaEdicao();
 })();

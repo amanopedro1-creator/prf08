@@ -24,6 +24,20 @@
         'ARP | Curso de Piloto Policial de Aeronave Remota'
     ];
 
+    const MEDAL_OPTIONS = [
+        { code: 'elogio_ref', name: 'Referência elogiosa', image: 'mencaoelogio.png' },
+        { code: 'elogio', name: 'Elogio', image: 'mencaoelogio.png' },
+        { code: 'merito', name: 'Medalha ao Mérito', image: 'medalhamerito.png' },
+        { code: 'bravura', name: 'Medalha Bravura', image: 'medalhabravura.png' },
+        { code: 'heroi_estradas', name: 'Medalha Herói das Estradas', image: 'medalhaheroiestradas.png' },
+        { code: 'washington', name: 'Medalha Washington Luís', image: 'medalhawashington.png' },
+        { code: 'antonio_felix_gracruza', name: 'Medalha Antônio Félix Filho Grã-Cruz', image: 'medalhaantoniofelix.png' },
+        { code: 'washington_gracruza', name: 'Medalha Washington Luís Grã Cruz', image: 'medalhagracruzwashington.png' },
+        { code: 'moeda_antonio_bronze', name: 'Moeda Antônio Felix Bronze', image: 'moedaantoniofelixbronze.png' },
+        { code: 'moeda_antonio_prata', name: 'Moeda Antônio Felix Prata', image: 'moedaantoniofelixprata.png' },
+        { code: 'moeda_antonio_ouro', name: 'Moeda Antônio Felix Ouro', image: 'moedaantoniofelixouro.png' }
+    ];
+
     function byId(id) {
         return document.getElementById(id);
     }
@@ -78,6 +92,31 @@
             .split(' || ')
             .map(function (v) { return v.trim(); })
             .filter(Boolean);
+    }
+
+    function parseGrupamentos(value) {
+        return String(value || '')
+            .split(' || ')
+            .map(function (v) { return v.trim(); })
+            .filter(Boolean);
+    }
+
+    function renderMedalOptions(selectedCodes) {
+        const node = byId('roles-medalhas');
+        if (!node) return;
+        const selected = Array.isArray(selectedCodes) ? selectedCodes : [];
+        node.innerHTML = MEDAL_OPTIONS.map(function (medal) {
+            const checked = selected.includes(medal.code) ? 'checked' : '';
+            return (
+                '<label class="approvals-medal-option">' +
+                '<input type="checkbox" name="roles-medalhas-opcao" value="' + medal.code + '" ' + checked + '>' +
+                '<span class="approvals-medal-chip">' +
+                '<img src="assets/img/' + medal.image + '" alt="' + medal.name + '">' +
+                '<span>' + medal.name + '</span>' +
+                '</span>' +
+                '</label>'
+            );
+        }).join('');
     }
 
     function normalizeText(value) {
@@ -342,14 +381,39 @@
         node.value = safe;
     }
 
-    function openEditModal(profile, mode) {
+    function ensureMultiSelectValues(selectId, values) {
+        const node = byId(selectId);
+        if (!node) return;
+        const list = Array.isArray(values) ? values : [];
+        const normalized = list.map(function (v) { return String(v || '').trim(); }).filter(Boolean);
+        if (!normalized.length) {
+            Array.from(node.options || []).forEach(function (opt) { opt.selected = false; });
+            return;
+        }
+        normalized.forEach(function (val) {
+            const exists = Array.from(node.options || []).some(function (opt) {
+                return String(opt.value || '').trim() === val;
+            });
+            if (!exists) {
+                const extra = document.createElement('option');
+                extra.value = val;
+                extra.textContent = val;
+                node.appendChild(extra);
+            }
+        });
+        Array.from(node.options || []).forEach(function (opt) {
+            opt.selected = normalized.includes(String(opt.value || '').trim());
+        });
+    }
+
+    async function openEditModal(profile, mode) {
         activeEditProfile = profile;
         activeEditMode = mode;
         byId('roles-user-id').value = profile.id || '';
         byId('roles-user-name').textContent = profile.nome_guerra || profile.email || profile.id;
         byId('roles-user-email').textContent = profile.email || '-';
         ensureSelectValue('roles-cargo', profile.cargo || '');
-        ensureSelectValue('roles-grupamento', profile.grupamento || profile.unidade || '');
+        ensureMultiSelectValues('roles-grupamento', parseGrupamentos(profile.grupamento || profile.unidade || ''));
         ensureSelectValue('roles-acesso', profile.acesso || '');
 
         const cursos = parseCursos(profile.cursos);
@@ -357,14 +421,32 @@
             node.checked = cursos.includes(node.value);
         });
 
+        if (mode === 'medalhas') {
+            let selectedMedals = [];
+            try {
+                const medalResult = await supabaseClient
+                    .from('profile_medals')
+                    .select('medal_code')
+                    .eq('user_id', profile.id);
+                if (!medalResult.error && Array.isArray(medalResult.data)) {
+                    selectedMedals = medalResult.data.map(function (m) { return m.medal_code; }).filter(Boolean);
+                }
+            } catch (e) {
+                /* ignore */
+            }
+            renderMedalOptions(selectedMedals);
+        }
+
         byId('roles-edit-title').textContent =
             mode === 'cargo' ? 'Editar cargo' :
             mode === 'grupamento' ? 'Editar grupamento' :
-            mode === 'acesso' ? 'Editar acesso' : 'Editar cursos';
+            mode === 'acesso' ? 'Editar acesso' :
+            mode === 'medalhas' ? 'Editar condecorações e medalhas' : 'Editar cursos';
         byId('roles-field-cargo').style.display = mode === 'cargo' ? 'flex' : 'none';
         byId('roles-field-grupamento').style.display = mode === 'grupamento' ? 'flex' : 'none';
         byId('roles-field-acesso').style.display = mode === 'acesso' ? 'flex' : 'none';
         byId('roles-field-cursos').style.display = mode === 'cursos' ? 'flex' : 'none';
+        byId('roles-field-medalhas').style.display = mode === 'medalhas' ? 'flex' : 'none';
         byId('roles-modal').classList.add('active');
     }
 
@@ -380,12 +462,71 @@
         const userId = byId('roles-user-id').value || '';
         const payload = {};
         if (activeEditMode === 'cargo') payload.cargo = (byId('roles-cargo').value || '').trim();
-        if (activeEditMode === 'grupamento') payload.grupamento = (byId('roles-grupamento').value || '').trim();
+        if (activeEditMode === 'grupamento') {
+            const selected = Array.from(byId('roles-grupamento').selectedOptions || [])
+                .map(function (opt) { return opt.value; })
+                .filter(Boolean);
+            payload.grupamento = selected.join(' || ');
+        }
         if (activeEditMode === 'acesso') payload.acesso = (byId('roles-acesso').value || '').trim();
         if (activeEditMode === 'cursos') {
             payload.cursos = Array.from(document.querySelectorAll('input[name="roles-cursos-opcao"]:checked'))
                 .map(function (node) { return node.value; })
                 .join(' || ');
+        }
+        if (activeEditMode === 'medalhas') {
+            const selected = Array.from(document.querySelectorAll('input[name="roles-medalhas-opcao"]:checked'))
+                .map(function (node) { return node.value; })
+                .filter(Boolean);
+
+            setStatus('Salvando condecorações...');
+            const currentResult = await supabaseClient
+                .from('profile_medals')
+                .select('medal_code')
+                .eq('user_id', userId);
+
+            if (currentResult.error) {
+                setStatus('Falha ao carregar condecorações: ' + currentResult.error.message, true);
+                return;
+            }
+
+            const current = (currentResult.data || []).map(function (m) { return m.medal_code; }).filter(Boolean);
+            const toAdd = selected.filter(function (code) { return !current.includes(code); });
+            const toRemove = current.filter(function (code) { return !selected.includes(code); });
+
+            if (toAdd.length) {
+                const rows = toAdd.map(function (code) {
+                    const conf = MEDAL_OPTIONS.find(function (m) { return m.code === code; }) || {};
+                    return {
+                        user_id: userId,
+                        medal_code: code,
+                        medal_name: conf.name || code,
+                        medal_image: conf.image || 'mencaoelogio.png'
+                    };
+                });
+                const insertResult = await supabaseClient.from('profile_medals').insert(rows);
+                if (insertResult.error) {
+                    setStatus('Falha ao adicionar condecorações: ' + insertResult.error.message, true);
+                    return;
+                }
+            }
+
+            if (toRemove.length) {
+                const delResult = await supabaseClient
+                    .from('profile_medals')
+                    .delete()
+                    .eq('user_id', userId)
+                    .in('medal_code', toRemove);
+                if (delResult.error) {
+                    setStatus('Falha ao remover condecorações: ' + delResult.error.message, true);
+                    return;
+                }
+            }
+
+            closeRoleModal();
+            setStatus('Condecorações atualizadas com sucesso.');
+            await loadProfiles();
+            return;
         }
 
         setStatus('Salvando ediÃ§Ã£o...');
@@ -402,7 +543,7 @@
 
     function buildProfileCard(profile) {
         const coursesText = parseCursos(profile.cursos).join(' | ') || 'Sem cursos';
-        const grouped = profile.grupamento || profile.unidade || '-';
+        const grouped = parseGrupamentos(profile.grupamento || profile.unidade || '').join(' | ') || '-';
         const acessoLabel = profile.acesso || '-';
         const approved = profile.aprovado === true;
         const statusClass = approved ? 'badge-ok' : 'badge-pending';
@@ -451,6 +592,7 @@
                 '<button class="approvals-btn" data-action="edit-grupamento" data-id="' + escapeHtml(profile.id) + '">Editar grupamento</button>' +
                 '<button class="approvals-btn" data-action="edit-acesso" data-id="' + escapeHtml(profile.id) + '">Editar acesso</button>' +
                 '<button class="approvals-btn" data-action="edit-cursos" data-id="' + escapeHtml(profile.id) + '">Editar cursos</button>' +
+                '<button class="approvals-btn" data-action="edit-medalhas" data-id="' + escapeHtml(profile.id) + '">Editar condecorações</button>' +
             '</div>' +
             '<div class="approvals-history-actions">' +
                 '<button class="approvals-btn" data-action="history-bou" data-id="' + escapeHtml(profile.id) + '">BOU (realizado/citado)</button>' +
@@ -488,6 +630,7 @@
                 if (action === 'edit-grupamento') openEditModal(profile, 'grupamento');
                 if (action === 'edit-acesso') openEditModal(profile, 'acesso');
                 if (action === 'edit-cursos') openEditModal(profile, 'cursos');
+                if (action === 'edit-medalhas') openEditModal(profile, 'medalhas');
                 if (action === 'history-bou') await openHistoryModal(profile, 'bou');
                 if (action === 'history-ait') await openHistoryModal(profile, 'ait');
                 if (action === 'history-patrulha') await openHistoryModal(profile, 'patrulha');

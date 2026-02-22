@@ -87,7 +87,7 @@
                         </a>
                         <div id="header-user-menu" class="user-menu-header is-hidden">
                             <span class="user-name-header"></span>
-<a href="/interno/perfil.html" class="auth-link" id="header-edit-profile-link">
+<a href="painel.html#meu-perfil" class="auth-link" id="header-edit-profile-link">
                                 <i class="fas fa-user-edit"></i>
                                 <span>EDITAR PERFIL</span>
                             </a>
@@ -157,7 +157,7 @@
                                 <div class="profile-brand-photo-wrap">
                                     <img id="painel-profile-photo" class="profile-brand-photo" src="assets/img/prf.png" alt="Foto do usuário">
                                 </div>
-                                <a href="/interno/perfil.html" class="profile-brand-edit-link">Editar perfil</a>
+                                <a href="painel.html#meu-perfil" class="profile-brand-edit-link">Editar perfil</a>
                             </div>
                             <div class="profile-brand-text">
                                 <div class="profile-brand-name" id="painel-profile-name">Usuário</div>
@@ -193,6 +193,10 @@
                         <span>Notificações</span>
                         <strong id="painel-notificacoes-badge" class="painel-side-badge is-hidden">0</strong>
                     </a>
+                    <a href="#" class="painel-side-link" id="painel-profile-trigger">
+                        <i class="fas fa-id-card" aria-hidden="true"></i>
+                        <span>Meu Perfil</span>
+                    </a>
                     <a href="/interno/diario-oficial.html" class="painel-side-link" rel="noopener">
                         <i class="fas fa-newspaper" aria-hidden="true"></i>
                         <span>Di&aacute;rio Oficial</span>
@@ -227,12 +231,14 @@
                     </a>
                 </aside>
                 <div class="painel-main-content">
-                    <div id="painel-main-default">
-                    <article id="painel-latest-aviso" class="painel-latest-aviso" aria-live="polite">
-                        <h3>Último aviso</h3>
-                        <p class="painel-latest-aviso-empty">Carregando aviso...</p>
-                    </article>
-                <div class="docs-grid" id="painel-main-docs-grid">
+                    <div class="painel-main-grid">
+                        <div class="painel-main-left">
+                            <div id="painel-main-default">
+                            <article id="painel-latest-aviso" class="painel-latest-aviso" aria-live="polite">
+                                <h3>Mural de Avisos</h3>
+                                <p class="painel-latest-aviso-empty">Carregando aviso...</p>
+                            </article>
+                        <div class="docs-grid" id="painel-main-docs-grid">
                     <a href="/interno/bou.html" class="docs-card" rel="noopener">
                         <i class="fas fa-handcuffs docs-card-icon" aria-hidden="true"></i>
                         <span>BOU - Boletim de Ocorrência Unificado</span>
@@ -271,19 +277,105 @@
                         <i class="fas fa-helicopter docs-card-icon" aria-hidden="true"></i>
                         <span>RAVOP - Relatório de Aeronavegação Operacional</span>
                     </a>
+                    <a href="/interno/corregedoria.html" class="docs-card" rel="noopener">
+                        <i class="fas fa-scale-balanced docs-card-icon" aria-hidden="true"></i>
+                        <span>Corregedoria</span>
+                    </a>
+                    <a href="/interno/gerenciamento-equipe.html" class="docs-card" rel="noopener">
+                        <i class="fas fa-users-gear docs-card-icon" aria-hidden="true"></i>
+                        <span>Gerenciamento de Equipe</span>
+                    </a>
                     <a href="/interno/aprovacoes.html" class="docs-card" id="painel-dgp-card" rel="noopener">
                         <i class="fas fa-user-shield docs-card-icon" aria-hidden="true"></i>
                         <span>Painel DGP</span>
-                    </a>
+                    </a>                    
                 </div>
-                </div>
-                <section id="painel-docs-inline" class="painel-docs-inline is-hidden" aria-hidden="true">
+                        </div>
+                        <section id="painel-docs-inline" class="painel-docs-inline is-hidden" aria-hidden="true">
                     <button type="button" id="painel-docs-inline-close" class="painel-docs-inline-close" aria-label="Fechar documentos">
                         <i class="fas fa-times" aria-hidden="true"></i>
                     </button>
                     <article id="painel-docs-inline-aviso" class="painel-latest-aviso">
-                        <h3>Último aviso</h3>
+                        <h3>Mural de avisos</h3>
                         <p class="painel-latest-aviso-empty">Carregando aviso...</p>
+                    </article>
+                            <article id="painel-profile-popup" class="painel-profile-popup is-hidden" aria-live="polite">
+                        <div class="profile-popup-layout">
+                            <div class="profile-popup-card">
+                                <div class="profile-popup-logo profile-popup-logo--header">
+                                    <img src="assets/img/prf.png" alt="Logo PRF">
+                                </div>
+                                <div class="profile-popup-card-header">
+                                    <img src="assets/img/prf.png" alt="Foto do usuário" id="profile-popup-photo">
+                                    <div class="profile-popup-card-text">
+                                        <div class="profile-popup-name" id="profile-popup-name">Usuário</div>
+                                        <div class="profile-popup-role" id="profile-popup-cargo">Cargo</div>
+                                        <div class="profile-popup-rg" id="profile-popup-rg">RG: -</div>
+                                    </div>
+                                    <button type="button" id="profile-popup-edit-trigger" class="profile-popup-edit-trigger">
+                                        <i class="fas fa-pen"></i>
+                                        <span>Editar Perfil</span>
+                                    </button>
+                                </div>
+                                <div id="profile-popup-edit-panel" class="profile-popup-edit-panel is-collapsed">
+                                    <div class="profile-popup-edit-row">
+                                        <label for="profile-popup-edit-nome">Nome</label>
+                                        <input id="profile-popup-edit-nome" type="text">
+                                    </div>
+                                    <div class="profile-popup-edit-row">
+                                        <label for="profile-popup-edit-rg">RG</label>
+                                        <input id="profile-popup-edit-rg" type="text">
+                                    </div>
+                                    <div class="profile-popup-edit-row">
+                                        <button type="button" id="profile-popup-edit-photo" class="profile-popup-edit-photo-btn">
+                                            <i class="fas fa-camera"></i>
+                                            <span>Alterar foto</span>
+                                        </button>
+                                        <input id="profile-popup-edit-file" type="file" accept="image/*" class="auth-photo-file-input">
+                                    </div>
+                                    <div class="profile-popup-edit-actions">
+                                        <button type="button" id="profile-popup-save" class="bou-btn bou-btn-primary">Salvar</button>
+                                    </div>
+                                    <p id="profile-popup-edit-feedback" class="approvals-status"></p>
+                                </div>
+                            </div>
+                            <div class="profile-popup-right">
+                                <div class="profile-popup-metrics">
+                                    <div class="profile-popup-metric">
+                                        <span>Ocorrências</span>
+                                        <strong id="profile-popup-bou-total">0</strong>
+                                    </div>
+                                    <div class="profile-popup-metric">
+                                        <span>Multas</span>
+                                        <strong id="profile-popup-ait-total">0</strong>
+                                    </div>
+                                    <div class="profile-popup-metric">
+                                        <span>Serviços (RIPAT)</span>
+                                        <strong id="profile-popup-ripat-total">0</strong>
+                                    </div>
+                                </div>
+                                <div class="profile-popup-sections">
+                                    <section class="profile-popup-section">
+                                        <h4>Grupamentos</h4>
+                                        <div id="profile-popup-grupos" class="profile-popup-chips">
+                                            <span class="profile-course-empty">A definir</span>
+                                        </div>
+                                    </section>
+                                    <section class="profile-popup-section">
+                                        <h4>Cursos e Especializações</h4>
+                                        <div id="profile-popup-cursos" class="profile-popup-chips">
+                                            <span class="profile-course-empty">A definir</span>
+                                        </div>
+                                    </section>
+                                    <section class="profile-popup-section profile-popup-section--wide">
+                                        <h4>Condecorações e Medalhas</h4>
+                                        <div id="profile-popup-medals" class="profile-popup-medals">
+                                            <div class="profile-popup-empty">Nenhuma condecoração atribuída.</div>
+                                        </div>
+                                    </section>
+                                </div>
+                            </div>
+                        </div>
                     </article>
                     <div id="painel-docs-map" class="painel-docs-map-wrap is-hidden">
                         <div class="mapa-interativo-layout is-vertical">
@@ -383,8 +475,19 @@
                             loading="lazy">
                             Carregando...
                         </iframe>
-                    </article>
-                </section>
+                            </article>
+                        </section>
+                    </div>
+                    <aside class="painel-on-duty" aria-live="polite">
+                        <div class="painel-on-duty-header">
+                            <h3>Em serviço</h3>
+                            <span id="painel-on-duty-count">0</span>
+                        </div>
+                        <div id="painel-on-duty-list" class="painel-on-duty-list">
+                            <p class="painel-on-duty-empty">Carregando agentes...</p>
+                        </div>
+                    </aside>
+                </div>
                 </div>
             </div>
         </div>
@@ -406,7 +509,7 @@
                 </button>
             </div>
         </div>
-        <p class="painel-notificacoes-sub">Cita&ccedil;&otilde;es em BOU, AIT, patrulha, relat&oacute;rio aluno e Di&aacute;rio Oficial.</p>
+        <p class="painel-notificacoes-sub">Cita&ccedil;&otilde;es em BOU, AIT, patrulha, relat&oacute;rio aluno, Di&aacute;rio Oficial e Corregedoria.</p>
         <div id="painel-notificacoes-list" class="painel-notificacoes-list">
             <p class="painel-notificacoes-empty">Carregando notificações...</p>
         </div>
@@ -448,17 +551,28 @@
             const openReg = byId('painel-regulamento-trigger');
             const openCtb = byId('painel-ctb-trigger');
             const openUni = byId('painel-uniformes-trigger');
+            const openProfile = byId('painel-profile-trigger');
             const openMap = byId('painel-mapa-trigger');
+            const headerEditProfile = byId('header-edit-profile-link');
+            const brandEditProfile = document.querySelector('.profile-brand-edit-link');
             const avisoSource = byId('painel-latest-aviso');
             const avisoTarget = byId('painel-docs-inline-aviso');
             const mainDefault = byId('painel-main-default');
+            const mainContent = document.querySelector('.painel-main-content');
             const frame = byId('painel-docs-inline-frame');
             const frameWrap = frame ? frame.closest('.painel-docs-frame-wrap') : null;
             const mapWrap = byId('painel-docs-map');
+            const profileWrap = byId('painel-profile-popup');
             const title = byId('painel-docs-inline-title');
             if (!panel || !openReg || !openUni || !mainDefault) return;
             let activeTrigger = null;
-            const docTriggers = [openReg, openCtb, openUni, openMap];
+            let editClient = null;
+            let editUser = null;
+            let editProfile = null;
+            let pendingPhotoFile = null;
+            let currentFotoPath = '';
+            let editBound = false;
+            const docTriggers = [openReg, openCtb, openUni, openProfile, openMap];
 
             const setActiveTriggerVisual = function (node) {
                 docTriggers.forEach(function (lnk) {
@@ -490,8 +604,17 @@
                 avisoTarget.innerHTML = avisoSource.innerHTML;
             };
 
-            const setDocInFrame = function (href, label, useMap) {
-                if (title) title.textContent = label || (useMap ? 'Mapa Interativo' : 'Documento Interno');
+            const setDocInFrame = function (href, label, useMap, useProfile) {
+                if (title) title.textContent = label || (useProfile ? 'Meu Perfil' : (useMap ? 'Mapa Interativo' : 'Documento Interno'));
+                if (mainContent) mainContent.classList.toggle('is-profile-open', !!useProfile);
+                if (useProfile) {
+                    if (frame) frame.src = '';
+                    if (frameWrap) frameWrap.classList.add('is-hidden');
+                    if (mapWrap) mapWrap.classList.add('is-hidden');
+                    if (profileWrap) profileWrap.classList.remove('is-hidden');
+                    return;
+                }
+                if (profileWrap) profileWrap.classList.add('is-hidden');
                 if (useMap) {
                     if (frame) frame.src = '';
                     if (frameWrap) frameWrap.classList.add('is-hidden');
@@ -503,14 +626,368 @@
                 if (frame) frame.src = href || '';
             };
 
+            const normalize = function (value) {
+                return String(value || '')
+                    .normalize('NFD')
+                    .replace(/[\u0300-\u036f]/g, '')
+                    .toLowerCase();
+            };
+
+            const setEditFeedback = function (msg, isError) {
+                const node = byId('profile-popup-edit-feedback');
+                if (!node) return;
+                node.textContent = msg || '';
+                node.className = isError ? 'approvals-status is-error' : 'approvals-status';
+            };
+
+            const bindProfileEdit = function () {
+                if (editBound) return;
+                const trigger = byId('profile-popup-edit-trigger');
+                const panel = byId('profile-popup-edit-panel');
+                const fotoBtn = byId('profile-popup-edit-photo');
+                const fileInput = byId('profile-popup-edit-file');
+                const saveBtn = byId('profile-popup-save');
+                if (!trigger || !panel || !fileInput || !saveBtn) return;
+
+                trigger.addEventListener('click', function () {
+                    if (panel.classList.contains('is-collapsed')) {
+                        panel.classList.remove('is-collapsed');
+                        requestAnimationFrame(function () {
+                            panel.classList.add('is-open');
+                        });
+                    } else {
+                        panel.classList.remove('is-open');
+                        panel.addEventListener('transitionend', function handleCollapse() {
+                            panel.classList.add('is-collapsed');
+                            panel.removeEventListener('transitionend', handleCollapse);
+                        });
+                    }
+                });
+
+                if (fotoBtn) {
+                    fotoBtn.addEventListener('click', function () {
+                        fileInput.click();
+                    });
+                }
+
+                fileInput.addEventListener('change', function () {
+                    const file = fileInput.files && fileInput.files[0] ? fileInput.files[0] : null;
+                    if (!file) return;
+                    if (!/^image\//i.test(file.type)) {
+                        setEditFeedback('Selecione um arquivo de imagem válido.', true);
+                        return;
+                    }
+                    if (file.size > 5 * 1024 * 1024) {
+                        setEditFeedback('A imagem deve ter no máximo 5MB.', true);
+                        return;
+                    }
+                    pendingPhotoFile = file;
+                    const photoNode = byId('profile-popup-photo');
+                    if (photoNode) photoNode.src = URL.createObjectURL(file);
+                    setEditFeedback('Foto carregada. Clique em "Salvar" para aplicar.');
+                });
+
+                saveBtn.addEventListener('click', async function () {
+                    if (!editClient || !editUser) return;
+                    const nomeInput = byId('profile-popup-edit-nome');
+                    const rgInput = byId('profile-popup-edit-rg');
+                    const nome = nomeInput && nomeInput.value ? nomeInput.value.trim() : '';
+                    const rg = rgInput && rgInput.value ? rgInput.value.trim() : '';
+                    if (!nome || !rg) {
+                        setEditFeedback('Preencha nome e RG para salvar.', true);
+                        return;
+                    }
+
+                    saveBtn.disabled = true;
+                    try {
+                        const basicResult = await editClient.rpc('update_own_profile_basic', {
+                            p_nome_guerra: nome,
+                            p_rg: rg
+                        });
+                        if (basicResult.error) {
+                            setEditFeedback('Falha ao salvar nome/RG: ' + basicResult.error.message, true);
+                            return;
+                        }
+
+                        if (pendingPhotoFile) {
+                            const safeName = (pendingPhotoFile.name || 'foto')
+                                .normalize('NFD')
+                                .replace(/[\u0300-\u036f]/g, '')
+                                .replace(/[^a-zA-Z0-9._-]/g, '_');
+                            const ext = safeName.includes('.') ? safeName.split('.').pop().toLowerCase() : 'jpg';
+                            const path = editUser.id + '/' + Date.now() + '_' + Math.random().toString(36).slice(2, 8) + '.' + ext;
+
+                            const upload = await editClient
+                                .storage
+                                .from('profile-photos')
+                                .upload(path, pendingPhotoFile, {
+                                    cacheControl: '3600',
+                                    upsert: false
+                                });
+
+                            if (upload.error) {
+                                setEditFeedback('Nome/RG salvos, mas falha ao enviar foto: ' + upload.error.message, true);
+                                return;
+                            }
+
+                            const publicUrlResult = editClient
+                                .storage
+                                .from('profile-photos')
+                                .getPublicUrl(path);
+                            const publicUrl = publicUrlResult && publicUrlResult.data ? publicUrlResult.data.publicUrl : '';
+
+                            const result = await editClient.rpc('update_own_profile_photo', {
+                                p_foto_url: publicUrl,
+                                p_foto_path: path
+                            });
+                            if (result.error) {
+                                setEditFeedback('Nome/RG salvos, mas falha ao salvar foto: ' + result.error.message, true);
+                                return;
+                            }
+
+                            if (currentFotoPath && currentFotoPath !== path) {
+                                await editClient.storage.from('profile-photos').remove([currentFotoPath]);
+                            }
+
+                            currentFotoPath = path;
+                            pendingPhotoFile = null;
+                        }
+
+                        if (editProfile) {
+                            editProfile.nome_guerra = nome;
+                            editProfile.rg = rg;
+                        }
+                        const nameNode = byId('profile-popup-name');
+                        const rgNode = byId('profile-popup-rg');
+                        if (nameNode) nameNode.textContent = nome;
+                        if (rgNode) rgNode.textContent = rg ? ('RG: ' + rg) : 'RG: -';
+                        setEditFeedback('Perfil atualizado com sucesso.');
+                    } catch (e) {
+                        setEditFeedback('Falha ao salvar perfil.', true);
+                    } finally {
+                        saveBtn.disabled = false;
+                    }
+                });
+
+                editBound = true;
+            };
+
+            const buildTokens = function (profile, user) {
+                const raw = [
+                    profile && profile.nome_guerra ? profile.nome_guerra : '',
+                    profile && profile.rg ? profile.rg : '',
+                    user && user.email ? user.email : ''
+                ];
+                const tokens = raw.map(normalize).filter(function (v) { return v.length >= 3; });
+                const nomeParts = String(profile && profile.nome_guerra ? profile.nome_guerra : '')
+                    .split(' ')
+                    .map(function (v) { return normalize(v); })
+                    .filter(function (v) { return v.length >= 4; });
+                return Array.from(new Set(tokens.concat(nomeParts)));
+            };
+
+            const hasMention = function (row, tokens, userId) {
+                if (!row || !tokens.length) return false;
+                if (row.user_id && String(row.user_id) === String(userId)) return false;
+                const source = normalize([
+                    row.conteudo_completo,
+                    row.texto,
+                    row.observacoes,
+                    row.relato,
+                    row.detalhes,
+                    row.resumo,
+                    row.titulo,
+                    row.subtitulo,
+                    row.infrator,
+                    row.numero_ait
+                ].join(' '));
+                return tokens.some(function (token) { return source.includes(token); });
+            };
+
+            const loadProfilePopup = async function () {
+                if (!profileWrap) return;
+                try {
+                    if (!window.supabase || !window.supabase.createClient) return;
+                    const client = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
+                    const sessionResult = await client.auth.getSession();
+                    const session = sessionResult && sessionResult.data ? sessionResult.data.session : null;
+                    const user = session ? session.user : null;
+                    if (!user) return;
+
+                    let profile = window.__painelProfile || null;
+                    if (!profile) {
+                        const profileResult = await client
+                            .from('profiles')
+                            .select('nome_guerra, rg, cargo, grupamento, cursos, foto_url, foto_path')
+                            .eq('id', user.id)
+                            .maybeSingle();
+                        profile = profileResult && profileResult.data ? profileResult.data : {};
+                    }
+
+                    editClient = client;
+                    editUser = user;
+                    editProfile = profile;
+
+                    const nameNode = byId('profile-popup-name');
+                    const cargoNode = byId('profile-popup-cargo');
+                    const rgNode = byId('profile-popup-rg');
+                    const photoNode = byId('profile-popup-photo');
+                    if (nameNode) nameNode.textContent = profile.nome_guerra || user.email || 'Usuário';
+                    if (cargoNode) cargoNode.textContent = profile.cargo || 'Cargo';
+                    if (rgNode) rgNode.textContent = profile.rg ? ('RG: ' + profile.rg) : 'RG: -';
+                    if (photoNode && profile.foto_url) photoNode.src = profile.foto_url;
+                    currentFotoPath = profile.foto_path || '';
+
+                    const editNome = byId('profile-popup-edit-nome');
+                    const editRg = byId('profile-popup-edit-rg');
+                    if (editNome) editNome.value = profile.nome_guerra || '';
+                    if (editRg) editRg.value = profile.rg || '';
+                    bindProfileEdit();
+
+                    const grupos = String(profile.grupamento || '').split(' || ').map(function (v) { return v.trim(); }).filter(Boolean);
+                    const gruposNode = byId('profile-popup-grupos');
+                    if (gruposNode) {
+                        if (!grupos.length) {
+                            gruposNode.innerHTML = '<span class="profile-course-empty">A definir</span>';
+                        } else {
+                            gruposNode.innerHTML = grupos.map(function (g, idx) {
+                                const palette = ['#1d4ed8', '#0ea5e9', '#16a34a', '#f59e0b', '#ef4444'][idx % 5];
+                                return '<span class="profile-course-chip" style="background:' + palette + '22;color:' + palette + ';">' + g + '</span>';
+                            }).join('');
+                        }
+                    }
+
+                    const cursosNode = byId('profile-popup-cursos');
+                    if (cursosNode) {
+                        const rawCourses = String(profile.cursos || '').trim();
+                        if (!rawCourses) {
+                            cursosNode.innerHTML = '<span class="profile-course-empty">A definir</span>';
+                        } else {
+                            const courses = rawCourses.split(' || ').map(function (s) { return s.trim(); }).filter(Boolean);
+                            const courseColors = {
+                                CFP: { bg: '#1d4ed8', fg: '#ffffff' },
+                                CAFIT: { bg: '#0f766e', fg: '#ffffff' },
+                                CVP: { bg: '#9333ea', fg: '#ffffff' },
+                                OP: { bg: '#f59e0b', fg: '#111827' },
+                                CDP: { bg: '#0f172a', fg: '#ffffff' },
+                                CAD: { bg: '#ef4444', fg: '#ffffff' },
+                                COEsp: { bg: '#16a34a', fg: '#ffffff' },
+                                CFMB: { bg: '#0ea5e9', fg: '#ffffff' },
+                                CFMT: { bg: '#2563eb', fg: '#ffffff' },
+                                TPCC: { bg: '#7c3aed', fg: '#ffffff' },
+                                COA: { bg: '#0891b2', fg: '#ffffff' },
+                                CPPAR: { bg: '#6d28d9', fg: '#ffffff' },
+                                ARP: { bg: '#0f766e', fg: '#ffffff' }
+                            };
+                            cursosNode.innerHTML = courses.map(function (course) {
+                                const code = course.split('|')[0].trim();
+                                const palette = courseColors[code] || { bg: '#334155', fg: '#ffffff' };
+                                return '<span class="profile-course-chip" style="background:' + palette.bg + 'E6;color:' + palette.fg + ';">' + course + '</span>';
+                            }).join('');
+                        }
+                    }
+
+                    const medalNode = byId('profile-popup-medals');
+                    if (medalNode) {
+                        const medalConfig = {
+                            elogio_ref: { name: 'Referência elogiosa', image: 'mencaoelogio.png' },
+                            elogio: { name: 'Elogio', image: 'mencaoelogio.png' },
+                            merito: { name: 'Medalha ao Mérito', image: 'medalhamerito.png' },
+                            bravura: { name: 'Medalha Bravura', image: 'medalhabravura.png' },
+                            heroi_estradas: { name: 'Medalha Herói das Estradas', image: 'medalhaheroiestradas.png' },
+                            washington: { name: 'Medalha Washington Luís', image: 'medalhawashington.png' },
+                            antonio_felix_gracruza: { name: 'Medalha Antônio Félix Filho Grã-Cruz', image: 'medalhaantoniofelix.png' },
+                            washington_gracruza: { name: 'Medalha Washington Luís Grã Cruz', image: 'medalhagracruzwashington.png' },
+                            moeda_antonio_bronze: { name: 'Moeda Antônio Felix Bronze', image: 'moedaantoniofelixbronze.png' },
+                            moeda_antonio_prata: { name: 'Moeda Antônio Felix Prata', image: 'moedaantoniofelixprata.png' },
+                            moeda_antonio_ouro: { name: 'Moeda Antônio Felix Ouro', image: 'moedaantoniofelixouro.png' }
+                        };
+
+                        const medalResult = await client
+                            .from('profile_medals')
+                            .select('medal_code, medal_name, medal_image')
+                            .eq('user_id', user.id)
+                            .order('awarded_at', { ascending: false });
+
+                        const medals = medalResult && Array.isArray(medalResult.data) ? medalResult.data : [];
+                        if (!medals.length) {
+                            medalNode.innerHTML = '<div class="profile-popup-empty">Nenhuma condecoração atribuída.</div>';
+                        } else {
+                            medalNode.innerHTML = medals.map(function (m) {
+                                const conf = medalConfig[m.medal_code] || {};
+                                const name = m.medal_name || conf.name || 'Condecoração';
+                                const image = m.medal_image || conf.image || 'mencaoelogio.png';
+                                return (
+                                    '<div class="profile-popup-medal">' +
+                                    '<img src="assets/img/' + image + '" alt="' + name + '">' +
+                                    '<span>' + name + '</span>' +
+                                    '</div>'
+                                );
+                            }).join('');
+                        }
+                    }
+
+                    const tokens = buildTokens(profile || {}, user);
+                    const countOwn = async function (table) {
+                        const q = await client.from(table).select('id', { count: 'exact', head: true }).eq('user_id', user.id);
+                        return q && typeof q.count === 'number' ? q.count : 0;
+                    };
+                    const countMentioned = async function (table) {
+                        const q = await client.from(table).select('*').limit(200);
+                        if (q.error || !Array.isArray(q.data)) return 0;
+                        const matched = q.data.filter(function (row) { return hasMention(row, tokens, user.id); });
+                        return matched.length;
+                    };
+                    const countOwnFromTables = async function (tables) {
+                        let sum = 0;
+                        for (let i = 0; i < tables.length; i += 1) {
+                            sum += await countOwn(tables[i]);
+                        }
+                        return sum;
+                    };
+                    const countMentionedFromTables = async function (tables) {
+                        let sum = 0;
+                        for (let i = 0; i < tables.length; i += 1) {
+                            sum += await countMentioned(tables[i]);
+                        }
+                        return sum;
+                    };
+
+                    const [bouMade, bouCited, aitMade, aitCited, ripatMade, ripatCited] = await Promise.all([
+                        countOwn('bous'),
+                        countMentioned('bous'),
+                        countOwn('aits'),
+                        countMentioned('aits'),
+                        countOwnFromTables(['patrulhas', 'relatorios_patrulha']),
+                        countMentionedFromTables(['patrulhas', 'relatorios_patrulha'])
+                    ]);
+
+                    const setCount = function (id, value) {
+                        const node = byId(id);
+                        if (node) node.textContent = String(value || 0);
+                    };
+                    setCount('profile-popup-bou-total', (bouMade + bouCited));
+                    setCount('profile-popup-ait-total', (aitMade + aitCited));
+                    setCount('profile-popup-ripat-total', (ripatMade + ripatCited));
+                } catch (e) {
+                    /* ignore */
+                }
+            };
+
             const openPopup = function (event, sourceNode) {
                 if (event) event.preventDefault();
+                if (panel.classList.contains('is-open') && activeTrigger && sourceNode === activeTrigger) {
+                    closePopup();
+                    return;
+                }
                 syncAviso();
                 const href = sourceNode ? sourceNode.getAttribute('href') : '';
                 const labelNode = sourceNode ? sourceNode.querySelector('span') : null;
                 const label = labelNode ? labelNode.textContent.trim() : 'Documento Interno';
                 const useMap = sourceNode === openMap;
-                setDocInFrame(href, label, useMap);
+                const useProfile = sourceNode === openProfile;
+                setDocInFrame(href, label, useMap, useProfile);
+                if (useProfile) loadProfilePopup();
                 activeTrigger = sourceNode || null;
                 setActiveTriggerVisual(activeTrigger);
                 mainDefault.classList.add('is-hidden');
@@ -527,6 +1004,7 @@
             const closePopup = function () {
                 panel.classList.remove('is-open');
                 panel.setAttribute('aria-hidden', 'true');
+                if (mainContent) mainContent.classList.remove('is-profile-open');
                 setTimeout(function () {
                     panel.classList.add('is-hidden');
                     mainDefault.classList.remove('is-hidden');
@@ -551,7 +1029,31 @@
                     openPopup(event, openMap);
                 });
             }
+            if (openProfile) {
+                openProfile.addEventListener('click', function (event) {
+                    openPopup(event, openProfile);
+                });
+            }
+            if (headerEditProfile) {
+                headerEditProfile.addEventListener('click', function (event) {
+                    openPopup(event, openProfile || headerEditProfile);
+                });
+            }
+            if (brandEditProfile) {
+                brandEditProfile.addEventListener('click', function (event) {
+                    openPopup(event, openProfile || brandEditProfile);
+                });
+            }
             if (closeBtn) closeBtn.addEventListener('click', closePopup);
+
+            const openProfileFromHash = function () {
+                if (window.location.hash === '#meu-perfil' && openProfile) {
+                    openPopup(null, openProfile);
+                }
+            };
+
+            window.addEventListener('hashchange', openProfileFromHash);
+            openProfileFromHash();
 
             document.addEventListener('keydown', function (e) {
                 if (e.key === 'Escape' && panel.classList.contains('is-open')) {
@@ -636,14 +1138,15 @@
                 if (cargoNode) cargoNode.textContent = p.cargo || 'Cargo do agente';
                 const isAgenteAluno = String(p.cargo || '').trim().toLowerCase() === 'agente aluno';
                 const isAdmin = p.is_admin === true;
-                const isDoa = normalizeText(p.grupamento || '') === normalizeText('Divisão de Operações Aéreas');
-                const isDgp = normalizeText(p.grupamento || '') === normalizeText('Diretoria de Gestão de Pessoas');
+                const grupos = String(p.grupamento || '').split(' || ').map(v => v.trim()).filter(Boolean);
+                const isDoa = grupos.some(g => normalizeText(g) === normalizeText('Divisão de Operações Aéreas'));
+                const isDgp = grupos.some(g => normalizeText(g) === normalizeText('Diretoria de Gestão de Pessoas'));
                 const hasAcesso = normalizeText(p.acesso || '').includes('acesso');
                 setLockedCard(relatorioAlunoCard, isAgenteAluno, 'Indisponível para Agente Aluno');
                 setLockedCard(aceResultadosCard, !(isDgp || isAdmin || hasAcesso), 'Acesso restrito à DGP ou perfil com acesso');
                 setLockedCard(relatorioVooCard, !(isDoa || isAdmin), 'Acesso restrito à Divisão de Operações Aéreas');
                 setLockedCard(painelDgpCard, !isAdmin, 'Indisponível para este perfil');
-                if (grupamentoNode) grupamentoNode.textContent = p.grupamento || '-';
+                if (grupamentoNode) grupamentoNode.textContent = grupos.length ? grupos.join(' | ') : '-';
                 if (cursosNode) {
                     const rawCourses = String(p.cursos || '').trim();
                     if (!rawCourses) {
@@ -687,13 +1190,13 @@
                     .limit(1);
 
                 if (result.error) {
-                    box.innerHTML = '<h3>Último aviso</h3><p class="painel-latest-aviso-empty">Não foi possível carregar os avisos.</p>';
+                    box.innerHTML = '<h3>Mural de avisos</h3><p class="painel-latest-aviso-empty">Não foi possível carregar os avisos.</p>';
                     return;
                 }
 
                 const aviso = Array.isArray(result.data) && result.data.length ? result.data[0] : null;
                 if (!aviso) {
-                    box.innerHTML = '<h3>Último aviso</h3><p class="painel-latest-aviso-empty">Nenhum aviso publicado até o momento.</p>';
+                    box.innerHTML = '<h3>Mural de avisos</h3><p class="painel-latest-aviso-empty">Nenhum aviso publicado até o momento.</p>';
                     return;
                 }
 
@@ -707,7 +1210,7 @@
                     : '';
 
                 box.innerHTML =
-                    '<h3>Último aviso</h3>' +
+                    '<h3>Mural de avisos</h3>' +
                     '<div class="painel-aviso-layout">' +
                     '<div class="painel-aviso-copy">' +
                     '<h4>' + titulo + '</h4>' +
@@ -721,7 +1224,7 @@
             } catch (e) {
                 const box = document.getElementById('painel-latest-aviso');
                 if (box) {
-                    box.innerHTML = '<h3>Último aviso</h3><p class="painel-latest-aviso-empty">Erro ao carregar avisos.</p>';
+                    box.innerHTML = '<h3>Mural de avisos/h3><p class="painel-latest-aviso-empty">Erro ao carregar avisos.</p>';
                 }
             }
         })();
@@ -812,6 +1315,8 @@
                             ? (row.titulo || row.area || 'Cita\u00e7\u00e3o em relat\u00f3rio de patrulha')
                             : type === 'diario'
                                 ? ('Cita\u00e7\u00e3o no Di\u00e1rio Oficial #' + (row.numero_decreto || id))
+                                : type === 'corregedoria'
+                                    ? ('Cita\u00e7\u00e3o na Corregedoria ' + (row.numero || row.title || ('#' + id)))
                                 : (row.titulo || 'Cita\u00e7\u00e3o em relat\u00f3rio aluno');
                 return {
                     key: type + ':' + id,
@@ -833,6 +1338,27 @@
                         .map(function (row) { return toNotification(options.type, row, options); });
                 }
                 return [];
+            }
+
+            async function fetchCorregedoria(client, userId) {
+                const query = await client
+                    .from('corregedoria_posts')
+                    .select('id,title,numero,created_at,mentioned_user_ids')
+                    .order('created_at', { ascending: false })
+                    .limit(200);
+                if (query.error) return [];
+                return (query.data || [])
+                    .filter(function (row) {
+                        const list = Array.isArray(row.mentioned_user_ids) ? row.mentioned_user_ids : [];
+                        return list.map(String).includes(String(userId));
+                    })
+                    .map(function (row) {
+                        return toNotification('corregedoria', row, {
+                            type: 'corregedoria',
+                            href: '/interno/corregedoria.html',
+                            clickable: true
+                        });
+                    });
             }
 
             try {
@@ -883,11 +1409,13 @@
                     href: '/interno/diario-oficial.html',
                     clickable: true
                 });
+                const corregedoria = await fetchCorregedoria(client, user.id);
                 all.push.apply(all, bou);
                 all.push.apply(all, ait);
                 all.push.apply(all, patrulha);
                 all.push.apply(all, aluno);
                 all.push.apply(all, diario);
+                all.push.apply(all, corregedoria);
 
                 const unique = [];
                 const seen = new Set();
@@ -1068,6 +1596,123 @@
             shiftControl.subscribe((state) => render(state));
             setInterval(() => render(shiftControl.getState()), 1000);
             render(shiftControl.getState());
+        })();
+    </script>
+    <script>
+        (function setupOnDutyList() {
+            function byId(id) { return document.getElementById(id); }
+            const listNode = byId('painel-on-duty-list');
+            const countNode = byId('painel-on-duty-count');
+            if (!listNode) return;
+
+            if (!window.supabase || !window.supabase.createClient) return;
+            const client = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
+
+            let refreshTimer = null;
+            let busy = false;
+
+            const safe = function (v, fallback) {
+                const s = (v || '').toString().trim();
+                return s || (fallback || '-');
+            };
+
+            const render = function (items) {
+                const total = items.length;
+                if (countNode) countNode.textContent = String(total);
+                if (!total) {
+                    listNode.innerHTML = '<p class="painel-on-duty-empty">Nenhum agente em serviço.</p>';
+                    return;
+                }
+                listNode.innerHTML = items.map(function (agent) {
+                    const nome = safe(agent.nome_guerra, 'Agente');
+                    const rg = safe(agent.rg, '-');
+                    const cargo = safe(agent.cargo, 'Cargo não definido');
+                    const grupamentoRaw = safe(agent.grupamento, 'Grupamento não definido');
+                    const grupamento = grupamentoRaw.includes(' || ')
+                        ? grupamentoRaw.split(' || ').map(function (g) { return g.trim(); }).filter(Boolean).join(' | ')
+                        : grupamentoRaw;
+                    const foto = safe(agent.foto_url, 'assets/img/prf.png');
+                    return (
+                        '<div class="painel-on-duty-item">' +
+                        '<img src="' + foto + '" alt="' + nome + '" class="painel-on-duty-avatar" onerror="this.src=\'assets/img/prf.png\'">' +
+                        '<div>' +
+                        '<div class="painel-on-duty-name">' + nome + '</div>' +
+                        '<div class="painel-on-duty-meta">RG: ' + rg + ' • ' + cargo + '</div>' +
+                        '<div class="painel-on-duty-grupo">' + grupamento + '</div>' +
+                        '</div>' +
+                        '</div>'
+                    );
+                }).join('');
+            };
+
+            const fetchList = async function () {
+                if (busy) return;
+                busy = true;
+                try {
+                    const active = await client
+                        .from('agent_pontos')
+                        .select('user_id,inicio_at')
+                        .is('fim_at', null)
+                        .order('inicio_at', { ascending: true });
+
+                    if (active.error || !Array.isArray(active.data)) {
+                        listNode.innerHTML = '<p class="painel-on-duty-empty">Não foi possível carregar.</p>';
+                        if (countNode) countNode.textContent = '0';
+                        return;
+                    }
+
+                    const orderedIds = [];
+                    const seen = new Set();
+                    active.data.forEach(function (row) {
+                        const id = row && row.user_id ? String(row.user_id) : '';
+                        if (!id || seen.has(id)) return;
+                        seen.add(id);
+                        orderedIds.push(id);
+                    });
+
+                    if (!orderedIds.length) {
+                        render([]);
+                        return;
+                    }
+
+                    const profiles = await client
+                        .from('profiles')
+                        .select('id,nome_guerra,rg,cargo,grupamento,foto_url')
+                        .in('id', orderedIds);
+
+                    const map = new Map();
+                    if (profiles && Array.isArray(profiles.data)) {
+                        profiles.data.forEach(function (p) {
+                            if (p && p.id) map.set(String(p.id), p);
+                        });
+                    }
+
+                    const items = orderedIds.map(function (id) { return map.get(id); }).filter(Boolean);
+                    render(items);
+                } catch (e) {
+                    listNode.innerHTML = '<p class="painel-on-duty-empty">Não foi possível carregar.</p>';
+                    if (countNode) countNode.textContent = '0';
+                } finally {
+                    busy = false;
+                }
+            };
+
+            const scheduleRefresh = function () {
+                if (refreshTimer) clearTimeout(refreshTimer);
+                refreshTimer = setTimeout(fetchList, 300);
+            };
+
+            fetchList();
+            try {
+                client
+                    .channel('agent_pontos_live')
+                    .on('postgres_changes', { event: '*', schema: 'public', table: 'agent_pontos' }, scheduleRefresh)
+                    .subscribe();
+            } catch (e) {
+                /* ignore */
+            }
+
+            window.addEventListener('shift-state-changed', scheduleRefresh);
         })();
     </script>
 </body>

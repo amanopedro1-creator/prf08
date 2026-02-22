@@ -51,9 +51,10 @@
                     return;
                 }
 
-                const grupo = normalizeText(profile.grupamento || '');
+                const grupos = String(profile.grupamento || '').split(' || ').map(v => v.trim()).filter(Boolean);
+                const isDoa = grupos.some(g => normalizeText(g) === normalizeText('Divisão de Operações Aéreas'));
                 const isAdmin = profile.is_admin === true;
-                if (!isAdmin && grupo !== normalizeText('Divisão de Operações Aéreas')) {
+                if (!isAdmin && !isDoa) {
                     window.location.replace('painel.html');
                 }
             } catch (e) {
@@ -288,3 +289,4 @@
     <script src="relatorio-voo.js" defer></script>
 </body>
 </html>
+
