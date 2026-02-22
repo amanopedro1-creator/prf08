@@ -7,6 +7,9 @@
     status: byId('enviosStatus'),
     lista: byId('listaEnvios'),
     contador: byId('contadorEnvios'),
+    listaTodos: byId('listaEnviosTodos'),
+    contadorTodos: byId('contadorEnviosTodos'),
+    statusTodos: byId('enviosTodosStatus'),
     btnEnviarSelecionado: byId('btnEnviarSelecionado'),
     btnLimparSelecionado: byId('btnLimparSelecionado')
   };
@@ -14,6 +17,8 @@
   let supabaseClient = null;
   let currentUser = null;
   let bous = [];
+  let allBous = [];
+  let profileMap = new Map();
   const hiddenStoragePrefix = 'bouEnviosHiddenIds:';
   const sentStoragePrefix = 'bouEnviosSentIds:';
   const lastSentStorageKey = 'bouLastSentTitle';
@@ -63,6 +68,12 @@
     el.status.style.color = isError ? '#b42318' : '#166534';
   };
 
+  const setStatusTodos = (msg, isError = false) => {
+    if (!el.statusTodos) return;
+    el.statusTodos.textContent = msg;
+    el.statusTodos.style.color = isError ? '#b42318' : '#475569';
+  };
+
   const formatDate = (iso) => {
     if (!iso) return '-';
     const d = new Date(iso);
@@ -100,6 +111,45 @@
     const payload = parseConteudo(item.conteudo_completo);
     const c = payload.campos || {};
     return String(c.titulo || item.titulo || '').trim();
+  };
+
+  const formatResponsavel = (userId) => {
+    const profile = profileMap.get(String(userId || ''));
+    if (!profile) return 'Usuário não identificado';
+    const nome = profile.nome_guerra ? String(profile.nome_guerra).trim() : '';
+    const rg = profile.rg ? String(profile.rg).trim() : '';
+    if (nome && rg) return `${nome} - ${rg}`;
+    return nome || rg || (profile.email ? String(profile.email).trim() : 'Usuário não identificado');
+  };
+
+  const buildDetailHtml = (payload) => {
+    const c = payload.campos || {};
+    return `
+      <div class="bou-grid bou-envio-content" style="margin-top:10px;">
+        <div><label>Unidade</label><input type="text" value="${safeText(c.unidade || '')}" readonly></div>
+        <div><label>Motorista</label><input type="text" value="${safeText(c.motorista || '')}" readonly></div>
+        <div><label>Chefe de viatura</label><input type="text" value="${safeText(c.chefe || '')}" readonly></div>
+        <div><label>Terceiro Homem</label><input type="text" value="${safeText(c.terceiro || '')}" readonly></div>
+        <div><label>Quarto Homem</label><input type="text" value="${safeText(c.quarto || '')}" readonly></div>
+        <div><label>Acusado</label><input type="text" value="${safeText(c.nome_acusado || '')}" readonly></div>
+        <div><label>RG</label><input type="text" value="${safeText(c.rg_acusado || '')}" readonly></div>
+        <div><label>Natureza</label><input type="text" value="${safeText(c.natureza || '')}" readonly></div>
+        <div><label>Data/Hora</label><input type="text" value="${safeText(c.datahora || '')}" readonly></div>
+        <div><label>Local</label><input type="text" value="${safeText(c.local || '')}" readonly></div>
+        <div><label>Envolvidos</label><input type="text" value="${safeText(c.envolvidos || '')}" readonly></div>
+        <div><label>Resultado</label><input type="text" value="${safeText(c.resultado || '')}" readonly></div>
+        <div><label>Material</label><input type="text" value="${safeText(c.material || '')}" readonly></div>
+        <div><label>Veiculo</label><input type="text" value="${safeText(c.veiculo || '')}" readonly></div>
+        <div><label>Coloracao</label><input type="text" value="${safeText(c.cor_veiculo || '')}" readonly></div>
+        <div class="bou-grid-span"><label>Acoes dos policiais e do individuo</label><textarea class="bou-output" readonly>${safeText(c.acoes || '')}</textarea></div>
+        <div class="bou-grid-span"><label>Relato dos Fatos</label><textarea class="bou-output" readonly>${safeText(c.relato || '')}</textarea></div>
+        <div class="bou-grid-span"><label>Assinatura</label><input type="text" value="${safeText(c.assinatura || '')}" readonly></div>
+        <details class="bou-grid-span bou-original-details">
+          <summary>Texto Original</summary>
+          <textarea class="bou-output" readonly>${safeText(payload.texto_original || '')}</textarea>
+        </details>
+      </div>
+    `;
   };
 
   const pickMostRecent = (items) => {
@@ -168,15 +218,15 @@
         const payload = parseConteudo(item.conteudo_completo);
         const c = payload.campos || {};
         const titulo = c.titulo || item.titulo || '(Sem titulo)';
-
         const nomeAcusado = c.nome_acusado || 'N/A';
         const rgAcusado = c.rg_acusado || 'N/A';
+        const dataExibicao = item.data_criacao || item.created_at || '';
         return `
           <details class="bou-envio-item">
             <summary class="bou-envio-summary">
               <div class="bou-envio-summary-main">
                 <strong>${safeText(titulo)}</strong>
-                <span>${safeText(formatDate(item.data_criacao))}</span>
+                <span>${safeText(formatDate(dataExibicao))}</span>
                 <span>${safeText(nomeAcusado)} - ${safeText(rgAcusado)}</span>
               </div>
               <div class="bou-envio-summary-actions">
@@ -189,30 +239,7 @@
                 <i class="fas fa-chevron-down bou-envio-arrow" aria-hidden="true"></i>
               </div>
             </summary>
-            <div class="bou-grid bou-envio-content" style="margin-top:10px;">
-              <div><label>Unidade</label><input type="text" value="${safeText(c.unidade || '')}" readonly></div>
-              <div><label>Motorista</label><input type="text" value="${safeText(c.motorista || '')}" readonly></div>
-              <div><label>Chefe de viatura</label><input type="text" value="${safeText(c.chefe || '')}" readonly></div>
-              <div><label>Terceiro Homem</label><input type="text" value="${safeText(c.terceiro || '')}" readonly></div>
-              <div><label>Quarto Homem</label><input type="text" value="${safeText(c.quarto || '')}" readonly></div>
-              <div><label>Acusado</label><input type="text" value="${safeText(c.nome_acusado || '')}" readonly></div>
-              <div><label>RG</label><input type="text" value="${safeText(c.rg_acusado || '')}" readonly></div>
-              <div><label>Natureza</label><input type="text" value="${safeText(c.natureza || '')}" readonly></div>
-              <div><label>Data/Hora</label><input type="text" value="${safeText(c.datahora || '')}" readonly></div>
-              <div><label>Local</label><input type="text" value="${safeText(c.local || '')}" readonly></div>
-              <div><label>Envolvidos</label><input type="text" value="${safeText(c.envolvidos || '')}" readonly></div>
-              <div><label>Resultado</label><input type="text" value="${safeText(c.resultado || '')}" readonly></div>
-              <div><label>Material</label><input type="text" value="${safeText(c.material || '')}" readonly></div>
-              <div><label>Veiculo</label><input type="text" value="${safeText(c.veiculo || '')}" readonly></div>
-              <div><label>Coloracao</label><input type="text" value="${safeText(c.cor_veiculo || '')}" readonly></div>
-              <div class="bou-grid-span"><label>Acoes dos policiais e do individuo</label><textarea class="bou-output" readonly>${safeText(c.acoes || '')}</textarea></div>
-              <div class="bou-grid-span"><label>Relato dos Fatos</label><textarea class="bou-output" readonly>${safeText(c.relato || '')}</textarea></div>
-              <div class="bou-grid-span"><label>Assinatura</label><input type="text" value="${safeText(c.assinatura || '')}" readonly></div>
-              <details class="bou-grid-span bou-original-details">
-                <summary>Texto Original</summary>
-                <textarea class="bou-output" readonly>${safeText(payload.texto_original || '')}</textarea>
-              </details>
-            </div>
+            ${buildDetailHtml(payload)}
           </details>
         `;
       })
@@ -248,20 +275,66 @@
     if (!supabaseClient || !currentUser) return;
 
     setStatus('Carregando BOUs do banco...');
-    const result = await supabaseClient
-      .from('bous')
-      .select('id, user_id, titulo, conteudo_completo, data_criacao')
-      .eq('user_id', currentUser.id)
-      .order('data_criacao', { ascending: false });
+    setStatusTodos('Carregando BOUs gerais...');
+    const [bousRes, profilesRes] = await Promise.all([
+      supabaseClient
+        .from('bous')
+        .select('id, user_id, titulo, conteudo_completo, data_criacao, created_at')
+        .order('data_criacao', { ascending: false }),
+      supabaseClient
+        .from('profiles')
+        .select('id, nome_guerra, rg, email')
+    ]);
 
-    if (result.error) {
-      setStatus(`Falha ao carregar BOUs: ${result.error.message}`, true);
+    if (bousRes.error) {
+      setStatus(`Falha ao carregar BOUs: ${bousRes.error.message}`, true);
+      setStatusTodos('Falha ao carregar BOUs gerais.', true);
       return;
     }
 
-    bous = Array.isArray(result.data) ? result.data : [];
+    allBous = Array.isArray(bousRes.data) ? bousRes.data : [];
+    profileMap = new Map((Array.isArray(profilesRes.data) ? profilesRes.data : []).map((p) => [String(p.id), p]));
+    bous = allBous.filter((item) => String(item.user_id || '') === String(currentUser.id));
     render();
+    renderTodos();
     setStatus('Lista atualizada.');
+    setStatusTodos('Lista geral atualizada.');
+  };
+
+  const renderTodos = () => {
+    if (!el.listaTodos) return;
+    if (el.contadorTodos) el.contadorTodos.textContent = String(allBous.length);
+
+    if (!allBous.length) {
+      el.listaTodos.innerHTML = '<p class="bou-hint">Nenhum BOU encontrado.</p>';
+      return;
+    }
+
+    el.listaTodos.innerHTML = allBous.map((item) => {
+      const payload = parseConteudo(item.conteudo_completo);
+      const c = payload.campos || {};
+      const titulo = c.titulo || item.titulo || '(Sem titulo)';
+      const responsavel = formatResponsavel(item.user_id);
+      const citados = (c.envolvidos || '').trim() || 'N/A';
+      const preso = (c.nome_acusado || '').trim() || 'N/A';
+      const dataExibicao = item.data_criacao || item.created_at || '';
+
+      return `
+        <details class="bou-envio-item">
+          <summary class="bou-envio-summary">
+            <div class="bou-envio-summary-main">
+              <strong>${safeText(titulo)}</strong>
+              <span>Responsável: ${safeText(responsavel)}</span>
+              <span>Citados: ${safeText(citados)}</span>
+              <span>${safeText(formatDate(dataExibicao))}</span>
+              <span>Preso: ${safeText(preso)}</span>
+            </div>
+            <i class="fas fa-chevron-down bou-envio-arrow" aria-hidden="true"></i>
+          </summary>
+          ${buildDetailHtml(payload)}
+        </details>
+      `;
+    }).join('');
   };
 
   const sendToDiscord = async (items) => {

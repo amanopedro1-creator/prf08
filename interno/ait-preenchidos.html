@@ -258,20 +258,24 @@
                     <details class="ace-result-card">
                         <summary class="ace-result-summary">
                             <div class="ace-result-summary-main">
-                                <strong>${esc('AIT ' + (row.numero_ait || ('#' + rowId)))}</strong>
+                                <strong>${esc(row.titulo || ('AIT ' + (row.numero_ait || ('#' + rowId))))}</strong>
+                                <span>Respons·vel: ${esc(row.relator_nome || 'Usu·rio n„o identificado')}</span>
                                 <span>${esc(fmtDate(row.created_at || row.data_criacao))}</span>
-                                <span>Relator: ${esc(row.relator_nome || 'Usu√°rio n√£o identificado')}</span>
-                                <span>Infrator: ${esc((row.nome_infrator || 'N/A') + ' - ' + (row.rg_infrator || 'N/A'))}</span>
+                                <span>Propriet·rio: ${esc(row.nome_infrator || 'N/A')}</span>
+                                <span>Modelo: ${esc(row.marca_modelo || 'N/A')}</span>
+                                <span>Emplacamento: ${esc(row.emplacamento || 'N/A')}</span>
                             </div>
                             ${selectHtml}
                             <i class="fas fa-chevron-down ace-result-arrow" aria-hidden="true"></i>
                         </summary>
                         <div class="ace-result-body">
-                            <p><strong>Infra√ß√µes:</strong> ${esc(row.infracoes || 'N/A')}</p>
+                            <p><strong>Policial respons·vel:</strong> ${esc(row.policial_responsavel || row.relator_nome || 'N/A')}</p>
+                            <p><strong>Infrator:</strong> ${esc((row.nome_infrator || 'N/A') + ' - ' + (row.rg_infrator || 'N/A'))}</p>
+                            <p><strong>InfraÁıes:</strong> ${esc(row.infracoes || 'N/A')}</p>
                             <p><strong>Valor da multa:</strong> ${esc(row.valor_multa || 'N/A')}</p>
-                            <p><strong>Apreens√£o do ve√≠culo:</strong> ${esc(row.apreensao_veiculo || 'N/A')}</p>
-                            <p><strong>Data e hor√°rio:</strong> ${esc(row.datahora || 'N/A')}</p>
-                            <p><strong>Local de autua√ß√£o:</strong> ${esc(row.local_autuacao || 'N/A')}</p>
+                            <p><strong>Apreens„o do veÌculo:</strong> ${esc(row.apreensao_veiculo || 'N/A')}</p>
+                            <p><strong>Data e hor·rio:</strong> ${esc(row.datahora || 'N/A')}</p>
+                            <p><strong>Local de autuaÁ„o:</strong> ${esc(row.local_autuacao || 'N/A')}</p>
                             <p><strong>Marca/modelo:</strong> ${esc(row.marca_modelo || 'N/A')}</p>
                             <p><strong>Emplacamento:</strong> ${esc(row.emplacamento || 'N/A')}</p>
                         </div>
@@ -452,8 +456,10 @@
                         return {
                             ...row,
                             relator_nome: relator ? ((relator.nome_guerra || '') + (relator.rg ? (' - ' + relator.rg) : '')).trim() : '',
+                            titulo: campos.numero_ait ? ('AIT ' + campos.numero_ait) : ('AIT ' + (row.numero_ait || ('#' + row.id))),
                             nome_infrator: campos.nome_infrator || '',
                             rg_infrator: campos.rg_infrator || '',
+                            policial_responsavel: campos.policial_responsavel || '',
                             infracoes: campos.infracoes || '',
                             valor_multa: campos.valor_multa || '',
                             apreensao_veiculo: campos.apreensao_veiculo || '',
@@ -483,3 +489,5 @@
     </script>
 </body>
 </html>
+
+

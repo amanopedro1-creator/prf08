@@ -301,10 +301,6 @@
                     <button type="button" id="painel-docs-inline-close" class="painel-docs-inline-close" aria-label="Fechar documentos">
                         <i class="fas fa-times" aria-hidden="true"></i>
                     </button>
-                    <article id="painel-docs-inline-aviso" class="painel-latest-aviso">
-                        <h3>Mural de avisos</h3>
-                        <p class="painel-latest-aviso-empty">Carregando aviso...</p>
-                    </article>
                             <article id="painel-profile-popup" class="painel-profile-popup is-hidden" aria-live="polite">
                         <div class="profile-popup-layout">
                             <div class="profile-popup-card">
@@ -565,7 +561,6 @@
             const headerEditProfile = byId('header-edit-profile-link');
             const brandEditProfile = document.querySelector('.profile-brand-edit-link');
             const avisoSource = byId('painel-latest-aviso');
-            const avisoTarget = byId('painel-docs-inline-aviso');
             const mainDefault = byId('painel-main-default');
             const mainContent = document.querySelector('.painel-main-content');
             const frame = byId('painel-docs-inline-frame');
@@ -606,11 +601,6 @@
                 const label = node.querySelector('span');
                 if (icon) icon.style.color = '#ffffff';
                 if (label) label.style.color = '#ffffff';
-            };
-
-            const syncAviso = function () {
-                if (!avisoSource || !avisoTarget) return;
-                avisoTarget.innerHTML = avisoSource.innerHTML;
             };
 
             const setDocInFrame = function (href, label, useMap, useProfile) {
@@ -1028,7 +1018,6 @@
                     closePopup();
                     return;
                 }
-                syncAviso();
                 const href = sourceNode ? sourceNode.getAttribute('href') : '';
                 const labelNode = sourceNode ? sourceNode.querySelector('span') : null;
                 const label = labelNode ? labelNode.textContent.trim() : 'Documento Interno';

@@ -221,6 +221,35 @@
                     .trim();
             }
 
+            function buildTokens(profile, user) {
+                const tokens = [
+                    profile && profile.nome_guerra ? profile.nome_guerra : '',
+                    profile && profile.rg ? profile.rg : '',
+                    user && user.email ? user.email : ''
+                ]
+                    .map(normalize)
+                    .filter((t) => t && t.length >= 3);
+
+                const parts = String(profile && profile.nome_guerra ? profile.nome_guerra : '')
+                    .split(' ')
+                    .map(normalize)
+                    .filter((t) => t && t.length >= 4);
+
+                return Array.from(new Set(tokens.concat(parts)));
+            }
+
+            function hasMention(row, tokens) {
+                if (!row || !tokens.length) return false;
+                const source = normalize([
+                    row.conteudo_completo,
+                    row.titulo,
+                    row.area,
+                    row.observacoes,
+                    row.unidade
+                ].join(' '));
+                return tokens.some((token) => source.includes(token));
+            }
+
             function esc(value) {
                 if (value === null || value === undefined) return '';
                 return String(value)
@@ -257,28 +286,33 @@
                 const selectHtml = isAdmin
                     ? `<label class="ace-select-wrap"><input type="checkbox" class="ace-select-item" data-id="${esc(rowId)}" ${checked}> <span>Selecionar</span></label>`
                     : '';
-                const equipe = Array.isArray(row.equipe) && row.equipe.length ? row.equipe.join(', ') : 'N/A';
+                const auxiliares = row.auxiliares || 'N/A';
 
                 return `
                     <details class="ace-result-card">
                         <summary class="ace-result-summary">
                             <div class="ace-result-summary-main">
-                                <strong>${esc(row.titulo || 'Relat√≥rio de Patrulha')}</strong>
-                                <span>${esc(fmtDate(row.created_at))}</span>
-                                <span>Relator: ${esc(row.relator_nome || 'Usu√°rio n√£o identificado')}</span>
-                                <span>Equipe: ${esc(equipe)}</span>
+                                <strong>${esc(row.titulo || 'RelatÛrio de Patrulha')}</strong>
+                                <span>Motorista: ${esc(row.motorista || 'N/A')}</span>
+                                <span>Chefe: ${esc(row.chefe || 'N/A')}</span>
+                                <span>Auxiliares: ${esc(auxiliares)}</span>
+                                <span>Unidade: ${esc(row.unidade || 'N/A')}</span>
+                                <span>Data de inÌcio: ${esc(row.data_inicio || 'N/A')}</span>
+                                <span>Hora inÌcio: ${esc(row.hora_inicio || 'N/A')}</span>
+                                <span>Hora tÈrmino: ${esc(row.hora_termino || 'N/A')}</span>
                             </div>
                             ${selectHtml}
                             <i class="fas fa-chevron-down ace-result-arrow" aria-hidden="true"></i>
                         </summary>
                         <div class="ace-result-body">
+                            <p><strong>Relator:</strong> ${esc(row.relator_nome || 'Usu·rio n„o identificado')}</p>
                             <p><strong>Unidade:</strong> ${esc(row.unidade || 'N/A')}</p>
-                            <p><strong>√Årea:</strong> ${esc(row.area || 'N/A')}</p>
-                            <p><strong>Per√≠odo:</strong> ${esc((row.data_inicio || 'N/A') + ' ' + (row.hora_inicio || '') + ' - ' + (row.data_termino || 'N/A') + ' ' + (row.hora_termino || ''))}</p>
-                            <p><strong>Ocorr√™ncias:</strong> ${esc(row.ocorrencias || 'N/A')}</p>
+                            <p><strong>¡rea:</strong> ${esc(row.area || 'N/A')}</p>
+                            <p><strong>PerÌodo:</strong> ${esc((row.data_inicio || 'N/A') + ' ' + (row.hora_inicio || '') + ' - ' + (row.data_termino || 'N/A') + ' ' + (row.hora_termino || ''))}</p>
+                            <p><strong>OcorrÍncias:</strong> ${esc(row.ocorrencias || 'N/A')}</p>
                             <p><strong>Abordagens:</strong> ${esc(row.abordagens || 'N/A')}</p>
-                            <p><strong>Pris√µes:</strong> ${esc(row.prisoes || 'N/A')}</p>
-                            <p><strong>Observa√ß√µes:</strong></p>
+                            <p><strong>Prisıes:</strong> ${esc(row.prisoes || 'N/A')}</p>
+                            <p><strong>ObservaÁıes:</strong></p>
                             <div class="ace-result-text">${esc(row.observacoes || 'N/A').replace(/\n/g, '<br>')}</div>
                         </div>
                     </details>
@@ -440,8 +474,9 @@
 
                     const session = sessionResult && sessionResult.data ? sessionResult.data.session : null;
                     const me = session && session.user ? session.user : null;
+                    let meProfile = null;
                     if (me && Array.isArray(profilesRes.data)) {
-                        const meProfile = profilesRes.data.find((p) => String(p.id) === String(me.id));
+                        meProfile = profilesRes.data.find((p) => String(p.id) === String(me.id)) || null;
                         isAdmin = meProfile ? (meProfile.is_admin === true) : Boolean(window.__ripatIsAdmin);
                     }
 
@@ -455,6 +490,10 @@
                         const relator = profileMap.get(String(row.user_id || ''));
                         const parsed = parseJson(row.conteudo_completo);
                         const campos = parsed && parsed.campos ? parsed.campos : {};
+                        const auxiliares = [
+                            campos.auxiliar_1,
+                            campos.auxiliar_2
+                        ].map((v) => String(v || '').trim()).filter((v) => v && v !== 'N/A');
                         const equipe = [
                             campos.motorista,
                             campos.chefe,
@@ -466,6 +505,9 @@
                             ...row,
                             relator_nome: relator ? ((relator.nome_guerra || '') + (relator.rg ? (' - ' + relator.rg) : '')).trim() : '',
                             equipe,
+                            motorista: campos.motorista || '',
+                            chefe: campos.chefe || '',
+                            auxiliares: auxiliares.join(', ') || '',
                             unidade: campos.unidade || '',
                             data_inicio: campos.data_inicio || '',
                             hora_inicio: campos.hora_inicio || '',
@@ -476,6 +518,14 @@
                             prisoes: campos.prisoes || ''
                         };
                     });
+
+                    if (!isAdmin && me) {
+                        const tokens = buildTokens(meProfile || {}, me);
+                        allRows = allRows.filter((row) => {
+                            if (String(row.user_id || '') === String(me.id)) return true;
+                            return hasMention(row, tokens);
+                        });
+                    }
 
                     if (el.adminActions) el.adminActions.classList.toggle('is-hidden', !isAdmin);
                     applyFilters();
@@ -496,3 +546,5 @@
     </script>
 </body>
 </html>
+
+

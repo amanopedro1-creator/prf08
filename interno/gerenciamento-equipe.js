@@ -124,9 +124,10 @@
             const title = (options && options.groupTitlePrefix)
                 ? (options.groupTitlePrefix + grp)
                 : grp;
+            const countLabel = ' (' + items.length + ')';
             return (
                 '<section class="gerenciamento-group">' +
-                '<h3 class="gerenciamento-group-title">' + title + '</h3>' +
+                '<h3 class="gerenciamento-group-title">' + title + countLabel + '</h3>' +
                 '<div class="gerenciamento-group-list">' +
                 items.map(formatTeamCard).join('') +
                 '</div>' +
@@ -257,10 +258,8 @@
             userTokens[p.id] = buildTokens(p);
         });
 
-        const members = profiles.map(function (p) {
+        const baseMembers = profiles.map(function (p) {
             const tokens = userTokens[p.id] || [];
-            const groupLabel = parseGroups(p.grupamento || '').join(' | ') || '-';
-
             let totalMinutes = 0;
             let last7Minutes = 0;
             pontos.forEach(function (row) {
@@ -295,10 +294,11 @@
             };
 
             return {
+                id: p.id,
                 nome: safe(p.nome_guerra, 'Agente'),
                 rg: safe(p.rg, '-'),
                 cargo: safe(p.cargo, '-'),
-                grupamento: groupLabel,
+                grupamentos: parseGroups(p.grupamento || ''),
                 foto_url: p.foto_url || 'assets/img/prf.png',
                 serviceTotal: minutesToHhmm(totalMinutes),
                 service7: minutesToHhmm(last7Minutes),
@@ -307,6 +307,26 @@
                 ripat7: countRecent(ripats),
                 rolePriority: rolePriority(p.cargo || '')
             };
+        });
+
+        const members = [];
+        baseMembers.forEach(function (base) {
+            const groups = base.grupamentos.length ? base.grupamentos : ['Sem grupamento'];
+            groups.forEach(function (grp) {
+                members.push({
+                    nome: base.nome,
+                    rg: base.rg,
+                    cargo: base.cargo,
+                    grupamento: grp,
+                    foto_url: base.foto_url,
+                    serviceTotal: base.serviceTotal,
+                    service7: base.service7,
+                    bou7: base.bou7,
+                    ait7: base.ait7,
+                    ripat7: base.ripat7,
+                    rolePriority: base.rolePriority
+                });
+            });
         });
 
         members.sort(function (a, b) {

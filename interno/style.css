@@ -1688,6 +1688,7 @@ p {
 
 .gerenciamento-group-list {
     display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 14px;
 }
 
@@ -1754,12 +1755,18 @@ p {
 }
 
 @media (max-width: 980px) {
+    .gerenciamento-group-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
     .gerenciamento-metrics {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
 
 @media (max-width: 560px) {
+    .gerenciamento-group-list {
+        grid-template-columns: 1fr;
+    }
     .gerenciamento-card-head {
         grid-template-columns: 1fr;
         text-align: center;
@@ -2649,6 +2656,10 @@ p {
 .bou-envios-list {
     display: grid;
     gap: 14px;
+}
+
+.bou-envios-list.is-geral {
+    padding: 10px 12px;
 }
 
 .bou-envio-item {
