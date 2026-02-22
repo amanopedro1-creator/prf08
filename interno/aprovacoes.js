@@ -18,7 +18,8 @@
         'COEsp | Curso de Operações Especiais',
         'CFMB | Curso de Motociclista Batedor',
         'CFMT | Curso de Formação de Motociclista Tático',
-        'TPCC | Técnicas Policiais de Combate ao Crime',
+        'CDT | Curso de Desembarque Tático',
+        'CDD | Curso de Direção Defensiva',
         'COA | Curso de Operador Aerotático',
         'CPPAR | Curso de Piloto Policial da Asa Rotativa',
         'ARP | Curso de Piloto Policial de Aeronave Remota'

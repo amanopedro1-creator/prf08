@@ -162,7 +162,10 @@
                             </div>
                             <div class="profile-brand-text">
                                 <div class="profile-brand-name" id="painel-profile-name">Usuário</div>
-                                <div class="profile-brand-role" id="painel-profile-cargo">Cargo do agente</div>
+                                <div class="profile-brand-role-line">
+                                    <img id="painel-profile-cargo-img" class="profile-role-img is-hidden" alt="Imagem do cargo">
+                                    <div class="profile-brand-role" id="painel-profile-cargo">Cargo do agente</div>
+                                </div>
                                 <div class="profile-brand-rg" id="painel-profile-rg">RG: -</div>
                                 <div class="profile-shift-wrap">
                                     <button type="button" id="painel-shift-btn" class="profile-shift-btn profile-shift-btn--idle">
@@ -187,6 +190,12 @@
                     </div>
                 </div>
             </article>
+            <div class="painel-aviso-top">
+                <article id="painel-latest-aviso" class="painel-latest-aviso" aria-live="polite">
+                    <h3>Mural de Avisos</h3>
+                    <p class="painel-latest-aviso-empty">Carregando aviso...</p>
+                </article>
+            </div>
             <div class="painel-layout">
                 <aside class="painel-side-menu" aria-label="Navegação interna rápida">
                     <a href="#" class="painel-side-link" id="painel-notificacoes-toggle" rel="noopener">
@@ -235,10 +244,6 @@
                     <div class="painel-main-grid">
                         <div class="painel-main-left">
                             <div id="painel-main-default">
-                            <article id="painel-latest-aviso" class="painel-latest-aviso" aria-live="polite">
-                                <h3>Mural de Avisos</h3>
-                                <p class="painel-latest-aviso-empty">Carregando aviso...</p>
-                            </article>
                         <div class="docs-grid" id="painel-main-docs-grid">
                     <a href="/interno/bou.html" class="docs-card" rel="noopener">
                         <i class="fas fa-handcuffs docs-card-icon" aria-hidden="true"></i>
@@ -310,7 +315,10 @@
                                     <img src="assets/img/prf.png" alt="Foto do usuário" id="profile-popup-photo">
                                     <div class="profile-popup-card-text">
                                         <div class="profile-popup-name" id="profile-popup-name">Usuário</div>
-                                        <div class="profile-popup-role" id="profile-popup-cargo">Cargo</div>
+                                        <div class="profile-popup-role-line">
+                                            <div class="profile-popup-role" id="profile-popup-cargo">Cargo</div>
+                                            <img id="profile-popup-cargo-img" class="profile-popup-role-img is-hidden" alt="Imagem do cargo">
+                                        </div>
                                         <div class="profile-popup-rg" id="profile-popup-rg">RG: -</div>
                                     </div>
                                     <button type="button" id="profile-popup-edit-trigger" class="profile-popup-edit-trigger">
@@ -633,6 +641,33 @@
                     .replace(/[\u0300-\u036f]/g, '')
                     .toLowerCase();
             };
+            const cargoImageMap = {
+                'diretor-geral': 'diretor.png',
+                'superintendente': 'superintendente.png',
+                'coordenador': 'coordenador.png',
+                'chefe de divisao': 'chefededivisao.png',
+                'chefe de servico': 'chefedeservico.png',
+                'chefe de nucleo': 'chefedenucleo.png',
+                'agente de classe especial': 'classeespecial.png',
+                'agente de primeira classe': 'primeiraclasse.png',
+                'agente de segunda classe': 'segundaclasse.png',
+                'agente de terceira classe': 'terceiraclasse.png',
+                'agente aluno': 'aluno.png'
+            };
+            const setCargoImage = function (cargoValue, node) {
+                if (!node) return;
+                const key = normalize(cargoValue).trim();
+                const file = cargoImageMap[key];
+                if (!file) {
+                    node.classList.add('is-hidden');
+                    node.removeAttribute('src');
+                    node.alt = '';
+                    return;
+                }
+                node.src = 'assets/img/' + file;
+                node.alt = cargoValue ? ('Imagem do cargo: ' + cargoValue) : 'Imagem do cargo';
+                node.classList.remove('is-hidden');
+            };
 
             const setEditFeedback = function (msg, isError) {
                 const node = byId('profile-popup-edit-feedback');
@@ -831,10 +866,12 @@
 
                     const nameNode = byId('profile-popup-name');
                     const cargoNode = byId('profile-popup-cargo');
+                    const cargoImgNode = byId('profile-popup-cargo-img');
                     const rgNode = byId('profile-popup-rg');
                     const photoNode = byId('profile-popup-photo');
                     if (nameNode) nameNode.textContent = profile.nome_guerra || user.email || 'Usuário';
                     if (cargoNode) cargoNode.textContent = profile.cargo || 'Cargo';
+                    setCargoImage(profile.cargo, cargoImgNode);
                     if (rgNode) rgNode.textContent = profile.rg ? ('RG: ' + profile.rg) : 'RG: -';
                     if (photoNode && profile.foto_url) photoNode.src = profile.foto_url;
                     currentFotoPath = profile.foto_path || '';
@@ -875,7 +912,8 @@
                                 COEsp: { bg: '#16a34a', fg: '#ffffff' },
                                 CFMB: { bg: '#0ea5e9', fg: '#ffffff' },
                                 CFMT: { bg: '#2563eb', fg: '#ffffff' },
-                                TPCC: { bg: '#7c3aed', fg: '#ffffff' },
+                                CDT: { bg: '#84d8a7', fg: '#0f172a' },
+                                CDD: { bg: '#9b59b6', fg: '#ffffff' },
                                 COA: { bg: '#0891b2', fg: '#ffffff' },
                                 CPPAR: { bg: '#6d28d9', fg: '#ffffff' },
                                 ARP: { bg: '#0f766e', fg: '#ffffff' }
@@ -1096,6 +1134,7 @@
                 const nameNode = document.getElementById('painel-profile-name');
                 const rgNode = document.getElementById('painel-profile-rg');
                 const cargoNode = document.getElementById('painel-profile-cargo');
+                const cargoImgNode = document.getElementById('painel-profile-cargo-img');
                 const grupamentoNode = document.getElementById('painel-profile-grupamento');
                 const imgNode = document.getElementById('painel-profile-photo');
                 const medalsNode = document.getElementById('painel-profile-medals');
@@ -1118,7 +1157,8 @@
                     'COEsp': { bg: '#111111', fg: '#ffffff' },
                     'CFMB': { bg: '#d97706', fg: '#334155' },
                     'CFMT': { bg: '#f4b183', fg: '#334155' },
-                    'TPCC': { bg: '#84cc16', fg: '#334155' },
+                    'CDT': { bg: '#84d8a7', fg: '#0f172a' },
+                    'CDD': { bg: '#9b59b6', fg: '#ffffff' },
                     'COA': { bg: '#166534', fg: '#ffffff' },
                     'CPPAR': { bg: '#556b2f', fg: '#ffffff' },
                     'ARP': { bg: '#e5d3b3', fg: '#334155' }
@@ -1142,6 +1182,33 @@
                     .replace(/[\u0300-\u036f]/g, '')
                     .toLowerCase()
                     .trim();
+                const cargoImageMap = {
+                    'diretor-geral': 'diretor.png',
+                    'superintendente': 'superintendente.png',
+                    'coordenador': 'coordenador.png',
+                    'chefe de divisao': 'chefededivisao.png',
+                    'chefe de servico': 'chefedeservico.png',
+                    'chefe de nucleo': 'chefedenucleo.png',
+                    'agente de classe especial': 'classeespecial.png',
+                    'agente de primeira classe': 'primeiraclasse.png',
+                    'agente de segunda classe': 'segundaclasse.png',
+                    'agente de terceira classe': 'terceiraclasse.png',
+                    'agente aluno': 'aluno.png'
+                };
+                const setCargoImage = (cargoValue, node) => {
+                    if (!node) return;
+                    const key = normalizeText(cargoValue);
+                    const file = cargoImageMap[key];
+                    if (!file) {
+                        node.classList.add('is-hidden');
+                        node.removeAttribute('src');
+                        node.alt = '';
+                        return;
+                    }
+                    node.src = 'assets/img/' + file;
+                    node.alt = cargoValue ? ('Imagem do cargo: ' + cargoValue) : 'Imagem do cargo';
+                    node.classList.remove('is-hidden');
+                };
                 const resolveMedalImage = (value) => {
                     const raw = String(value || '').trim();
                     if (!raw) return 'assets/img/mencaoelogio.png';
@@ -1155,6 +1222,7 @@
                 if (nameNode) nameNode.textContent = p.nome_guerra || p.email || user.email || 'Usuário';
                 if (rgNode) rgNode.textContent = `RG: ${p.rg || '-'}`;
                 if (cargoNode) cargoNode.textContent = p.cargo || 'Cargo do agente';
+                setCargoImage(p.cargo, cargoImgNode);
                 if (imgNode && p.foto_url) imgNode.src = p.foto_url;
 
                 try {
