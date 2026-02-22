@@ -5504,6 +5504,24 @@ p {
     flex-shrink: 0;
 }
 
+.profile-brand-medals {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: center;
+    max-width: 140px;
+}
+
+.profile-brand-medal {
+    width: 36px;
+    height: 36px;
+    object-fit: contain;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.12);
+    padding: 4px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.28);
+}
+
 .profile-brand-photo {
     width: 100%;
     height: 100%;

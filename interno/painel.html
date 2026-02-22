@@ -157,6 +157,7 @@
                                 <div class="profile-brand-photo-wrap">
                                     <img id="painel-profile-photo" class="profile-brand-photo" src="assets/img/prf.png" alt="Foto do usuário">
                                 </div>
+                                <div id="painel-profile-medals" class="profile-brand-medals is-hidden" aria-label="Condecorações do usuário"></div>
                                 <a href="painel.html#meu-perfil" class="profile-brand-edit-link">Editar perfil</a>
                             </div>
                             <div class="profile-brand-text">
@@ -889,6 +890,14 @@
 
                     const medalNode = byId('profile-popup-medals');
                     if (medalNode) {
+                        const resolveMedalImage = function (value) {
+                            const raw = String(value || '').trim();
+                            if (!raw) return 'assets/img/mencaoelogio.png';
+                            const lower = raw.toLowerCase();
+                            if (lower.startsWith('http://') || lower.startsWith('https://')) return raw;
+                            if (raw.startsWith('/') || raw.startsWith('assets/')) return raw;
+                            return 'assets/img/' + raw;
+                        };
                         const medalConfig = {
                             elogio_ref: { name: 'Referência elogiosa', image: 'mencaoelogio.png' },
                             elogio: { name: 'Elogio', image: 'mencaoelogio.png' },
@@ -917,9 +926,10 @@
                                 const conf = medalConfig[m.medal_code] || {};
                                 const name = m.medal_name || conf.name || 'Condecoração';
                                 const image = m.medal_image || conf.image || 'mencaoelogio.png';
+                                const src = resolveMedalImage(image);
                                 return (
                                     '<div class="profile-popup-medal">' +
-                                    '<img src="assets/img/' + image + '" alt="' + name + '">' +
+                                    '<img src="' + src + '" alt="' + name + '" onerror="this.src=\'assets/img/mencaoelogio.png\'">' +
                                     '<span>' + name + '</span>' +
                                     '</div>'
                                 );
@@ -1088,6 +1098,7 @@
                 const cargoNode = document.getElementById('painel-profile-cargo');
                 const grupamentoNode = document.getElementById('painel-profile-grupamento');
                 const imgNode = document.getElementById('painel-profile-photo');
+                const medalsNode = document.getElementById('painel-profile-medals');
                 const relatorioAlunoCard = document.getElementById('relatorio-aluno-card');
                 const aceResultadosCard = document.getElementById('ace-resultados-card');
                 const relatorioVooCard = document.getElementById('relatorio-voo-card');
@@ -1131,36 +1142,73 @@
                     .replace(/[\u0300-\u036f]/g, '')
                     .toLowerCase()
                     .trim();
+                const resolveMedalImage = (value) => {
+                    const raw = String(value || '').trim();
+                    if (!raw) return 'assets/img/mencaoelogio.png';
+                    const lower = raw.toLowerCase();
+                    if (lower.startsWith('http://') || lower.startsWith('https://')) return raw;
+                    if (raw.startsWith('/') || raw.startsWith('assets/')) return raw;
+                    return 'assets/img/' + raw;
+                };
 
                 if (cardNode) cardNode.style.backgroundImage = `url('${selectedBg}')`;
                 if (nameNode) nameNode.textContent = p.nome_guerra || p.email || user.email || 'Usuário';
                 if (rgNode) rgNode.textContent = `RG: ${p.rg || '-'}`;
                 if (cargoNode) cargoNode.textContent = p.cargo || 'Cargo do agente';
-                const isAgenteAluno = String(p.cargo || '').trim().toLowerCase() === 'agente aluno';
-                const isAdmin = p.is_admin === true;
-                const grupos = String(p.grupamento || '').split(' || ').map(v => v.trim()).filter(Boolean);
-                const isDoa = grupos.some(g => normalizeText(g) === normalizeText('Divisão de Operações Aéreas'));
-                const isDgp = grupos.some(g => normalizeText(g) === normalizeText('Diretoria de Gestão de Pessoas'));
-                const hasAcesso = normalizeText(p.acesso || '').includes('acesso');
-                setLockedCard(relatorioAlunoCard, isAgenteAluno, 'Indisponível para Agente Aluno');
-                setLockedCard(aceResultadosCard, !(isDgp || isAdmin || hasAcesso), 'Acesso restrito à DGP ou perfil com acesso');
-                setLockedCard(relatorioVooCard, !(isDoa || isAdmin), 'Acesso restrito à Divisão de Operações Aéreas');
-                setLockedCard(painelDgpCard, !isAdmin, 'Indisponível para este perfil');
-                if (grupamentoNode) grupamentoNode.textContent = grupos.length ? grupos.join(' | ') : '-';
-                if (cursosNode) {
-                    const rawCourses = String(p.cursos || '').trim();
-                    if (!rawCourses) {
-                        cursosNode.innerHTML = '<span class="profile-course-empty">A definir</span>';
-                    } else {
-                        const courses = rawCourses.split(' || ').map((s) => s.trim()).filter(Boolean);
-                        cursosNode.innerHTML = courses.map((course) => {
-                            const code = course.split('|')[0].trim();
-                            const palette = courseColors[code] || { bg: '#334155', fg: '#ffffff' };
-                            return `<span class="profile-course-chip" style="background:${palette.bg}E6;color:${palette.fg};">${course}</span>`;
-                        }).join('');
+                if (imgNode && p.foto_url) imgNode.src = p.foto_url;
+
+                try {
+                    const isAgenteAluno = String(p.cargo || '').trim().toLowerCase() === 'agente aluno';
+                    const isAdmin = p.is_admin === true;
+                    const grupos = String(p.grupamento || '').split(' || ').map(v => v.trim()).filter(Boolean);
+                    const isDoa = grupos.some(g => normalizeText(g) === normalizeText('Divisão de Operações Aéreas'));
+                    const isDgp = grupos.some(g => normalizeText(g) === normalizeText('Diretoria de Gestão de Pessoas'));
+                    const hasAcesso = normalizeText(p.acesso || '').includes('acesso');
+                    setLockedCard(relatorioAlunoCard, isAgenteAluno, 'Indisponível para Agente Aluno');
+                    setLockedCard(aceResultadosCard, !(isDgp || isAdmin || hasAcesso), 'Acesso restrito à DGP ou perfil com acesso');
+                    setLockedCard(relatorioVooCard, !(isDoa || isAdmin), 'Acesso restrito à Divisão de Operações Aéreas');
+                    setLockedCard(painelDgpCard, !isAdmin, 'Indisponível para este perfil');
+                    if (grupamentoNode) grupamentoNode.textContent = grupos.length ? grupos.join(' | ') : '-';
+                    if (cursosNode) {
+                        const rawCourses = String(p.cursos || '').trim();
+                        if (!rawCourses) {
+                            cursosNode.innerHTML = '<span class="profile-course-empty">A definir</span>';
+                        } else {
+                            const courses = rawCourses.split(' || ').map((s) => s.trim()).filter(Boolean);
+                            cursosNode.innerHTML = courses.map((course) => {
+                                const code = course.split('|')[0].trim();
+                                const palette = courseColors[code] || { bg: '#334155', fg: '#ffffff' };
+                                return `<span class="profile-course-chip" style="background:${palette.bg}E6;color:${palette.fg};">${course}</span>`;
+                            }).join('');
+                        }
+                    }
+                } catch (e) {
+                    /* keep basic profile info */
+                }
+
+                if (medalsNode) {
+                    try {
+                        const medalResult = await client
+                            .from('profile_medals')
+                            .select('medal_image, medal_name')
+                            .eq('user_id', user.id)
+                            .order('awarded_at', { ascending: false })
+                            .limit(24);
+                        const medals = medalResult && Array.isArray(medalResult.data) ? medalResult.data : [];
+                        if (medals.length) {
+                            medalsNode.innerHTML = medals.map(function (medal) {
+                                const src = resolveMedalImage(medal.medal_image);
+                                const alt = medal.medal_name ? String(medal.medal_name) : 'Condecoração do usuário';
+                                return '<img src="' + src + '" alt="' + alt + '" class="profile-brand-medal" onerror="this.src=\'assets/img/mencaoelogio.png\'">';
+                            }).join('');
+                            medalsNode.classList.remove('is-hidden');
+                        } else {
+                            medalsNode.classList.add('is-hidden');
+                        }
+                    } catch (e) {
+                        medalsNode.classList.add('is-hidden');
                     }
                 }
-                if (imgNode && p.foto_url) imgNode.src = p.foto_url;
             } catch (e) {
                 /* ignore */
             }

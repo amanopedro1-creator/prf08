@@ -6,6 +6,9 @@
     let isAdmin = false;
     let canPublish = false;
     let currentDiarios = [];
+    let currentUserName = "";
+    let currentUserCargo = "";
+    const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1474964160054952079/Z4JPYwL70v554ZyJ7Wgur_mshHz-_dhoBsybbX07eYvGcOZ8dfi12OrIT92A6Lj0zjj4";
 
     function byId(id) { return document.getElementById(id); }
 
@@ -43,6 +46,52 @@
         return formatLongPt(dateValue).toUpperCase();
     }
 
+    function truncateText(value, maxLen) {
+        const text = String(value || "");
+        if (text.length <= maxLen) return text;
+        return text.slice(0, Math.max(0, maxLen - 1)) + "\u2026";
+    }
+
+    async function sendDiarioToDiscord(row) {
+        if (!DISCORD_WEBHOOK_URL) return;
+        const complemento = (row.texto || "").trim();
+        const meta = buildMetaLine(row);
+        const decreto = buildDecretoTitle(row);
+        const assinaturaData = "São Paulo, " + formatLongPt(row.created_at) + ".";
+        const assinante = "**" + (currentUserCargo || "Cargo") + " " + (currentUserName || "Usuário") + "**";
+        const prefixo = "O DIRETOR-GERAL da Polícia Rodoviária Federal, no uso das atribuições que lhe conferem ";
+        const marcacao = "||@👮‍♂️| Polícia Rodoviária Federal ||"
+        const body = [
+            "**DIÁRIO OFICIAL DA UNIÃO**",
+            meta,
+            "**Órgão:** Atos do Poder Executivo",
+            "",
+            "#", decreto,
+            prefixo + complemento,
+            "",
+            assinaturaData,
+            assinante,
+            marcacao
+        ].join("\n");
+
+        const payload = {
+            content: truncateText(body, 1900)
+        };
+
+        const response = await fetch(DISCORD_WEBHOOK_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) {
+            const text = await response.text().catch(function () { return ""; });
+            throw new Error("Webhook falhou: " + response.status + " " + text);
+        }
+
+        return response;
+    }
+
     async function enforceAuth() {
         if (!window.supabase || !window.supabase.createClient) {
             window.location.replace("../login.html");
@@ -60,7 +109,7 @@
 
         const profileQuery = await client
             .from("profiles")
-            .select("aprovado, is_admin, acesso")
+            .select("aprovado, is_admin, acesso, nome_guerra, cargo")
             .eq("id", currentUser.id)
             .maybeSingle();
         const profile = profileQuery ? profileQuery.data : null;
@@ -77,6 +126,8 @@
         const hasAcesso = Boolean(accessRaw)
             && (accessRaw.includes("acesso") || accessRaw === "sim" || accessRaw === "true" || accessRaw === "1");
         canPublish = isAdmin || hasAcesso;
+        currentUserName = String(profile.nome_guerra || currentUser.email || "Usu\u00e1rio").trim();
+        currentUserCargo = String(profile.cargo || "Cargo").trim();
         const formCard = byId("diario-form-card");
         if (formCard) formCard.style.display = canPublish ? "block" : "none";
         return true;
@@ -231,10 +282,33 @@
             created_by: currentUser ? currentUser.id : null
         };
 
-        const insert = await client.from("diarios_oficiais").insert(payload);
+        const insert = await client.from("diarios_oficiais").insert(payload).select("*").single();
         if (insert.error) {
             setStatus("Falha ao publicar Di\u00e1rio Oficial: " + insert.error.message, true);
             return;
+        }
+
+        const savedRow = insert.data || payload;
+        try {
+            const response = await sendDiarioToDiscord(savedRow);
+            let discordMessageId = null;
+            try {
+                const json = await response.json();
+                discordMessageId = json && json.id ? String(json.id) : null;
+            } catch (e) {
+                /* ignore parse errors */
+            }
+            if (savedRow.id) {
+                await client
+                    .from("diarios_oficiais")
+                    .update({
+                        discord_sent_at: new Date().toISOString(),
+                        discord_message_id: discordMessageId
+                    })
+                    .eq("id", savedRow.id);
+            }
+        } catch (e) {
+            setStatus("Di\u00e1rio Oficial publicado, mas falhou ao enviar ao Discord.", true);
         }
 
         byId("diario-form").reset();
@@ -254,3 +328,7 @@
         }
     });
 })();
+
+
+
+
