@@ -449,6 +449,150 @@
     }
   };
 
+  const AVISO_DISMISS_STORAGE_KEY = 'avisosDismissed';
+  let cachedAvisosDismissed = null;
+
+  const loadAvisosDismissed = () => {
+    if (cachedAvisosDismissed) return cachedAvisosDismissed;
+    const set = new Set();
+    try {
+      const raw = localStorage.getItem(AVISO_DISMISS_STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) {
+          parsed.forEach((id) => {
+            if (id !== null && id !== undefined) {
+              set.add(String(id));
+            }
+          });
+        }
+      }
+    } catch (err) {
+      /* ignore */
+    }
+    cachedAvisosDismissed = set;
+    return set;
+  };
+
+  const saveAvisosDismissed = () => {
+    if (!cachedAvisosDismissed) return;
+    try {
+      localStorage.setItem(AVISO_DISMISS_STORAGE_KEY, JSON.stringify(Array.from(cachedAvisosDismissed)));
+    } catch (err) {
+      /* ignore */
+    }
+  };
+
+  const isAvisoDismissed = (id) => {
+    if (id === null || id === undefined || id === '') return false;
+    return loadAvisosDismissed().has(String(id));
+  };
+
+  const dismissAviso = (id) => {
+    if (id === null || id === undefined || id === '') return;
+    const set = loadAvisosDismissed();
+    set.add(String(id));
+    saveAvisosDismissed();
+  };
+
+  const undismissAviso = (id) => {
+    if (id === null || id === undefined || id === '') return;
+    const set = loadAvisosDismissed();
+    set.delete(String(id));
+    saveAvisosDismissed();
+  };
+
+  const clearAvisosDismissed = () => {
+    cachedAvisosDismissed = new Set();
+    saveAvisosDismissed();
+  };
+
+  const hideAvisoElement = (element) => {
+    if (!element) return;
+    if (element.hidden) return;
+    element.classList.add('is-aviso-closing');
+    const finalize = () => {
+      element.hidden = true;
+      element.setAttribute('aria-hidden', 'true');
+      element.classList.add('is-aviso-dismissed');
+      element.classList.remove('is-aviso-closing');
+      element.removeEventListener('transitionend', finalize);
+    };
+    element.addEventListener('transitionend', finalize);
+    window.setTimeout(finalize, 320);
+  };
+
+  const showAvisoElement = (element) => {
+    if (!element) return;
+    element.hidden = false;
+    element.removeAttribute('aria-hidden');
+    element.classList.remove('is-aviso-dismissed');
+    element.classList.add('is-aviso-reopening');
+    window.requestAnimationFrame(() => {
+      element.classList.remove('is-aviso-reopening');
+    });
+  };
+
+  const applyAvisoDismissals = (root) => {
+    if (!root) return;
+    const targets = [];
+    if (root.nodeType === 1 && root.matches && root.matches('[data-aviso-id]')) {
+      targets.push(root);
+    }
+    if (root.querySelectorAll) {
+      root.querySelectorAll('[data-aviso-id]').forEach((node) => targets.push(node));
+    }
+    targets.forEach((element) => {
+      if (element.getAttribute('data-aviso-scope') !== 'latest') return;
+      const avisoId = element.getAttribute('data-aviso-id');
+      if (isAvisoDismissed(avisoId)) {
+        hideAvisoElement(element);
+      }
+    });
+  };
+
+  const setupAvisoDismissals = () => {
+    document.addEventListener('click', (event) => {
+      const btn = event.target.closest('.aviso-close-btn');
+      if (!btn) return;
+      const wrapper = btn.closest('[data-aviso-id]');
+      if (!wrapper || wrapper.getAttribute('data-aviso-scope') !== 'latest') return;
+      const avisoId = wrapper.getAttribute('data-aviso-id');
+      dismissAviso(avisoId);
+      hideAvisoElement(wrapper);
+      event.preventDefault();
+    });
+
+    document.addEventListener('click', (event) => {
+      const trigger = event.target.closest('[data-show-avisos="true"]');
+      if (!trigger) return;
+      clearAvisosDismissed();
+      const latest = document.querySelector('[data-aviso-scope="latest"][data-aviso-id]');
+      if (latest) {
+        showAvisoElement(latest);
+      }
+    });
+
+    applyAvisoDismissals(document);
+
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        mutation.addedNodes.forEach((node) => {
+          if (node.nodeType !== 1) return;
+          applyAvisoDismissals(node);
+        });
+      });
+    });
+
+    if (document.body) {
+      observer.observe(document.body, { childList: true, subtree: true });
+    } else {
+      window.addEventListener('DOMContentLoaded', () => {
+        observer.observe(document.body, { childList: true, subtree: true });
+      }, { once: true });
+    }
+  };
+
   const setupHeaderAuthState = async () => {
     const loginLink = byId('header-login-btn');
     const registerLink = byId('header-register-btn');
@@ -1214,6 +1358,9 @@
     };
 
     window.incrementMultasTotal = incrementMultasTotal;
+    window.isAvisoDismissed = isAvisoDismissed;
+    window.dismissAviso = dismissAviso;
+    window.undismissAviso = undismissAviso;
   };
 
   const setupModalClose = () => {
@@ -1303,6 +1450,7 @@
     setupHeaderAuthState();
     setupModalClose();
     setupInfoCardDropdowns();
+    setupAvisoDismissals();
     window.addEventListener('resize', updateNumbersGridLayout);
   });
 })();
