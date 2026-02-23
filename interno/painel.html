@@ -167,11 +167,6 @@
                                     <div class="profile-brand-role" id="painel-profile-cargo">Cargo do agente</div>
                                 </div>
                                 <div class="profile-brand-rg" id="painel-profile-rg">RG: -</div>
-                                <div class="profile-shift-wrap">
-                                    <button type="button" id="painel-shift-btn" class="profile-shift-btn profile-shift-btn--idle">
-                                        Entrar em serviço
-                                    </button>
-                                </div>
                             </div>
                         </div>
 
@@ -186,6 +181,10 @@
                                     <span class="profile-course-empty">A definir</span>
                                 </div>
                             </div>
+                            <a href="#painel-latest-aviso" class="profile-meta-btn" data-show-avisos="true">
+                                <i class="fas fa-bullhorn" aria-hidden="true"></i>
+                                <span>Mostrar avisos</span>
+                            </a>
                         </aside>
                     </div>
                 </div>
@@ -485,8 +484,13 @@
                     </div>
                     <aside class="painel-on-duty" aria-live="polite">
                         <div class="painel-on-duty-header">
-                            <h3>Em serviço</h3>
-                            <span id="painel-on-duty-count">0</span>
+                            <button type="button" id="painel-shift-btn" class="profile-shift-btn profile-shift-btn--idle profile-shift-btn--mini">
+                                Entrar em serviço
+                            </button>
+                            <div class="painel-on-duty-title">
+                                <h3>Em serviço</h3>
+                                <span id="painel-on-duty-count">0</span>
+                            </div>
                         </div>
                         <div id="painel-on-duty-list" class="painel-on-duty-list">
                             <p class="painel-on-duty-empty">Carregando agentes...</p>
@@ -1272,7 +1276,7 @@
         })();
     </script>
     <script>
-        (async function loadPainelLatestAviso() {
+        async function loadPainelLatestAviso() {
             try {
                 if (!window.supabase || !window.supabase.createClient) return;
                 const client = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
@@ -1313,8 +1317,23 @@
                 const mediaHtml = midia
                     ? '<div class="painel-aviso-media-wrap"><img src="' + esc(midia) + '" alt="Mídia do aviso" class="painel-aviso-media"></div>'
                     : '';
+                const avisoId = aviso && aviso.id !== undefined && aviso.id !== null ? esc(aviso.id) : '';
+
+                if (avisoId) {
+                    box.setAttribute('data-aviso-id', avisoId);
+                    box.setAttribute('data-aviso-scope', 'latest');
+                } else {
+                    box.removeAttribute('data-aviso-id');
+                    box.removeAttribute('data-aviso-scope');
+                }
+
+                if (window.isAvisoDismissed && window.isAvisoDismissed(avisoId)) {
+                    box.innerHTML = '<h3>Mural de avisos</h3><p class="painel-latest-aviso-empty">Aviso fechado.</p>';
+                    return;
+                }
 
                 box.innerHTML =
+                    '<button type="button" class="aviso-close-btn" aria-label="Fechar aviso" title="Fechar aviso">&times;</button>' +
                     '<h3>Mural de avisos</h3>' +
                     '<div class="painel-aviso-layout">' +
                     '<div class="painel-aviso-copy">' +
@@ -1332,7 +1351,12 @@
                     box.innerHTML = '<h3>Mural de avisos/h3><p class="painel-latest-aviso-empty">Erro ao carregar avisos.</p>';
                 }
             }
-        })();
+        }
+
+        loadPainelLatestAviso();
+        window.addEventListener('pageshow', function () {
+            loadPainelLatestAviso();
+        });
     </script>
     <script>
         (async function loadPainelNotifications() {
