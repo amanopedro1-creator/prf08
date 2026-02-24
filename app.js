@@ -141,7 +141,7 @@
           ? `<div class="number-icon"><img src="${escapeHtml(item.icon)}" alt="${label || 'ícone'}" loading="lazy"></div>`
           : '';
         return `
-          <div class="number-item">
+          <div class="number-item scroll-fade">
             ${icon}
             <div class="number-value" data-target="${value}">0</div>
             ${label ? `<div class="number-unit">${label}</div>` : ''}
@@ -159,7 +159,7 @@
       ? `<img src="${item.image}" alt="${escapeHtml(item.title)}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\\'news-placeholder\\'><i class=\\'fas fa-newspaper\\'></i></div>'">`
       : `<div class="news-placeholder"><i class="fas fa-newspaper"></i></div>`;
     return `
-      <article class="news-item">
+      <article class="news-item scroll-fade">
         <div class="news-image">${image}</div>
         <div class="news-content">
           <h3>${escapeHtml(item.title)}</h3>
@@ -1431,6 +1431,103 @@
     }, 300);
   };
 
+  const setupPasswordToggles = () => {
+    const toggles = document.querySelectorAll('.input-toggle[data-target]');
+    if (!toggles.length) return;
+
+    const setState = (button, input, isVisible) => {
+      input.type = isVisible ? 'text' : 'password';
+      button.setAttribute('aria-pressed', isVisible ? 'true' : 'false');
+      button.setAttribute('aria-label', isVisible ? 'Ocultar senha' : 'Mostrar senha');
+      const icon = button.querySelector('i');
+      if (icon) {
+        icon.classList.toggle('fa-eye', !isVisible);
+        icon.classList.toggle('fa-eye-slash', isVisible);
+      }
+    };
+
+    toggles.forEach((button) => {
+      const targetId = button.getAttribute('data-target');
+      const input = targetId ? byId(targetId) : null;
+      if (!input) return;
+
+      setState(button, input, input.type === 'text');
+
+      button.addEventListener('click', () => {
+        const isVisible = input.type === 'text';
+        setState(button, input, !isVisible);
+        input.focus();
+        const end = input.value.length;
+        if (typeof input.setSelectionRange === 'function') {
+          input.setSelectionRange(end, end);
+        }
+      });
+    });
+  };
+
+  const setupAuthPageTransitions = () => {
+    const body = document.body;
+    if (!body || !body.classList.contains('auth-page')) return;
+
+    requestAnimationFrame(() => {
+      body.classList.add('is-ready');
+    });
+
+    const authLinks = document.querySelectorAll('.auth-siga .register a');
+    authLinks.forEach((link) => {
+      link.addEventListener('click', (event) => {
+        const href = link.getAttribute('href');
+        if (!href || href.indexOf('#') === 0) return;
+        event.preventDefault();
+        body.classList.add('is-leaving');
+        setTimeout(() => {
+          window.location.href = href;
+        }, 260);
+      });
+    });
+  };
+
+  let scrollFadeObserver = null;
+
+  const registerScrollFades = (root = document) => {
+    const elements = root.querySelectorAll('.scroll-fade');
+    if (!elements.length) return;
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) {
+      elements.forEach((el) => el.classList.add('is-visible'));
+      return;
+    }
+
+    if (!scrollFadeObserver) {
+      scrollFadeObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-visible');
+              scrollFadeObserver.unobserve(entry.target);
+            }
+          });
+        },
+        {
+          threshold: 0.2,
+          rootMargin: '0px 0px -10% 0px'
+        }
+      );
+    }
+
+    elements.forEach((el) => {
+      if (!el.classList.contains('is-visible')) {
+        scrollFadeObserver.observe(el);
+      }
+    });
+  };
+
+  const setupScrollFades = () => {
+    registerScrollFades();
+    window.registerScrollFades = registerScrollFades;
+  };
+
   document.addEventListener('DOMContentLoaded', async () => {
     rewriteNavLinks();
     setupGlobals();
@@ -1447,6 +1544,9 @@
     setupSupabaseLogin();
     setupSupabaseRegister();
     setupAuthFloatingLabels();
+    setupPasswordToggles();
+    setupAuthPageTransitions();
+    setupScrollFades();
     setupHeaderAuthState();
     setupModalClose();
     setupInfoCardDropdowns();

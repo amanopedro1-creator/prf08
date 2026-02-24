@@ -102,7 +102,7 @@
       const hasContent = Boolean((n.conteudo || '').trim());
 
       return `
-      <article class="news-item news-item--expandable" data-news-id="${esc(n.id)}">
+      <article class="news-item news-item--expandable scroll-fade" data-news-id="${esc(n.id)}">
         <div class="news-image">${image}</div>
         <div class="news-content">
           <h3>${esc(n.titulo)}</h3>
@@ -113,6 +113,10 @@
         </div>
       </article>`;
     }).join('');
+
+    if (typeof window.registerScrollFades === 'function') {
+      window.registerScrollFades(grid);
+    }
 
     grid.querySelectorAll('.news-toggle-btn').forEach((btn) => {
       btn.addEventListener('click', () => {

@@ -23,89 +23,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins&display=swap">
 </head>
-<body>
-            <header class="top-header">
-        <div class="container">
-            <div class="top-header-content">
-                <div class="logo-governo">
-                    <a href="index.html" class="gov-logo-link">
-                        <img src="assets/img/gov_br.png" alt="Governo do Brasil" class="gov-logo">
-                    </a>
-                    <span class="gov-divider" aria-hidden="true"></span>
-                    <div class="gov-identity">
-                        <span class="gov-ministry">MINISTÉRIO DA JUSTIÇA E SEGURANÇA PÚBLICA</span>
-                        <span class="gov-agency">Polícia Rodoviária Federal</span>
-                    </div>
-                </div>
-                <div class="top-header-right">
-                    <div class="user-auth-header">
-                        <a href="login.html" id="header-login-btn" class="auth-link">
-                            <i class="fas fa-sign-in-alt"></i>
-                            <span>LOGIN</span>
-                        </a>
-                        <a href="criar-conta.html" id="header-register-btn" class="auth-link">
-                            <i class="fas fa-user-plus"></i>
-                            <span>CRIAR CONTA</span>
-                        </a>
-                        <div id="header-user-menu" class="user-menu-header is-hidden">
-                            <span class="user-name-header"></span>
-<a href="#" onclick="userProfile.openModal(); return false;" class="auth-link" id="header-edit-profile-link">
-                                <i class="fas fa-user-edit"></i>
-                                <span>EDITAR PERFIL</span>
-                            </a>
-                            <a href="#" onclick="auth.logout(); return false;" class="auth-link">
-                                <i class="fas fa-sign-out-alt"></i>
-                                <span>SAIR</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </header>
-
-        <header class="main-header main-header--duna" id="menu">
-        <div class="container">
-            <div class="header-row">
-
-            <!-- ESQUERDA: 3 páginas -->
-            <nav class="mini-nav mini-nav--left" aria-label="Páginas (esquerda)">
-                <a href="index.html">INÍCIO</a>
-                    <div class="nav-dropdown">
-                        <a href="#" class="nav-link-dropdown" aria-haspopup="true" aria-expanded="false">INSTITUCIONAL</a>
-                        <div class="dropdown-menu">
-                            <a href="organograma.html">Organograma</a>
-<a href="historia-valores.html">História e Valores</a>
-                        </div>
-                    </div>
-                    <div class="nav-dropdown">
-                        <a href="#" class="nav-link-dropdown" aria-haspopup="true" aria-expanded="false">SERVIÇOS</a>
-                            <div class="dropdown-menu">
-                            <a href="documentos.html">Documentos PRF</a>
-                        </div>
-                    </div>
-            </nav>
-
-            <!-- CENTRO: informação (logo + textos) -->
-            <div class="main-header-top">
-                <div class="brand-block">
-                <a href="index.html" class="brand-logo-link">
-                <img src="assets/img/prf.png" alt="PRF Jaguaré" class="brand-logo">
-                </a>
-                </div>
-            </div>
-            <!-- DIREITA: +3 páginas -->
-            <nav class="mini-nav mini-nav--right" aria-label="Páginas (direita)">
-                <a href="concursos.html">CONCURSOS</a>
-                <a href="capacitacao.html">CAPACITAÇÃO E TREINAMENTO</a>
-                <a href="/corregedoria.html">CORREGEDORIA</a>
-            </nav>
-            </div>
-            <div class="red-line"></div>
-        </div>
-        </header>
-
-                <section class="auth-siga">
+<body class="auth-page">
+<section class="auth-siga">
         <div class="wrapper auth-siga-wrapper">
             <div class="auth-siga-head">
                 <img src="assets/img/siga_prf.png" alt="SIGA PRF" class="auth-logo-siga">
@@ -122,9 +41,12 @@
                         <i class="fas fa-envelope icon"></i>
                     </div>
 
-                    <div class="input_box">
+                    <div class="input_box input_box--password">
                         <input type="password" id="login-password" name="password" class="input-field" autocomplete="current-password" placeholder=" " required>
                         <label for="login-password" class="label">Senha de acesso</label>
+                        <button class="input-toggle" type="button" data-target="login-password" aria-label="Mostrar senha" aria-pressed="false">
+                            <i class="fas fa-eye" aria-hidden="true"></i>
+                        </button>
                         <i class="fas fa-lock icon"></i>
                     </div>
 
@@ -146,36 +68,10 @@
                     </div>
                 </form>
             </div>
+            <a href="index.html" class="auth-back-link">Voltar ao site</a>
         </div>
     </section>
-
-        <footer class="diario-footer">
-        <div class="container">
-            <div class="diario-footer-top">
-                <div class="diario-footer-brand">
-                    <img src="assets/img/prf.png" alt="Polícia Rodoviária Federal" class="diario-footer-logo">
-                    <div class="diario-footer-brand-text">
-                        <strong>Polícia Rodoviária Federal</strong>
-                        <span>Unidade Operacional Jaguaré</span>
-                        <span>São Paulo - SP</span>
-                    </div>
-                </div>
-                <div class="diario-footer-contact">
-                    <h4>CONTATO</h4>
-                    <p>PRF — Delegacia de Jaguaré</p>
-                    <p>Telefone: 191 (PRF)</p>
-                    <p>Emergência: 190</p>
-                </div>
-            </div>
-            <div class="diario-footer-divider" aria-hidden="true"></div>
-            <div class="diario-footer-bottom">
-                <span>© 2026 Lucas Santhi — Todos os direitos reservados</span>             
-                <img src="assets/img/gov_br.png" alt="gov.br" class="diario-footer-gov">                
-            </div>
-            <div><span>Este site não tem vínculo com nenhuma instituição real.</span></div>
-        </div>
-    </footer>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         window.SUPABASE_URL = window.SUPABASE_URL || 'https://pssujmmuachdymlwsiuj.supabase.co';
         window.SUPABASE_ANON_KEY = window.SUPABASE_ANON_KEY || 'sb_publishable_PYQxZQr_TfVEesG7L4WI4g_-VjPHVpW';
@@ -183,6 +79,7 @@
     <script src="app.js" defer></script>
 </body>
 </html>
+
 
 
 
