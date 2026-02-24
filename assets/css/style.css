@@ -4034,7 +4034,12 @@ p {
     background-size: cover;
     background-repeat: no-repeat;
     background-attachment: fixed;
+    min-height: 100vh;
     padding: 56px 0 72px;
+}
+
+.auth-page {
+    background-color: #05090d;
 }
 
 .auth-siga, .auth-siga * {
@@ -4131,6 +4136,19 @@ p {
     color: var(--second-color);
     box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.2);
     background: rgba(3, 12, 20, 0.35);
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity 420ms ease, transform 420ms ease;
+}
+
+.auth-page.is-ready .auth-siga .login_box {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.auth-page.is-leaving .auth-siga .login_box {
+    opacity: 0;
+    transform: translateY(18px);
 }
 
 .auth-siga .login_box--wide {
@@ -4211,6 +4229,10 @@ p {
     padding-right: 120px;
 }
 
+.auth-siga .input_box--password .input-field {
+    padding-right: 92px;
+}
+
 .auth-siga .input-suffix {
     position: absolute;
     right: 54px;
@@ -4223,6 +4245,29 @@ p {
 
 .auth-siga .input_box--suffix .icon {
     right: 20px;
+}
+
+.auth-siga .input_box--password .icon {
+    right: 56px;
+}
+
+.auth-siga .input-toggle {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    padding: 0;
+    color: #e5e7eb;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.auth-siga .input-toggle:focus {
+    outline: 2px solid rgba(255, 255, 255, 0.6);
+    outline-offset: 2px;
+    border-radius: 999px;
 }
 
 .auth-siga .remember-forgot {
@@ -4279,6 +4324,34 @@ p {
     font-size: 13px;
     color: #f8fafc;
     text-align: center;
+}
+
+.auth-siga .auth-back-link {
+    margin-top: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 22px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    color: var(--second-color);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    background: rgba(3, 12, 20, 0.4);
+    backdrop-filter: blur(10px);
+    transition: transform 200ms ease, background 200ms ease, border-color 200ms ease;
+}
+
+.auth-siga .auth-back-link:hover {
+    transform: translateY(-1px);
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.6);
+}
+
+.auth-siga .auth-back-link:focus {
+    outline: 2px solid rgba(255, 255, 255, 0.6);
+    outline-offset: 2px;
 }
 
 .auth-siga .auth-photo {
@@ -4352,6 +4425,170 @@ p {
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-56px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(56px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes stackIn {
+    from {
+        opacity: 0;
+        transform: translateY(28px) scale(0.96);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.historia-page .historia-main {
+    animation: slideInLeft 980ms ease both;
+}
+
+.historia-page .valores-section {
+    animation: slideInRight 980ms ease both;
+}
+
+.historia-page .historia-image {
+    animation: fadeIn 980ms ease both;
+    animation-delay: 160ms;
+}
+
+.docs-page .news-header h2,
+.docs-page .news-header .red-line-news {
+    animation: fadeIn 640ms ease both;
+}
+
+.docs-page .news-header .red-line-news {
+    animation-delay: 120ms;
+}
+
+.docs-page .docs-card {
+    opacity: 0;
+    transform: translateY(28px) scale(0.96);
+    animation: stackIn 680ms ease both;
+}
+
+.docs-page .docs-card:nth-child(1) { animation-delay: 80ms; }
+.docs-page .docs-card:nth-child(2) { animation-delay: 160ms; }
+.docs-page .docs-card:nth-child(3) { animation-delay: 240ms; }
+.docs-page .docs-card:nth-child(4) { animation-delay: 320ms; }
+.docs-page .docs-card:nth-child(5) { animation-delay: 400ms; }
+.docs-page .docs-card:nth-child(6) { animation-delay: 480ms; }
+
+.concursos-page .news-header h2,
+.concursos-page .news-header .red-line-news {
+    animation: fadeIn 640ms ease both;
+}
+
+.concursos-page .news-header .red-line-news {
+    animation-delay: 120ms;
+}
+
+.concursos-page .concurso-card {
+    opacity: 0;
+    transform: translateY(28px) scale(0.96);
+    animation: stackIn 680ms ease both;
+    animation-delay: 120ms;
+}
+
+.capacitacao-page .news-header h2,
+.capacitacao-page .news-header .red-line-news {
+    animation: fadeIn 640ms ease both;
+}
+
+.capacitacao-page .news-header .red-line-news {
+    animation-delay: 120ms;
+}
+
+.capacitacao-page .info-card,
+.capacitacao-page .info-card-historia,
+.capacitacao-page .centralizar-foto {
+    opacity: 0;
+    transform: translateY(28px) scale(0.96);
+    animation: stackIn 680ms ease both;
+}
+
+.capacitacao-page .centralizar-foto {
+    animation-delay: 120ms;
+}
+
+.capacitacao-page .info-card {
+    animation-delay: 200ms;
+}
+
+.capacitacao-page .info-card-historia {
+    animation-delay: 320ms;
+}
+
+.corregedoria-page .info-card {
+    opacity: 0;
+    transform: translateY(32px);
+    animation: slideUp 720ms ease both;
+}
+
+.corregedoria-page .info-card:nth-of-type(1) { animation-delay: 120ms; }
+.corregedoria-page .info-card:nth-of-type(2) { animation-delay: 260ms; }
+
+@media (prefers-reduced-motion: reduce) {
+    .docs-page .news-header h2,
+    .docs-page .news-header .red-line-news,
+    .docs-page .docs-card,
+    .concursos-page .news-header h2,
+    .concursos-page .news-header .red-line-news,
+    .concursos-page .concurso-card,
+    .capacitacao-page .news-header h2,
+    .capacitacao-page .news-header .red-line-news,
+    .capacitacao-page .info-card,
+    .capacitacao-page .info-card-historia,
+    .capacitacao-page .centralizar-foto,
+    .corregedoria-page .info-card {
+        animation: none;
+        opacity: 1;
+        transform: none;
+    }
+}
+
+.scroll-fade {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 600ms ease, transform 600ms ease;
+}
+
+.scroll-fade.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .scroll-fade {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+}
+
+.organograma-page .organograma-section {
+    animation: fadeIn 720ms ease, slideUp 720ms ease;
 }
 
 /* Transi??es suaves para modo escuro */
