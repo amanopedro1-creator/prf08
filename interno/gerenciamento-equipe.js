@@ -185,26 +185,34 @@
         }
 
         let allowedGroups = [];
+        let coordinatorScoped = false;
         const ownPrimary = resolvePrimaryGroup(profile);
         const ownSecondary = resolveSecondaryGroup(profile);
         const ownGroups = [ownPrimary, ownSecondary].concat(parseGroups(profile.grupamento || '')).filter(Boolean);
+        const ownPrimaryNorm = normalize(ownPrimary);
         if (isAdmin || isDiretor || isSuperintendente) {
             allowedGroups = [];
         } else if (isChefeDiv || isChefeServ) {
             allowedGroups = ownGroups;
         } else if (isCoordenador) {
-            if (ownGroups.some(function (g) { return normalize(g) === normalize('Diretoria Executiva'); })) {
+            coordinatorScoped = true;
+            const isDiretoriaExecutiva = ownPrimaryNorm === normalize('Diretoria Executiva')
+                || ownPrimaryNorm === normalize('Diretoria Exectuiva');
+            const isDiretoriaOperacional = ownPrimaryNorm === normalize('Diretoria Operacional');
+            if (isDiretoriaExecutiva) {
                 allowedGroups = [
                     'Ronda PRF',
                     'Grupo de Patrulhamento Motorizado',
                     'Universidade Corporativa da PRF'
                 ];
-            } else if (ownGroups.some(function (g) { return normalize(g) === normalize('Diretoria Operacional'); })) {
+            } else if (isDiretoriaOperacional) {
                 allowedGroups = [
                     'Grupo de Patrulhamento Tático',
                     'Divisão de Operações Aéreas',
                     'Núcleo de Operações Especiais'
                 ];
+            } else {
+                allowedGroups = ['__sem_escopo__'];
             }
         }
 
@@ -240,6 +248,12 @@
                     return pPrimaryNorm === ownPrimaryNorm || pSecondaryNorm === ownPrimaryNorm;
                 }
                 return pPrimaryNorm === ownPrimaryNorm;
+            });
+        } else if (coordinatorScoped) {
+            const allowedNorm = allowedGroups.map(normalize);
+            profiles = profiles.filter(function (p) {
+                const pPrimaryNorm = normalize(resolvePrimaryGroup(p));
+                return allowedNorm.includes(pPrimaryNorm);
             });
         } else if (allowedGroups.length) {
             const allowedNorm = allowedGroups.map(normalize);
