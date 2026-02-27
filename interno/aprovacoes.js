@@ -367,9 +367,13 @@
     async function deleteProfile(userId, question, successText) {
         if (!window.confirm(question)) return;
         setStatus('Removendo perfil e dados...');
-        const result = await supabaseClient.from('profiles').delete().eq('id', userId);
+        const result = await supabaseClient.rpc('admin_delete_profile', { p_user_id: userId });
         if (result.error) {
             setStatus('Falha ao remover perfil: ' + result.error.message, true);
+            return;
+        }
+        if (result.data && result.data.success === false) {
+            setStatus('Falha ao remover perfil: ' + (result.data.error || 'erro desconhecido'), true);
             return;
         }
         setStatus(successText);
