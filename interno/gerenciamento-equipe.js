@@ -25,6 +25,20 @@
             .filter(Boolean);
     }
 
+    function resolvePrimaryGroup(profile) {
+        const direct = String(profile && profile.grupamento_principal ? profile.grupamento_principal : '').trim();
+        if (direct) return direct;
+        const legacy = parseGroups(profile && profile.grupamento ? profile.grupamento : '');
+        return legacy.length ? legacy[0] : '';
+    }
+
+    function resolveSecondaryGroup(profile) {
+        const direct = String(profile && profile.grupamento_secundario ? profile.grupamento_secundario : '').trim();
+        if (direct) return direct;
+        const legacy = parseGroups(profile && profile.grupamento ? profile.grupamento : '');
+        return legacy.length > 1 ? legacy[1] : '';
+    }
+
     function buildTokens(profile) {
         const raw = [profile.nome_guerra, profile.rg, profile.email].filter(Boolean);
         const tokens = raw.map(normalize).filter(function (v) { return v.length >= 3; });
@@ -82,7 +96,7 @@
                     <div>
                         <div class="gerenciamento-name">${member.nome}</div>
                         <div class="gerenciamento-meta">RG: ${member.rg} • ${member.cargo}</div>
-                        <div class="gerenciamento-meta">${member.grupamento}</div>
+                        <div class="gerenciamento-meta">Principal: ${member.grupamentoPrincipal} | Secundário: ${member.grupamentoSecundario}</div>
                     </div>
                 </div>
                 <div class="gerenciamento-metrics">
@@ -110,7 +124,7 @@
 
         const grouped = {};
         list.forEach(function (m) {
-            const key = m.grupamento || 'Sem grupamento';
+            const key = m.grupamentoPrincipal || 'Sem grupamento principal';
             if (!grouped[key]) grouped[key] = [];
             grouped[key].push(m);
         });
@@ -146,7 +160,7 @@
 
         const profileResult = await client
             .from('profiles')
-            .select('id, nome_guerra, rg, cargo, grupamento, is_admin, email')
+            .select('id, nome_guerra, rg, cargo, grupamento, grupamento_principal, grupamento_secundario, is_admin, email')
             .eq('id', user.id)
             .maybeSingle();
         const profile = profileResult && profileResult.data ? profileResult.data : null;
@@ -171,7 +185,9 @@
         }
 
         let allowedGroups = [];
-        const ownGroups = parseGroups(profile.grupamento || '');
+        const ownPrimary = resolvePrimaryGroup(profile);
+        const ownSecondary = resolveSecondaryGroup(profile);
+        const ownGroups = [ownPrimary, ownSecondary].concat(parseGroups(profile.grupamento || '')).filter(Boolean);
         if (isAdmin || isDiretor || isSuperintendente) {
             allowedGroups = [];
         } else if (isChefeDiv || isChefeServ) {
@@ -199,7 +215,7 @@
 
         const profilesResult = await client
             .from('profiles')
-            .select('id, nome_guerra, rg, cargo, grupamento, foto_url, email')
+            .select('id, nome_guerra, rg, cargo, grupamento, grupamento_principal, grupamento_secundario, foto_url, email')
             .eq('aprovado', true)
             .order('nome_guerra', { ascending: true });
         if (profilesResult.error) {
@@ -211,10 +227,26 @@
         }
 
         let profiles = Array.isArray(profilesResult.data) ? profilesResult.data : [];
-        if (allowedGroups.length) {
+        if (isChefeDiv || isChefeServ) {
+            const ownPrimaryNorm = normalize(ownPrimary);
+            profiles = profiles.filter(function (p) {
+                const pPrimary = resolvePrimaryGroup(p);
+                const pSecondary = resolveSecondaryGroup(p);
+                const pPrimaryNorm = normalize(pPrimary);
+                const pSecondaryNorm = normalize(pSecondary);
+
+                if (!ownPrimaryNorm) return false;
+                if (ownPrimaryNorm === normalize('Ronda PRF')) {
+                    return pPrimaryNorm === ownPrimaryNorm || pSecondaryNorm === ownPrimaryNorm;
+                }
+                return pPrimaryNorm === ownPrimaryNorm;
+            });
+        } else if (allowedGroups.length) {
             const allowedNorm = allowedGroups.map(normalize);
             profiles = profiles.filter(function (p) {
-                const groups = parseGroups(p.grupamento || '');
+                const groups = [resolvePrimaryGroup(p), resolveSecondaryGroup(p)]
+                    .concat(parseGroups(p.grupamento || ''))
+                    .filter(Boolean);
                 return groups.some(function (g) { return allowedNorm.includes(normalize(g)); });
             });
         }
@@ -298,7 +330,8 @@
                 nome: safe(p.nome_guerra, 'Agente'),
                 rg: safe(p.rg, '-'),
                 cargo: safe(p.cargo, '-'),
-                grupamentos: parseGroups(p.grupamento || ''),
+                grupamentoPrincipal: resolvePrimaryGroup(p) || '-',
+                grupamentoSecundario: resolveSecondaryGroup(p) || '-',
                 foto_url: p.foto_url || 'assets/img/prf.png',
                 serviceTotal: minutesToHhmm(totalMinutes),
                 service7: minutesToHhmm(last7Minutes),
@@ -309,24 +342,21 @@
             };
         });
 
-        const members = [];
-        baseMembers.forEach(function (base) {
-            const groups = base.grupamentos.length ? base.grupamentos : ['Sem grupamento'];
-            groups.forEach(function (grp) {
-                members.push({
-                    nome: base.nome,
-                    rg: base.rg,
-                    cargo: base.cargo,
-                    grupamento: grp,
-                    foto_url: base.foto_url,
-                    serviceTotal: base.serviceTotal,
-                    service7: base.service7,
-                    bou7: base.bou7,
-                    ait7: base.ait7,
-                    ripat7: base.ripat7,
-                    rolePriority: base.rolePriority
-                });
-            });
+        const members = baseMembers.map(function (base) {
+            return {
+                nome: base.nome,
+                rg: base.rg,
+                cargo: base.cargo,
+                grupamentoPrincipal: base.grupamentoPrincipal,
+                grupamentoSecundario: base.grupamentoSecundario,
+                foto_url: base.foto_url,
+                serviceTotal: base.serviceTotal,
+                service7: base.service7,
+                bou7: base.bou7,
+                ait7: base.ait7,
+                ripat7: base.ripat7,
+                rolePriority: base.rolePriority
+            };
         });
 
         members.sort(function (a, b) {

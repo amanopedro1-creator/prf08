@@ -456,9 +456,18 @@ async function loadRelatedRecords(prefilled) {
     return fetchRecent('aits', 'id,user_id,numero_ait,infrator,conteudo_completo,created_at,data_criacao', 'data_criacao');
   };
 
+  const fetchRecentAluno = async () => {
+    const rpc = await client.rpc('list_recent_relatorios_aluno_for_user', { p_days: relatedDays.aluno });
+    if (!rpc.error && Array.isArray(rpc.data)) return rpc.data;
+
+    const principal = await fetchRecent('relatorios_aluno', 'id,user_id,titulo,texto,detalhes,conteudo_completo,created_at', null);
+    if (Array.isArray(principal) && principal.length) return principal;
+    return fetchRecent('relatorio_aluno', 'id,user_id,titulo,texto,detalhes,conteudo_completo,created_at', null);
+  };
+
   const bouRows = await fetchRecentBous();
   const aitRows = await fetchRecentAits();
-  const alunoRows = await fetchRecent('relatorios_aluno', 'id,user_id,titulo,texto,detalhes,conteudo_completo,created_at', null);
+  const alunoRows = await fetchRecentAluno();
 
   relatedState.bou = bouRows
     .filter((row) => Boolean(row.sent_to_discord_at))

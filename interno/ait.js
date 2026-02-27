@@ -219,7 +219,15 @@ async function salvarAitNoBanco(payload) {
 }
 
 async function enviarAitParaDiscord(client, aitId) {
-  const rpc = await client.rpc("send_ait_to_discord", { p_ait_ids: [Number(aitId)] });
+  if (!client) {
+    throw new Error("Cliente Supabase indisponivel para envio.");
+  }
+
+  let rpc = await client.rpc("send_ait_to_discord", { p_ait_ids: [Number(aitId)] });
+  if (rpc.error) {
+    rpc = await client.rpc("send_ait_to_discord", { p_ait_id: Number(aitId) });
+  }
+
   if (rpc.error) {
     throw new Error(`AIT salvo no banco, mas falhou no envio ao Discord: ${rpc.error.message}`);
   }
@@ -247,6 +255,7 @@ async function enviarAit() {
       window.incrementMultasTotal(diff);
       if (currentEditId) originalValorMulta = valorAtual;
     }
+    await carregarUltimoTituloAit();
     setStatus(currentEditId ? `AIT #${aitId} atualizado e enviado ao Discord.` : `AIT #${el.numeroAit} salvo e enviado ao Discord.`);
   } catch (err) {
     setStatus(err.message || "Falha ao enviar AIT.", true);
@@ -304,6 +313,17 @@ async function carregarUltimoTituloAit() {
   const { client, user } = await getCurrentUser();
   if (!client || !user) return;
 
+  try {
+    const latestRpc = await client.rpc("get_last_dispatched_documents");
+    const latestRow = Array.isArray(latestRpc.data) ? latestRpc.data[0] : latestRpc.data;
+    if (!latestRpc.error && latestRow && latestRow.ait_titulo) {
+      setUltimoTituloAit(String(latestRow.ait_titulo || "").trim());
+      return;
+    }
+  } catch {
+    // segue fallback local
+  }
+
   const baseQuery = client
     .from("aits")
     .select("numero_ait, conteudo_completo, data_criacao, created_at")
@@ -352,3 +372,4 @@ preencherPolicialResponsavel();
 prefillDataHora();
 carregarUltimoTituloAit();
 carregarAitParaEdicao();
+setInterval(carregarUltimoTituloAit, 30000);

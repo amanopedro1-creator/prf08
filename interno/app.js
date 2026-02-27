@@ -477,14 +477,26 @@
       event.preventDefault();
     });
 
-    document.addEventListener('click', (event) => {
+    document.addEventListener('click', async (event) => {
       const trigger = event.target.closest('[data-show-avisos="true"]');
       if (!trigger) return;
       clearAvisosDismissed();
-      const latest = document.querySelector('[data-aviso-scope="latest"][data-aviso-id]');
+      let latest = document.querySelector('[data-aviso-scope="latest"][data-aviso-id]');
+      if (!latest && typeof window.loadPainelLatestAviso === 'function') {
+        try {
+          await window.loadPainelLatestAviso();
+        } catch (err) {
+          // noop
+        }
+        latest = document.querySelector('[data-aviso-scope="latest"][data-aviso-id]');
+      }
       if (latest) {
         showAvisoElement(latest);
+        if (typeof latest.scrollIntoView === 'function') {
+          latest.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
       }
+      event.preventDefault();
     });
 
     applyAvisoDismissals(document);

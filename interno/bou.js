@@ -868,6 +868,20 @@ async function carregarBouParaEdicao() {
 
 async function carregarUltimoTituloBou() {
   if (!el.lastTitleWrap) return;
+  const { client, user } = await getCurrentUser();
+  if (!client || !user) return;
+
+  try {
+    const latestRpc = await client.rpc('get_last_dispatched_documents');
+    const latestRow = Array.isArray(latestRpc.data) ? latestRpc.data[0] : latestRpc.data;
+    if (!latestRpc.error && latestRow && latestRow.bou_titulo) {
+      setUltimoTituloBou(String(latestRow.bou_titulo || '').trim());
+      return;
+    }
+  } catch (err) {
+    // segue fallback local
+  }
+
   const storedTitle = readLastSentTitle();
   setUltimoTituloBou(storedTitle);
 }
@@ -986,3 +1000,4 @@ sincronizarAcoesCombinadas();
   await carregarUltimoTituloBou();
   await carregarBouParaEdicao();
 })();
+setInterval(carregarUltimoTituloBou, 30000);

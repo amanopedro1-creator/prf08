@@ -102,6 +102,20 @@
             .filter(Boolean);
     }
 
+    function resolveGrupamentoPrincipal(profile) {
+        const direct = String(profile && profile.grupamento_principal ? profile.grupamento_principal : '').trim();
+        if (direct) return direct;
+        const legacy = parseGrupamentos(profile && (profile.grupamento || profile.unidade || ''));
+        return legacy.length ? legacy[0] : '';
+    }
+
+    function resolveGrupamentoSecundario(profile) {
+        const direct = String(profile && profile.grupamento_secundario ? profile.grupamento_secundario : '').trim();
+        if (direct) return direct;
+        const legacy = parseGrupamentos(profile && (profile.grupamento || profile.unidade || ''));
+        return legacy.length > 1 ? legacy[1] : '';
+    }
+
     function renderMedalOptions(selectedCodes) {
         const node = byId('roles-medalhas');
         if (!node) return;
@@ -414,7 +428,8 @@
         byId('roles-user-name').textContent = profile.nome_guerra || profile.email || profile.id;
         byId('roles-user-email').textContent = profile.email || '-';
         ensureSelectValue('roles-cargo', profile.cargo || '');
-        ensureMultiSelectValues('roles-grupamento', parseGrupamentos(profile.grupamento || profile.unidade || ''));
+        ensureSelectValue('roles-grupamento-principal', resolveGrupamentoPrincipal(profile));
+        ensureSelectValue('roles-grupamento-secundario', resolveGrupamentoSecundario(profile));
         ensureSelectValue('roles-acesso', profile.acesso || '');
 
         const cursos = parseCursos(profile.cursos);
@@ -464,10 +479,11 @@
         const payload = {};
         if (activeEditMode === 'cargo') payload.cargo = (byId('roles-cargo').value || '').trim();
         if (activeEditMode === 'grupamento') {
-            const selected = Array.from(byId('roles-grupamento').selectedOptions || [])
-                .map(function (opt) { return opt.value; })
-                .filter(Boolean);
-            payload.grupamento = selected.join(' || ');
+            const principal = (byId('roles-grupamento-principal').value || '').trim();
+            const secundario = (byId('roles-grupamento-secundario').value || '').trim();
+            payload.grupamento_principal = principal || null;
+            payload.grupamento_secundario = secundario || null;
+            payload.grupamento = [principal, secundario].filter(Boolean).join(' || ');
         }
         if (activeEditMode === 'acesso') payload.acesso = (byId('roles-acesso').value || '').trim();
         if (activeEditMode === 'cursos') {
@@ -544,7 +560,8 @@
 
     function buildProfileCard(profile) {
         const coursesText = parseCursos(profile.cursos).join(' | ') || 'Sem cursos';
-        const grouped = parseGrupamentos(profile.grupamento || profile.unidade || '').join(' | ') || '-';
+        const groupedPrimary = resolveGrupamentoPrincipal(profile) || '-';
+        const groupedSecondary = resolveGrupamentoSecundario(profile) || '-';
         const acessoLabel = profile.acesso || '-';
         const approved = profile.aprovado === true;
         const statusClass = approved ? 'badge-ok' : 'badge-pending';
@@ -571,7 +588,8 @@
                     '<div class="approvals-user-meta">' +
                         '<span><strong>RG:</strong> ' + escapeHtml(profile.rg || '-') + '</span>' +
                         '<span><strong>Cargo:</strong> ' + escapeHtml(profile.cargo || '-') + '</span>' +
-                        '<span><strong>Grupamento:</strong> ' + escapeHtml(grouped) + '</span>' +
+                        '<span><strong>Grupamento principal:</strong> ' + escapeHtml(groupedPrimary) + '</span>' +
+                        '<span><strong>Grupamento secundário:</strong> ' + escapeHtml(groupedSecondary) + '</span>' +
                         '<span><strong>Acesso:</strong> ' + escapeHtml(acessoLabel) + '</span>' +
                         '<span><strong>Cursos:</strong> ' + escapeHtml(coursesText) + '</span>' +
                         '<span><strong>Admin:</strong> ' + (profile.is_admin ? 'Sim' : 'Não') + '</span>' +
@@ -655,7 +673,7 @@
         setStatus('Carregando usuários...');
         const result = await supabaseClient
             .from('profiles')
-            .select('id,email,nome_guerra,rg,cargo,grupamento,acesso,cursos,unidade,foto_url,created_at,aprovado,is_admin')
+            .select('id,email,nome_guerra,rg,cargo,grupamento,grupamento_principal,grupamento_secundario,acesso,cursos,unidade,foto_url,created_at,aprovado,is_admin')
             .order('created_at', { ascending: false });
         if (result.error) {
             setStatus('Falha ao carregar usuários: ' + result.error.message, true);

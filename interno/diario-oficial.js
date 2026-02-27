@@ -46,10 +46,37 @@
         return formatLongPt(dateValue).toUpperCase();
     }
 
-    function truncateText(value, maxLen) {
+    function splitDiscordChunks(value, maxLen) {
         const text = String(value || "");
-        if (text.length <= maxLen) return text;
-        return text.slice(0, Math.max(0, maxLen - 1)) + "\u2026";
+        const safeMax = Math.max(200, Number(maxLen) || 1900);
+        if (!text) return [""];
+        if (text.length <= safeMax) return [text];
+
+        const lines = text.split("\n");
+        const chunks = [];
+        let current = "";
+        const pushCurrent = function () {
+            if (current) chunks.push(current);
+            current = "";
+        };
+
+        lines.forEach(function (line, idx) {
+            const withBreak = idx < lines.length - 1 ? (line + "\n") : line;
+            if ((current + withBreak).length <= safeMax) {
+                current += withBreak;
+                return;
+            }
+            if (current) pushCurrent();
+            if (withBreak.length <= safeMax) {
+                current = withBreak;
+                return;
+            }
+            for (let i = 0; i < withBreak.length; i += safeMax) {
+                chunks.push(withBreak.slice(i, i + safeMax));
+            }
+        });
+        pushCurrent();
+        return chunks.length ? chunks : [text.slice(0, safeMax)];
     }
 
     async function sendDiarioToDiscord(row) {
@@ -74,22 +101,37 @@
             marcacao
         ].join("\n");
 
-        const payload = {
-            content: truncateText(body, 1900)
-        };
-
-        const response = await fetch(DISCORD_WEBHOOK_URL, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
-        });
-
-        if (!response.ok) {
-            const text = await response.text().catch(function () { return ""; });
-            throw new Error("Webhook falhou: " + response.status + " " + text);
+        const chunks = splitDiscordChunks(body, 1900);
+        const MAX_MESSAGES = 100;
+        if (chunks.length > MAX_MESSAGES) {
+            throw new Error("Texto excede o limite operacional do webhook (" + MAX_MESSAGES + " mensagens).");
         }
 
-        return response;
+        let lastResponse = null;
+        let lastMessageId = null;
+        for (let i = 0; i < chunks.length; i += 1) {
+            const prefix = chunks.length > 1 ? `[Parte ${i + 1}/${chunks.length}]\n` : "";
+            const payload = { content: prefix + chunks[i] };
+            const response = await fetch(DISCORD_WEBHOOK_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            });
+            if (!response.ok) {
+                const text = await response.text().catch(function () { return ""; });
+                throw new Error("Webhook falhou na parte " + (i + 1) + ": " + response.status + " " + text);
+            }
+
+            try {
+                const json = await response.clone().json();
+                if (json && json.id) lastMessageId = String(json.id);
+            } catch (e) {
+                /* ignore parse errors */
+            }
+            lastResponse = response;
+        }
+
+        return { response: lastResponse, messageId: lastMessageId };
     }
 
     async function enforceAuth() {
@@ -290,14 +332,8 @@
 
         const savedRow = insert.data || payload;
         try {
-            const response = await sendDiarioToDiscord(savedRow);
-            let discordMessageId = null;
-            try {
-                const json = await response.json();
-                discordMessageId = json && json.id ? String(json.id) : null;
-            } catch (e) {
-                /* ignore parse errors */
-            }
+            const webhookResult = await sendDiarioToDiscord(savedRow);
+            const discordMessageId = webhookResult && webhookResult.messageId ? webhookResult.messageId : null;
             if (savedRow.id) {
                 await client
                     .from("diarios_oficiais")
