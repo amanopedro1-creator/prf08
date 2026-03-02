@@ -472,10 +472,10 @@
                     <aside class="painel-on-duty" aria-live="polite">
                         <div class="painel-on-duty-header">
                             <button type="button" id="painel-shift-btn" class="profile-shift-btn profile-shift-btn--idle profile-shift-btn--mini">
-                                Entrar em servi&ccedil;o
+                                Entrar em serviço
                             </button>
                             <div class="painel-on-duty-title">
-                                <h3>Em servi&ccedil;o</h3>
+                                <h3>Em serviço</h3>
                                 <span id="painel-on-duty-count">0</span>
                             </div>
                         </div>
@@ -1679,25 +1679,25 @@
 
                 if (s.status === 'active' && s.startAt) {
                     btn.classList.add('profile-shift-btn--active');
-                    btn.textContent = 'Em servi&ccedil;o &bull; ' + shiftControl.formatHms(Date.now() - Number(s.startAt));
+                    btn.textContent = 'Em serviço ' + shiftControl.formatHms(Date.now() - Number(s.startAt));
                     return;
                 }
 
                 if (s.status === 'closed') {
                     if (!showClosedState) {
                         btn.classList.add('profile-shift-btn--idle');
-                        btn.textContent = 'Entrar em servi&ccedil;o';
+                        btn.textContent = 'Entrar em serviço';
                         return;
                     }
                     btn.classList.add('profile-shift-btn--closed');
                     btn.textContent = s.totalMs
-                        ? ('Servi&ccedil;o encerrado &bull; ' + shiftControl.formatHms(s.totalMs))
-                        : 'Servi&ccedil;o encerrado';
+                        ? ('Serviço encerrado ' + shiftControl.formatHms(s.totalMs))
+                        : 'Serviço encerrado';
                     return;
                 }
 
                 btn.classList.add('profile-shift-btn--idle');
-                btn.textContent = 'Entrar em servi&ccedil;o';
+                btn.textContent = 'Entrar em serviço';
             };
 
             btn.addEventListener('click', async function () {
