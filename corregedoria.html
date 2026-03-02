@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -23,7 +23,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body class="corregedoria-page">
-    <header class="top-header">
+    <header class="top-header top-header--unified" id="menu">
         <div class="container">
             <div class="top-header-content">
                 <div class="logo-governo">
@@ -32,72 +32,62 @@
                     </a>
                     <span class="gov-divider" aria-hidden="true"></span>
                     <div class="gov-identity">
-                        <span class="gov-ministry">MINIST&Eacute;RIO DA JUSTI&Ccedil;A E SEGURAN&Ccedil;A P&Uacute;BLICA</span>
-                        <span class="gov-agency">Pol&iacute;cia Rodovi&aacute;ria Federal</span>
+                        <span class="gov-ministry">MINISTÉRIO DA JUSTIÇA E SEGURANÇA PÚBLICA</span>
+                        <span class="gov-agency">Polícia Rodoviária Federal</span>
                     </div>
                 </div>
-                <div class="top-header-right">
-                    <div class="user-auth-header">
-                        <a href="login.html" id="header-login-btn" class="auth-link">
-                            <i class="fas fa-sign-in-alt"></i>
-                            <span>LOGIN</span>
-                        </a>
-                        <a href="criar-conta.html" id="header-register-btn" class="auth-link">
-                            <i class="fas fa-user-plus"></i>
-                            <span>CRIAR CONTA</span>
-                        </a>
-                        <div id="header-user-menu" class="user-menu-header is-hidden">
-                            <span class="user-name-header"></span>
-<a href="#" onclick="userProfile.openModal(); return false;" class="auth-link" id="header-edit-profile-link">
-                                <i class="fas fa-user-edit"></i>
-                                <span>EDITAR PERFIL</span>
-                            </a>
-                            <a href="#" onclick="auth.logout(); return false;" class="auth-link">
-                                <i class="fas fa-sign-out-alt"></i>
-                                <span>SAIR</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </header>
 
-    <header class="main-header main-header--duna" id="menu">
-        <div class="container">
-            <div class="header-row">
-                <nav class="mini-nav mini-nav--left" aria-label="P&aacute;ginas (esquerda)">
-                    <a href="index.html">IN&Iacute;CIO</a>
+                <nav class="mini-nav mini-nav--unified" aria-label="Navegação principal">
+                    <a href="index.html"><i class="fas fa-house"></i> INÍCIO</a>
                     <div class="nav-dropdown">
-                        <a href="#" class="nav-link-dropdown" aria-haspopup="true" aria-expanded="false">INSTITUCIONAL</a>
+                        <a href="#" class="nav-link-dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-building-columns"></i> INSTITUCIONAL</a>
                         <div class="dropdown-menu">
                             <a href="organograma.html">Organograma</a>
-                            <a href="historia-valores.html">Hist&oacute;ria e Valores</a>
+                            <a href="historia-valores.html">História e Valores</a>
                         </div>
                     </div>
                     <div class="nav-dropdown">
-                        <a href="#" class="nav-link-dropdown" aria-haspopup="true" aria-expanded="false">SERVI&Ccedil;OS</a>
+                        <a href="#" class="nav-link-dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-folder-open"></i> SERVIÇOS</a>
                         <div class="dropdown-menu">
                             <a href="documentos.html">Documentos PRF</a>
                         </div>
                     </div>
+                    <div class="nav-dropdown">
+                        <a href="#" class="nav-link-dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-chalkboard-user"></i> UNIPRF</a>
+                        <div class="dropdown-menu">
+                            <a href="capacitacao.html">UniPRF</a>
+                            <a href="concursos.html">Concursos</a>
+                        </div>
+                    </div>
+                    <a href="/corregedoria.html"><i class="fas fa-scale-balanced"></i> CORREGEDORIA</a>
                 </nav>
 
-                <div class="main-header-top">
-                    <div class="brand-block">
-                        <a href="index.html" class="brand-logo-link">
-                            <img src="assets/img/prf.png" alt="PRF Jaguar&eacute;" class="brand-logo">
+                <div class="top-header-right">
+                    <div class="user-auth-header">
+                        <a href="login.html" id="header-login-btn" class="auth-link">
+                            <i class="fas fa-sign-in-alt"></i>
+                            <span>SIGA</span>
                         </a>
+                        <div id="header-user-menu" class="user-menu-header is-hidden">
+                            <button type="button" class="user-menu-toggle" id="header-user-toggle" aria-expanded="false" aria-controls="header-user-panel">
+                                <span class="user-name-header"></span>
+                                <i class="fas fa-chevron-down" aria-hidden="true"></i>
+                            </button>
+                            <div class="user-menu-panel" id="header-user-panel">
+                                <div class="user-menu-actions"></div>
+                                <a href="#" onclick="userProfile.openModal(); return false;" class="auth-link" id="header-edit-profile-link">
+                                    <i class="fas fa-user-edit"></i>
+                                    <span>Editar perfil</span>
+                                </a>
+                                <a href="#" onclick="auth.logout(); return false;" class="auth-link">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                    <span>Sair</span>
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
-
-                <nav class="mini-nav mini-nav--right" aria-label="P&aacute;ginas (direita)">
-                    <a href="concursos.html">CONCURSOS</a>
-                    <a href="capacitacao.html">CAPACITA&Ccedil;&Atilde;O E TREINAMENTO</a>
-                    <a href="corregedoria.html" aria-current="page">CORREGEDORIA</a>
-                </nav>
             </div>
-            <div class="red-line"></div>
         </div>
     </header>
 
@@ -163,15 +153,13 @@
                 </div>
             </div>
             <div class="diario-footer-divider" aria-hidden="true"></div>
-            <div class="diario-footer-bottom">
-                <span>© 2026 Lucas Santhi — Todos os direitos reservados</span>             
-                <img src="assets/img/gov_br.png" alt="gov.br" class="diario-footer-gov">                
-            </div>
-            <div><span>Este site não tem vínculo com nenhuma instituição real.</span></div>
+            <div><span>Este site fornece informa&ccedil;&otilde;es fict&iacute;cias exclusivamente destinadas ao uso no jogo Grand Theft Auto V, no modo Role Play (RP). Todas as informa&ccedil;&otilde;es, personagens, eventos e situa&ccedil;&otilde;es descritas s&atilde;o puramente fict&iacute;cias e n&atilde;o t&ecirc;m conex&atilde;o com eventos ou indiv&iacute;duos reais. O prop&oacute;sito &eacute; proporcionar entretenimento aos participantes do jogo, e n&atilde;o deve ser interpretado como representa&ccedil;&atilde;o da realidade.</span></div>
         </div>
     </footer>
 
     <script src="app.js" defer></script>
 </body>
 </html>
+
+
 

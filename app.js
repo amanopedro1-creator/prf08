@@ -120,7 +120,7 @@
       columns = Math.min(safeCount, 3);
     }
 
-    grid.style.setProperty('grid-template-columns', `repeat(${columns}, minmax(200px, 1fr))`, 'important');
+    grid.style.setProperty('grid-template-columns', `repeat(${columns}, minmax(220px, 1fr))`, 'important');
     grid.style.setProperty('justify-content', 'center');
   };
 
@@ -598,6 +598,9 @@
     const registerLink = byId('header-register-btn');
     const userMenu = byId('header-user-menu');
     const userNameNode = userMenu ? userMenu.querySelector('.user-name-header') : null;
+    const userActionsNode = userMenu ? userMenu.querySelector('.user-menu-actions') : null;
+    const userToggle = userMenu ? userMenu.querySelector('.user-menu-toggle') : null;
+    const userPanel = userMenu ? userMenu.querySelector('.user-menu-panel') : null;
     if (!loginLink && !registerLink && !userMenu) return;
 
     const clearHeaderShiftTimer = () => {
@@ -616,11 +619,48 @@
       return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
     };
 
+    const ensureUserMenuDropdown = () => {
+      if (!userMenu || !userToggle || !userPanel) return;
+      if (userMenu.dataset.menuInit === 'true') return;
+      userMenu.dataset.menuInit = 'true';
+
+      const close = () => {
+        userMenu.classList.remove('is-open');
+        userToggle.setAttribute('aria-expanded', 'false');
+      };
+
+      const open = () => {
+        userMenu.classList.add('is-open');
+        userToggle.setAttribute('aria-expanded', 'true');
+      };
+
+      userToggle.addEventListener('click', (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        if (userMenu.classList.contains('is-open')) {
+          close();
+        } else {
+          open();
+        }
+      });
+
+      document.addEventListener('click', (event) => {
+        if (!userMenu.contains(event.target)) close();
+      });
+
+      window.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') close();
+      });
+    };
+
     const showGuest = () => {
       clearHeaderShiftTimer();
       if (loginLink) loginLink.classList.remove('is-hidden');
       if (registerLink) registerLink.classList.remove('is-hidden');
-      if (userMenu) userMenu.classList.add('is-hidden');
+      if (userMenu) {
+        userMenu.classList.add('is-hidden');
+        userMenu.classList.remove('is-open');
+      }
     };
 
     const initShiftControl = async (client, userId) => {
@@ -841,15 +881,18 @@
         textNode.className = 'user-name-text';
         textNode.textContent = name || 'Usuario autenticado';
         userNameNode.appendChild(textNode);
-        userNameNode.style.cursor = 'pointer';
-        userNameNode.setAttribute('title', 'Ir para o painel');
-        userNameNode.onclick = () => {
-          window.location.href = painelHref;
-        };
+        if (!userToggle) {
+          userNameNode.style.cursor = 'pointer';
+          userNameNode.setAttribute('title', 'Ir para o painel');
+          userNameNode.onclick = () => {
+            window.location.href = painelHref;
+          };
+        }
 
         const shiftControl = await initShiftControl(client, userId);
-        await attachHeaderShiftBadge(userNameNode, shiftControl);
+        await attachHeaderShiftBadge(userActionsNode || userNameNode, shiftControl);
       }
+      ensureUserMenuDropdown();
     };
 
     try {
