@@ -475,7 +475,7 @@
 
   const init = async () => {
     if (!window.supabase || !window.supabase.createClient || !window.SUPABASE_URL || !window.SUPABASE_ANON_KEY) {
-      setStatus('Supabase nao inicializado nesta p?gina.', true);
+      setStatus('Supabase não inicializado nesta página.', true);
       return;
     }
 
@@ -505,3 +505,4 @@
 
   window.addEventListener('DOMContentLoaded', init);
 })();
+

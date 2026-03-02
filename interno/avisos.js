@@ -157,7 +157,7 @@
                     '<h3>' + escapeHtml(titulo) + '</h3>' +
                     (subtitulo ? '<h4>' + escapeHtml(subtitulo) + '</h4>' : '') +
                     (texto ? '<p class="aviso-card-texto">' + escapeHtml(texto).replace(/\n/g, '<br>') + '</p>' : '') +
-                    (midia ? '<img src="' + escapeHtml(midia) + '" alt="Mídia do aviso" class="aviso-card-media">' : '') +
+                    (midia ? '<img src="' + escapeHtml(midia) + '" alt="M?dia do aviso" class="aviso-card-media">' : '') +
                     '<span class="aviso-card-data">Publicado em ' + escapeHtml(createdAt) + '</span>' +
                     actions +
                 '</div>' +
@@ -256,3 +256,6 @@
         }
     });
 })();
+
+
+

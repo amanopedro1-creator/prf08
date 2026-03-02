@@ -1,4 +1,4 @@
-'use strict';
+﻿'use strict';
 
 (function () {
     let client = null;
@@ -249,3 +249,4 @@
 
     init();
 })();
+

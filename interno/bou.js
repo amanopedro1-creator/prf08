@@ -99,7 +99,7 @@ function setUltimoTituloBou(titulo) {
   el.lastTitleWrap.classList.remove('is-hidden');
   if (!safe) {
     el.lastTitleWrap.classList.add('is-empty');
-    el.lastTitleText.textContent = '—';
+    el.lastTitleText.textContent = '?';
     return;
   }
   el.lastTitleWrap.classList.remove('is-empty');
@@ -158,7 +158,7 @@ function getSupabaseClient() {
 
 async function getCurrentUser() {
   const client = getSupabaseClient();
-  if (!client) return { client: null, user: null, error: 'Supabase nao disponivel na p?gina.' };
+  if (!client) return { client: null, user: null, error: 'Supabase nao disponivel na página.' };
   const sessionResult = await client.auth.getSession();
   const session = sessionResult && sessionResult.data ? sessionResult.data.session : null;
   const user = session ? session.user : null;
@@ -547,10 +547,10 @@ function gerarTexto() {
     '',
     `Material Apreendido: ${v(el.material, 'NIHIL')}`,
     '',
-    `Veículo Apreendido: ${v(el.veiculo)}`,
-    `Coloraçãoo: ${v(el.corVeiculo)}`,
+    `Ve?culo Apreendido: ${v(el.veiculo)}`,
+    `Colora??oo: ${v(el.corVeiculo)}`,
     '',
-    'Assinatura do responsável:',
+    'Assinatura do respons?vel:',
     `${v(el.assinatura)}`,
     ''
   );
@@ -626,7 +626,7 @@ function parseCampo(texto, label) {
 }
 
 function parseTitulo(texto) {
-  const match = texto.match(/T[IÍ]TULO DO BOU \/ BO:\s*[\r\n]+([\s\S]*?)(?:[\r\n]{2,}|$)/i);
+  const match = texto.match(/T[I?]TULO DO BOU \/ BO:\s*[\r\n]+([\s\S]*?)(?:[\r\n]{2,}|$)/i);
   return match ? match[1].trim() : '';
 }
 
@@ -685,8 +685,8 @@ function aplicarTextoCompletoNosCampos(textoCompleto) {
     { id: 'resultado', labels: ['Resultado da abordagem'] },
     { id: 'material', labels: ['Material Apreendido'] },
     { id: 'veiculo', labels: ['Veiculo Apreendido'] },
-    { id: 'corVeiculo', labels: ['Coloracao', 'Coloração'] },
-    { id: 'assinatura', labels: ['Assinatura do responsavel', 'Assinatura do responsável'] }
+    { id: 'corVeiculo', labels: ['Coloracao', 'Colora??o'] },
+    { id: 'assinatura', labels: ['Assinatura do responsavel', 'Assinatura do respons?vel'] }
   ];
 
   mapa.forEach((item) => {
@@ -1001,3 +1001,5 @@ sincronizarAcoesCombinadas();
   await carregarBouParaEdicao();
 })();
 setInterval(carregarUltimoTituloBou, 30000);
+
+

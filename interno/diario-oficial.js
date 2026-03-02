@@ -1,4 +1,4 @@
-"use strict";
+﻿"use strict";
 
 (function () {
     let client = null;
@@ -84,14 +84,14 @@
         const complemento = (row.texto || "").trim();
         const meta = buildMetaLine(row);
         const decreto = buildDecretoTitle(row);
-        const assinaturaData = "São Paulo, " + formatLongPt(row.created_at) + ".";
+        const assinaturaData = "S?o Paulo, " + formatLongPt(row.created_at) + ".";
         const assinante = "**" + (currentUserCargo || "Cargo") + " " + (currentUserName || "Usuário") + "**";
-        const prefixo = "O DIRETOR-GERAL da Polícia Rodoviária Federal, no uso das atribuições que lhe conferem ";
-        const marcacao = "||@👮‍♂️| Polícia Rodoviária Federal ||"
+        const prefixo = "O DIRETOR-GERAL da Pol?cia Rodovi?ria Federal, no uso das atribui??es que lhe conferem ";
+        const marcacao = "||@?????| Pol?cia Rodovi?ria Federal ||"
         const body = [
-            "**DIÁRIO OFICIAL DA UNIÃO**",
+            "**DI?RIO OFICIAL DA UNI?O**",
             meta,
-            "**Órgão:** Atos do Poder Executivo",
+            "**?rg?o:** Atos do Poder Executivo",
             "",
             "#", decreto,
             prefixo + complemento,
@@ -217,7 +217,7 @@
             return;
         }
         if (!id) return;
-        if (!window.confirm("Deseja realmente excluir esta publicação do Diário Oficial?")) return;
+        if (!window.confirm("Deseja realmente excluir esta publicação do Di?rio Oficial?")) return;
 
         setStatus("Excluindo publicação...");
         const result = await client.from("diarios_oficiais").delete().eq("id", id);
@@ -226,7 +226,7 @@
             return;
         }
 
-        setStatus("Publicação excluída com sucesso.");
+        setStatus("Publicação exclu?da com sucesso.");
         await loadDiarios();
     }
 
@@ -364,6 +364,8 @@
         }
     });
 })();
+
+
 
 
 

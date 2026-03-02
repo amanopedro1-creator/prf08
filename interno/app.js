@@ -211,7 +211,7 @@
     const pageInfo = byId(pageInfoId);
 
     if (pageInfo) {
-      pageInfo.textContent = `P?gina ${state[key].page} de ${totalPages}`;
+      pageInfo.textContent = `Página ${state[key].page} de ${totalPages}`;
     }
 
     if (pageNumbers) {
@@ -524,6 +524,9 @@
     const registerLink = byId('header-register-btn');
     const userMenu = byId('header-user-menu');
     const userNameNode = userMenu ? userMenu.querySelector('.user-name-header') : null;
+    const userActionsNode = userMenu ? userMenu.querySelector('.user-menu-actions') : null;
+    const userToggle = userMenu ? userMenu.querySelector('.user-menu-toggle') : null;
+    const userPanel = userMenu ? userMenu.querySelector('.user-menu-panel') : null;
     if (!loginLink && !registerLink && !userMenu) return;
 
     const clearHeaderShiftTimer = () => {
@@ -542,11 +545,48 @@
       return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
     };
 
+    const ensureUserMenuDropdown = () => {
+      if (!userMenu || !userToggle || !userPanel) return;
+      if (userMenu.dataset.menuInit === 'true') return;
+      userMenu.dataset.menuInit = 'true';
+
+      const close = () => {
+        userMenu.classList.remove('is-open');
+        userToggle.setAttribute('aria-expanded', 'false');
+      };
+
+      const open = () => {
+        userMenu.classList.add('is-open');
+        userToggle.setAttribute('aria-expanded', 'true');
+      };
+
+      userToggle.addEventListener('click', (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        if (userMenu.classList.contains('is-open')) {
+          close();
+        } else {
+          open();
+        }
+      });
+
+      document.addEventListener('click', (event) => {
+        if (!userMenu.contains(event.target)) close();
+      });
+
+      window.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') close();
+      });
+    };
+
     const showGuest = () => {
       clearHeaderShiftTimer();
       if (loginLink) loginLink.classList.remove('is-hidden');
       if (registerLink) registerLink.classList.remove('is-hidden');
-      if (userMenu) userMenu.classList.add('is-hidden');
+      if (userMenu) {
+        userMenu.classList.add('is-hidden');
+        userMenu.classList.remove('is-open');
+      }
     };
 
     const initShiftControl = async (client, userId) => {
@@ -720,7 +760,7 @@
       badge.type = 'button';
       badge.className = 'user-shift-header user-shift-header--idle';
       badge.title = 'Alternar ponto';
-      badge.textContent = 'Fora de serviço';
+      badge.textContent = 'Fora de servi?o';
       badge.addEventListener('click', async (event) => {
         event.preventDefault();
         event.stopPropagation();
@@ -733,7 +773,7 @@
         const s = state || shiftControl.getState();
         if (s.status === 'active' && s.startAt) {
           badge.className = 'user-shift-header user-shift-header--active';
-          badge.textContent = `Em serviço ${formatHms(Date.now() - Number(s.startAt))}`;
+          badge.textContent = `Em servi?o ${formatHms(Date.now() - Number(s.startAt))}`;
           return;
         }
         if (s.status === 'closed') {
@@ -742,7 +782,7 @@
           return;
         }
         badge.className = 'user-shift-header user-shift-header--idle';
-        badge.textContent = 'Fora de serviço';
+        badge.textContent = 'Fora de servi?o';
       };
 
       shiftControl.subscribe((state) => render(state));
@@ -767,15 +807,18 @@
         textNode.className = 'user-name-text';
         textNode.textContent = name || 'Usuario autenticado';
         userNameNode.appendChild(textNode);
-        userNameNode.style.cursor = 'pointer';
-        userNameNode.setAttribute('title', 'Ir para o painel');
-        userNameNode.onclick = () => {
-          window.location.href = painelHref;
-        };
+        if (!userToggle) {
+          userNameNode.style.cursor = 'pointer';
+          userNameNode.setAttribute('title', 'Ir para o painel');
+          userNameNode.onclick = () => {
+            window.location.href = painelHref;
+          };
+        }
 
         const shiftControl = await initShiftControl(client, userId);
-        await attachHeaderShiftBadge(userNameNode, shiftControl);
+        await attachHeaderShiftBadge(userActionsNode || userNameNode, shiftControl);
       }
+      ensureUserMenuDropdown();
     };
 
     try {
@@ -854,12 +897,12 @@
       }
 
       if (!(await ensureSupabaseLibrary())) {
-        setFeedback('Biblioteca Supabase n?o foi carregada.', true);
+        setFeedback('Biblioteca Supabase não foi carregada.', true);
         return;
       }
 
       if (!window.SUPABASE_URL || !window.SUPABASE_ANON_KEY) {
-        setFeedback('Configure SUPABASE_URL e SUPABASE_ANON_KEY na p?gina de login.', true);
+        setFeedback('Configure SUPABASE_URL e SUPABASE_ANON_KEY na página de login.', true);
         return;
       }
 
@@ -883,13 +926,13 @@
         });
 
         if (error) {
-          setFeedback('Email ou senha inv?lidos.', true);
+          setFeedback('Email ou senha inválidos.', true);
           return;
         }
 
         const userId = signInData && signInData.user ? signInData.user.id : null;
         if (!userId) {
-          setFeedback('N?o foi poss?vel validar o usu?rio autenticado.', true);
+          setFeedback('Não foi possível validar o usuário autenticado.', true);
           return;
         }
 
@@ -1013,17 +1056,17 @@
       }
 
       if (!(await ensureSupabaseLibrary())) {
-        setFeedback('Biblioteca Supabase n?o foi carregada.', true);
+        setFeedback('Biblioteca Supabase não foi carregada.', true);
         return;
       }
 
       if (!window.SUPABASE_URL || !window.SUPABASE_ANON_KEY) {
-        setFeedback('Configure SUPABASE_URL e SUPABASE_ANON_KEY na p?gina de credenciamento.', true);
+        setFeedback('Configure SUPABASE_URL e SUPABASE_ANON_KEY na página de credenciamento.', true);
         return;
       }
 
       if (password.length < 6) {
-        setFeedback('A senha deve ter no m?nimo 6 caracteres.', true);
+        setFeedback('A senha deve ter no mínimo 6 caracteres.', true);
         return;
       }
 
@@ -1061,7 +1104,7 @@
         });
 
         if (error) {
-          setFeedback(`N?o foi poss?vel solicitar acesso: ${error.message}`, true);
+          setFeedback(`Não foi possível solicitar acesso: ${error.message}`, true);
           return;
         }
 
@@ -1098,7 +1141,7 @@
                   password
                 });
                 if (signInResult.error) {
-                  photoUploadWarning = ' Conta criada, mas nao foi possivel autenticar para subir a foto agora.';
+                  photoUploadWarning = ' Conta criada, mas não foi possivel autenticar para subir a foto agora.';
                 } else {
                   activeSession = signInResult.data ? signInResult.data.session : null;
                 }
@@ -1142,7 +1185,7 @@
               photoUploadWarning = ' Conta criada, mas ocorreu erro ao enviar a foto.';
             }
             await client.auth.signOut();
-            setFeedback(`Solicitação enviada. Sua conta está pendente de aprovação do administrador.${photoUploadWarning}`);
+            setFeedback(`Solicitação enviada. Sua conta est? pendente de aprovação do administrador.${photoUploadWarning}`);
             registerForm.reset();
             clearPhotoSelection();
             return;
@@ -1150,7 +1193,7 @@
         }
 
         await client.auth.signOut();
-        setFeedback('Solicitação enviada. Sua conta está pendente de aprovação do administrador.');
+        setFeedback('Solicitação enviada. Sua conta est? pendente de aprovação do administrador.');
         registerForm.reset();
         clearPhotoSelection();
       } catch (err) {
@@ -1246,7 +1289,7 @@
     };
 
     window.userProfile = window.userProfile || {
-      openModal: () => window.alert('Perfil do usu?rio indispon?vel no modo estático.')
+      openModal: () => window.alert('Perfil do usuário indisponível no modo estático.')
     };
 
     window.auth = window.auth || {
@@ -1353,4 +1396,7 @@
     window.addEventListener('resize', updateNumbersGridLayout);
   });
 })();
+
+
+
 

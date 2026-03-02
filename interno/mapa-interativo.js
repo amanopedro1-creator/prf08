@@ -174,7 +174,8 @@
         if (!el.categoriasLista) return [];
         const items = Array.from(el.categoriasLista.querySelectorAll('.mapa-categoria-item span')).map((node) => node.textContent);
         return items.map((text) => {
-            const match = text.match(/^(.*)\\s\\((\\d+)\\)$/);
+            const normalized = String(text || '').trim();
+            const match = normalized.match(/^(.*)\s\((\d+)\)$/);
             if (!match) return null;
             return { categoria: match[1], quantidade: Number(match[2]) };
         }).filter(Boolean);
@@ -322,6 +323,14 @@
         const x = Number(el.x.value);
         const y = Number(el.y.value);
         const categorias = parseCategoriasFromList();
+        if (!categorias.length) {
+            const categoria = el.categoria ? el.categoria.value.trim() : '';
+            const quantidade = el.quantidade ? Number(el.quantidade.value) : 0;
+            if (categoria && Number.isFinite(quantidade) && quantidade > 0) {
+                categorias.push({ categoria, quantidade });
+                renderCategoriasLista(categorias);
+            }
+        }
 
         if (!titulo || !Number.isFinite(x) || !Number.isFinite(y) || !categorias.length) {
             setStatus('Informe título, coordenadas válidas e ao menos uma categoria.', true);
@@ -515,3 +524,5 @@
         if (mapBounds) map.fitBounds(mapBounds);
     };
 })();
+
+

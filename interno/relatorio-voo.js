@@ -1,4 +1,4 @@
-const $ = (id) => document.getElementById(id);
+﻿const $ = (id) => document.getElementById(id);
 
 const el = {
   numero: $('voo-numero'),
@@ -288,9 +288,9 @@ function buildPayload() {
     uso_letal: getRadioValue('voo-letal')
   };
 
-  const titulo = `Relatório de voo n° ${campos.numero || 'N/A'}`;
+  const titulo = `Relatório de voo nº ${campos.numero || 'N/A'}`;
   const texto = [
-    `Relatório de voo n° ${campos.numero || 'N/A'}`,
+    `Relatório de voo nº ${campos.numero || 'N/A'}`,
     '',
     `Data: ${campos.data || 'N/A'}`,
     `Início: ${campos.inicio || 'N/A'}`,
@@ -500,3 +500,5 @@ document.addEventListener('DOMContentLoaded', async () => {
   await loadTeamOptions();
   await loadForEdit();
 });
+
+

@@ -1,4 +1,4 @@
-const $ = (id) => document.getElementById(id);
+﻿const $ = (id) => document.getElementById(id);
 
 const el = {
   numeroAit: $("numeroAit"),
@@ -21,6 +21,7 @@ const el = {
 
 const currentEditId = new URLSearchParams(window.location.search).get("edit");
 let originalValorMulta = 0;
+const MAX_VALOR_MULTA = 100000;
 
 function setStatus(msg, isError = false) {
   if (!el.statusEntradaAit) return;
@@ -34,7 +35,7 @@ function setUltimoTituloAit(numero) {
   el.lastTitleWrap.classList.remove("is-hidden");
   if (!safe) {
     el.lastTitleWrap.classList.add("is-empty");
-    el.lastTitleText.textContent = "—";
+    el.lastTitleText.textContent = "?";
     return;
   }
   el.lastTitleWrap.classList.remove("is-empty");
@@ -79,15 +80,19 @@ function v(inputEl, fallback = "") {
   return value || fallback;
 }
 
+function sanitizeValorMulta(rawValue) {
+  const raw = String(rawValue || "");
+  const digits = raw.replace(/\D/g, "");
+  if (!digits) return "";
+  const parsed = Math.max(0, Number.parseInt(digits, 10));
+  const clamped = Math.min(parsed, MAX_VALOR_MULTA);
+  return clamped ? String(clamped) : "";
+}
+
 function parseValorMulta(value) {
-  const raw = String(value || "").trim();
-  if (!raw) return 0;
-  const normalized = raw
-    .replace(/\s/g, "")
-    .replace(/\./g, "")
-    .replace(",", ".")
-    .replace(/[^0-9.-]/g, "");
-  const parsed = Number(normalized);
+  const sanitized = sanitizeValorMulta(value);
+  if (!sanitized) return 0;
+  const parsed = Number.parseInt(sanitized, 10);
   return Number.isFinite(parsed) && parsed > 0 ? parsed : 0;
 }
 
@@ -148,18 +153,18 @@ async function preencherPolicialResponsavel() {
 function buildPayload() {
   return {
     texto_original: [
-      "# AUTO DE INFRAÇÃO DE TRÂNSITO - AIT",
+      "# AUTO DE INFRA??O DE TR?NSITO - AIT",
       "",
       `Número do AIT: ${v(el.numeroAit, "N/A")}`,
       `Policial responsável: ${v(el.policial, "N/A")}`,
       `Nome do Infrator: ${v(el.nomeInfrator, "N/A")}`,
       `RG do Infrator: ${v(el.rgInfrator, "N/A")}`,
       "",
-      "# Dados da infração",
+      "# Dados da infra??o",
       "",
       `Infrações cometidas: ${v(el.infracao, "N/A")}`,
       `Valor da multa em R$: ${v(el.valorMulta, "N/A")}`,
-      `Houve apreensão do veículo?: ${v(el.apreensao, "N/A")}`,
+      `Houve apreens?o do veículo?: ${v(el.apreensao, "N/A")}`,
       `Data e horário: ${v(el.datahora, "N/A")}`,
       `Local de autuação: ${v(el.local, "N/A")}`,
       `Marca e modelo do veículo: ${v(el.marcaModelo, "N/A")}`,
@@ -185,7 +190,7 @@ function buildPayload() {
 async function salvarAitNoBanco(payload) {
   const { client, user, error } = await getCurrentUser();
   if (!client || !user) {
-    throw new Error(error || "Sem sessão válida para salvar AIT.");
+    throw new Error(error || "Sem sess?o válida para salvar AIT.");
   }
 
   const numeroAit = payload && payload.campos && payload.campos.numero_ait
@@ -237,6 +242,9 @@ async function enviarAit() {
   const numero = v(el.numeroAit);
   const infracao = v(el.infracao);
   const nomeInfrator = v(el.nomeInfrator);
+  if (el.valorMulta) {
+    el.valorMulta.value = sanitizeValorMulta(el.valorMulta.value);
+  }
   if (!numero || !infracao || !nomeInfrator) {
     setStatus("Preencha ao menos Número do AIT, Nome do Infrator e Infrações.", true);
     return;
@@ -266,7 +274,7 @@ async function carregarAitParaEdicao() {
   if (!currentEditId) return;
   const { client, user, error } = await getCurrentUser();
   if (!client || !user) {
-    setStatus(error || "Sessão inválida para carregar edição.", true);
+    setStatus(error || "Sess?o inválida para carregar edição.", true);
     return;
   }
 
@@ -295,7 +303,7 @@ async function carregarAitParaEdicao() {
     if (el.nomeInfrator) el.nomeInfrator.value = campos.nome_infrator || result.data.infrator || "";
     if (el.rgInfrator) el.rgInfrator.value = campos.rg_infrator || "";
     if (el.infracao) el.infracao.value = campos.infracoes || "";
-    if (el.valorMulta) el.valorMulta.value = campos.valor_multa || "";
+    if (el.valorMulta) el.valorMulta.value = sanitizeValorMulta(campos.valor_multa || "");
     if (el.apreensao) el.apreensao.value = campos.apreensao_veiculo || "";
     if (el.datahora) el.datahora.value = campos.datahora || "";
     if (el.local) el.local.value = campos.local_autuacao || "";
@@ -366,6 +374,18 @@ function limparCampos() {
 
 if (el.btnEnviarAit) el.btnEnviarAit.addEventListener("click", enviarAit);
 if (el.btnLimparCampos) el.btnLimparCampos.addEventListener("click", limparCampos);
+if (el.valorMulta) {
+  el.valorMulta.setAttribute("inputmode", "numeric");
+  el.valorMulta.addEventListener("input", () => {
+    const sanitized = sanitizeValorMulta(el.valorMulta.value);
+    if (el.valorMulta.value !== sanitized) {
+      el.valorMulta.value = sanitized;
+    }
+  });
+  el.valorMulta.addEventListener("blur", () => {
+    el.valorMulta.value = sanitizeValorMulta(el.valorMulta.value);
+  });
+}
 
 setStatus("Pronto para enviar.");
 preencherPolicialResponsavel();
@@ -373,3 +393,6 @@ prefillDataHora();
 carregarUltimoTituloAit();
 carregarAitParaEdicao();
 setInterval(carregarUltimoTituloAit, 30000);
+
+
+

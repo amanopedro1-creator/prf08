@@ -62,39 +62,67 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <header class="top-header">
+    <header class="top-header top-header--unified" id="menu">
         <div class="container">
             <div class="top-header-content">
                 <div class="logo-governo">
-                    <a href="painel.html" class="gov-logo-link">
+                    <a href="../index.html" class="gov-logo-link">
                         <img src="assets/img/gov_br.png" alt="Governo do Brasil" class="gov-logo">
                     </a>
                     <span class="gov-divider" aria-hidden="true"></span>
                     <div class="gov-identity">
-                        <span class="gov-ministry">MINISTÉRIO DA JUSTIÇA E SEGURANÇA PÚBLICA</span>
-                        <span class="gov-agency">Polícia Rodoviária Federal</span>
+                        <span class="gov-ministry">MINIST&Eacute;RIO DA JUSTI&Ccedil;A E SEGURAN&Ccedil;A P&Uacute;BLICA</span>
+                        <span class="gov-agency">Pol&iacute;cia Rodovi&aacute;ria Federal</span>
                     </div>
                 </div>
+
+                <nav class="mini-nav mini-nav--unified" aria-label="Navega&ccedil;&atilde;o principal">
+                    <a href="../index.html"><i class="fas fa-house"></i> IN&Iacute;CIO</a>
+                    <div class="nav-dropdown">
+                        <a href="#" class="nav-link-dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-building-columns"></i> INSTITUCIONAL</a>
+                        <div class="dropdown-menu">
+                            <a href="../organograma.html">Organograma</a>
+                            <a href="../historia-valores.html">Hist&oacute;ria e Valores</a>
+                        </div>
+                    </div>
+                    <div class="nav-dropdown">
+                        <a href="#" class="nav-link-dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-folder-open"></i> SERVI&Ccedil;OS</a>
+                        <div class="dropdown-menu">
+                            <a href="../documentos.html">Documentos PRF</a>
+                        </div>
+                    </div>
+                    <div class="nav-dropdown">
+                        <a href="#" class="nav-link-dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-chalkboard-user"></i> UNIPRF</a>
+                        <div class="dropdown-menu">
+                            <a href="../capacitacao.html">UniPRF</a>
+                            <a href="../concursos.html">Concursos</a>
+                        </div>
+                    </div>
+                    <a href="../corregedoria.html"><i class="fas fa-scale-balanced"></i> CORREGEDORIA</a>
+                </nav>
+
                 <div class="top-header-right">
                     <div class="user-auth-header">
                         <a href="../login.html" id="header-login-btn" class="auth-link">
                             <i class="fas fa-sign-in-alt"></i>
-                            <span>LOGIN</span>
-                        </a>
-                        <a href="../criar-conta.html" id="header-register-btn" class="auth-link">
-                            <i class="fas fa-user-plus"></i>
-                            <span>CRIAR CONTA</span>
+                            <span>SIGA</span>
                         </a>
                         <div id="header-user-menu" class="user-menu-header is-hidden">
-                            <span class="user-name-header"></span>
-<a href="painel.html#meu-perfil" class="auth-link" id="header-edit-profile-link">
-                                <i class="fas fa-user-edit"></i>
-                                <span>EDITAR PERFIL</span>
-                            </a>
-                            <a href="#" onclick="auth.logout(); return false;" class="auth-link">
-                                <i class="fas fa-sign-out-alt"></i>
-                                <span>SAIR</span>
-                            </a>
+                            <button type="button" class="user-menu-toggle" id="header-user-toggle" aria-expanded="false" aria-controls="header-user-panel">
+                                <span class="user-name-header"></span>
+                                <i class="fas fa-chevron-down" aria-hidden="true"></i>
+                            </button>
+                            <div class="user-menu-panel" id="header-user-panel">
+                                <div class="user-menu-actions"></div>
+                                <a href="/interno/perfil.html" class="auth-link" id="header-edit-profile-link">
+                                    <i class="fas fa-user-edit"></i>
+                                    <span>Editar perfil</span>
+                                </a>
+                                <a href="#" onclick="auth.logout(); return false;" class="auth-link">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                    <span>Sair</span>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -102,51 +130,10 @@
         </div>
     </header>
 
-        <header class="main-header main-header--duna" id="menu">
-        <div class="container">
-            <div class="header-row">
-
-            <!-- ESQUERDA: 3 pÃ¡ginas -->
-            <nav class="mini-nav mini-nav--left" aria-label="PÃ¡ginas (esquerda)">
-                <a href="../index.html">INÍCIO</a>
-                    <div class="nav-dropdown">
-                        <a href="#" class="nav-link-dropdown" aria-haspopup="true" aria-expanded="false">INSTITUCIONAL</a>
-                        <div class="dropdown-menu">
-                            <a href="../organograma.html">Organograma</a>
-<a href="../historia-valores.html">História e Valores</a>
-                        </div>
-                    </div>
-                    <div class="nav-dropdown">
-                        <a href="#" class="nav-link-dropdown" aria-haspopup="true" aria-expanded="false">SERVIÇOS</a>
-                            <div class="dropdown-menu">
-                            <a href="../documentos.html">Documentos PRF</a>
-                        </div>
-                    </div>
-            </nav>
-
-            <!-- CENTRO: informaÃ§Ã£o (logo + textos) -->
-            <div class="main-header-top">
-                <div class="brand-block">
-                <a href="../index.html" class="brand-logo-link">
-                <img src="assets/img/prf.png" alt="PRF JaguarÃ©" class="brand-logo">
-                </a>
-                </div>
-            </div>
-            <!-- DIREITA: +3 pÃ¡ginas -->
-            <nav class="mini-nav mini-nav--right" aria-label="PÃ¡ginas (direita)">
-                <a href="../concursos.html">CONCURSOS</a>
-                <a href="../capacitacao.html">CAPACITAÇÃO E TREINAMENTO</a>
-                <a href="../corregedoria.html">CORREGEDORIA</a>
-            </nav>
-            </div>
-            <div class="red-line"></div>
-        </div>
-        </header>
-
     <section class="latest-news info-section">
         <div class="container">
             <div class="news-header">
-                <h2>SIGA - Sistema Integrado de Gestão Administrativa</h2>
+                <h2>SIGA - Sistema Integrado de Gest&atilde;o Administrativa</h2>
                 <div class="red-line-news"></div>
             </div>
             <article class="profile-brand-card" id="painel-profile-card">
@@ -155,13 +142,13 @@
                         <div class="profile-brand-identity">
                             <div class="profile-brand-photo-col">
                                 <div class="profile-brand-photo-wrap">
-                                    <img id="painel-profile-photo" class="profile-brand-photo" src="assets/img/prf.png" alt="Foto do usuário">
+                                    <img id="painel-profile-photo" class="profile-brand-photo" src="assets/img/prf.png" alt="Foto do usu&aacute;rio">
                                 </div>
-                                <div id="painel-profile-medals" class="profile-brand-medals is-hidden" aria-label="Condecorações do usuário"></div>
+                                <div id="painel-profile-medals" class="profile-brand-medals is-hidden" aria-label="Condecora&ccedil;ões do usu&aacute;rio"></div>
                                 <a href="painel.html#meu-perfil" class="profile-brand-edit-link">Editar perfil</a>
                             </div>
                             <div class="profile-brand-text">
-                                <div class="profile-brand-name" id="painel-profile-name">Usuário</div>
+                                <div class="profile-brand-name" id="painel-profile-name">Usu&aacute;rio</div>
                                 <div class="profile-brand-role-line">
                                     <img id="painel-profile-cargo-img" class="profile-role-img is-hidden" alt="Imagem do cargo">
                                     <div class="profile-brand-role" id="painel-profile-cargo">Cargo do agente</div>
@@ -196,10 +183,10 @@
                 </article>
             </div>
             <div class="painel-layout">
-                <aside class="painel-side-menu" aria-label="Navegação interna rápida">
+                <aside class="painel-side-menu" aria-label="Navega&ccedil;&atilde;o interna r&aacute;pida">
                     <a href="#" class="painel-side-link" id="painel-notificacoes-toggle" rel="noopener">
                         <i class="fas fa-bell" aria-hidden="true"></i>
-                        <span>Notificações</span>
+                        <span>Notifica&ccedil;ões</span>
                         <strong id="painel-notificacoes-badge" class="painel-side-badge is-hidden">0</strong>
                     </a>
                     <a href="#" class="painel-side-link" id="painel-profile-trigger">
@@ -220,7 +207,7 @@
                     </a>
                     <a href="https://docs.google.com/document/d/1i4M0SuHjl3hygdDxjdrNIes3jMYzx67hYyB7ZC3XwJk/edit?usp=sharing" class="painel-side-link" id="painel-uniformes-trigger" rel="noopener">
                         <i class="fas fa-shirt" aria-hidden="true"></i>
-                        <span>Padrão de Uniformes</span>
+                        <span>Padr&atilde;o de Uniformes</span>
                     </a>
                     <a href="#" class="painel-side-link" id="painel-mapa-trigger">
                         <i class="fas fa-map-location-dot" aria-hidden="true"></i>
@@ -246,19 +233,19 @@
                         <div class="docs-grid" id="painel-main-docs-grid">
                     <a href="/interno/bou.html" class="docs-card" rel="noopener">
                         <i class="fas fa-handcuffs docs-card-icon" aria-hidden="true"></i>
-                        <span>BOU - Boletim de Ocorrência Unificado</span>
+                        <span>BOU - Boletim de Ocorr&ecirc;ncia Unificado</span>
                     </a>
                     <a href="/interno/ait.html" class="docs-card" rel="noopener">
                         <i class="fas fa-file-invoice-dollar docs-card-icon" aria-hidden="true"></i>
-                        <span>AIT - Auto de Infração de Trânsito</span>
+                        <span>AIT - Auto de Infra&ccedil;&atilde;o de Tr&acirc;nsito</span>
                     </a>
                     <a href="/interno/patrulha.html" class="docs-card" rel="noopener">
                         <i class="fas fa-route docs-card-icon" aria-hidden="true"></i>
-                        <span>RIPAT - Relatório Integrado de Patrulha</span>
+                        <span>RIPAT - Relat&oacute;rio Integrado de Patrulha</span>
                     </a>
                     <a href="/interno/relatorio-aluno.html" class="docs-card" id="relatorio-aluno-card" rel="noopener">
                         <i class="fas fa-user-graduate docs-card-icon" aria-hidden="true"></i>
-                        <span>ACE - Avaliação de Capacitação e Ensino</span>
+                        <span>ACE - Avalia&ccedil;&atilde;o de Capacita&ccedil;&atilde;o e Ensino</span>
                     </a>
 
                     <a href="/interno/bou-envios.html" class="docs-card" rel="noopener">
@@ -280,7 +267,7 @@
 
                     <a href="/interno/relatorio-voo.html" class="docs-card" id="relatorio-voo-card" rel="noopener">
                         <i class="fas fa-helicopter docs-card-icon" aria-hidden="true"></i>
-                        <span>RAVOP - Relatório de Aeronavegação Operacional</span>
+                        <span>RAVOP - Relat&oacute;rio de Aeronavega&ccedil;&atilde;o Operacional</span>
                     </a>
                     <a href="/interno/corregedoria.html" class="docs-card" rel="noopener">
                         <i class="fas fa-scale-balanced docs-card-icon" aria-hidden="true"></i>
@@ -307,9 +294,9 @@
                                     <img src="assets/img/prf.png" alt="Logo PRF">
                                 </div>
                                 <div class="profile-popup-card-header">
-                                    <img src="assets/img/prf.png" alt="Foto do usuário" id="profile-popup-photo">
+                                    <img src="assets/img/prf.png" alt="Foto do usu&aacute;rio" id="profile-popup-photo">
                                     <div class="profile-popup-card-text">
-                                        <div class="profile-popup-name" id="profile-popup-name">Usuário</div>
+                                        <div class="profile-popup-name" id="profile-popup-name">Usu&aacute;rio</div>
                                         <div class="profile-popup-role-line">
                                             <div class="profile-popup-role" id="profile-popup-cargo">Cargo</div>
                                             <img id="profile-popup-cargo-img" class="profile-popup-role-img is-hidden" alt="Imagem do cargo">
@@ -346,7 +333,7 @@
                             <div class="profile-popup-right">
                                 <div class="profile-popup-metrics">
                                     <div class="profile-popup-metric">
-                                        <span>Ocorrências</span>
+                                        <span>Ocorr&ecirc;ncias</span>
                                         <strong id="profile-popup-bou-total">0</strong>
                                     </div>
                                     <div class="profile-popup-metric">
@@ -354,7 +341,7 @@
                                         <strong id="profile-popup-ait-total">0</strong>
                                     </div>
                                     <div class="profile-popup-metric">
-                                        <span>Serviços (RIPAT)</span>
+                                        <span>Servi&ccedil;os (RIPAT)</span>
                                         <strong id="profile-popup-ripat-total">0</strong>
                                     </div>
                                 </div>
@@ -366,15 +353,15 @@
                                         </div>
                                     </section>
                                     <section class="profile-popup-section">
-                                        <h4>Cursos e Especializações</h4>
+                                        <h4>Cursos e Especializa&ccedil;ões</h4>
                                         <div id="profile-popup-cursos" class="profile-popup-chips">
                                             <span class="profile-course-empty">A definir</span>
                                         </div>
                                     </section>
                                     <section class="profile-popup-section profile-popup-section--wide">
-                                        <h4>Condecorações e Medalhas</h4>
+                                        <h4>Condecora&ccedil;ões e Medalhas</h4>
                                         <div id="profile-popup-medals" class="profile-popup-medals">
-                                            <div class="profile-popup-empty">Nenhuma condecoração atribuída.</div>
+                                            <div class="profile-popup-empty">Nenhuma condecora&ccedil;&atilde;o atribu&iacute;da.</div>
                                         </div>
                                     </section>
                                 </div>
@@ -395,11 +382,11 @@
                                         <input type="color" id="mapa-cor" value="#0ea5e9">
                                     </label>
                                     <label class="modal-form-group">
-                                        <span>Título</span>
+                                        <span>T&iacute;tulo</span>
                                         <input type="text" id="mapa-titulo" placeholder="Identificador do ponto" required>
                                     </label>
                                     <label class="modal-form-group">
-                                        <span>Descrição (opcional)</span>
+                                        <span>Descri&ccedil;&atilde;o (opcional)</span>
                                         <textarea id="mapa-descricao" rows="3" placeholder="Detalhes adicionais"></textarea>
                                     </label>
                                     <div class="mapa-categorias-dinamicas">
@@ -407,9 +394,9 @@
                                             <span>Categoria</span>
                                             <select id="mapa-categoria">
                                                 <option value="">Selecione</option>
-                                                <option value="Denúncia realizadas">Denúncia realizadas</option>
-                                                <option value="Roubo de veículo">Roubo de veículo</option>
-                                                <option value="Tráfico">Tráfico</option>
+                                                <option value="Den&uacute;ncia realizadas">Den&uacute;ncia realizadas</option>
+                                                <option value="Roubo de ve&iacute;culo">Roubo de ve&iacute;culo</option>
+                                                <option value="Tr&aacute;fico">Tr&aacute;fico</option>
                                                 <option value="Disparos">Disparos</option>
                                                 <option value="Outros">Outros</option>
                                             </select>
@@ -439,13 +426,13 @@
                                 <div class="mapa-filters">
                                     <h4>Filtros</h4>
                                     <div class="mapa-filter-list">
-                                        <label><input type="checkbox" class="mapa-filter" value="Denúncia realizadas" checked> Denúncia realizadas</label>
-                                        <label><input type="checkbox" class="mapa-filter" value="Roubo de veículo" checked> Roubo de veículo</label>
-                                        <label><input type="checkbox" class="mapa-filter" value="Tráfico" checked> Tráfico</label>
+                                        <label><input type="checkbox" class="mapa-filter" value="Den&uacute;ncia realizadas" checked> Den&uacute;ncia realizadas</label>
+                                        <label><input type="checkbox" class="mapa-filter" value="Roubo de ve&iacute;culo" checked> Roubo de ve&iacute;culo</label>
+                                        <label><input type="checkbox" class="mapa-filter" value="Tr&aacute;fico" checked> Tr&aacute;fico</label>
                                         <label><input type="checkbox" class="mapa-filter" value="Disparos" checked> Disparos</label>
                                         <label><input type="checkbox" class="mapa-filter" value="Outros" checked> Outros</label>
                                     </div>
-                                    <input type="text" id="mapa-search" class="equipe-search" placeholder="Buscar por título ou descrição">
+                                    <input type="text" id="mapa-search" class="equipe-search" placeholder="Buscar por t&iacute;tulo ou descri&ccedil;&atilde;o">
                                 </div>
                             </article>
 
@@ -457,7 +444,7 @@
                                         <label><input type="checkbox" class="mapa-setor" value="1"> Setor 1</label>
                                         <label><input type="checkbox" class="mapa-setor" value="2"> Setor 2</label>
                                     </div>
-                                    <button type="button" id="mapa-setores-clear" class="approvals-btn">Limpar seleção</button>
+                                    <button type="button" id="mapa-setores-clear" class="approvals-btn">Limpar sele&ccedil;&atilde;o</button>
                                 </div>
                                 <div id="mapa-interativo" class="mapa-interativo-canvas" aria-label="Mapa interativo"></div>
                                 <p id="mapa-status" class="bou-status">Carregando mapa...</p>
@@ -485,10 +472,10 @@
                     <aside class="painel-on-duty" aria-live="polite">
                         <div class="painel-on-duty-header">
                             <button type="button" id="painel-shift-btn" class="profile-shift-btn profile-shift-btn--idle profile-shift-btn--mini">
-                                Entrar em serviço
+                                Entrar em servi&ccedil;o
                             </button>
                             <div class="painel-on-duty-title">
-                                <h3>Em serviço</h3>
+                                <h3>Em servi&ccedil;o</h3>
                                 <span id="painel-on-duty-count">0</span>
                             </div>
                         </div>
@@ -503,49 +490,46 @@
     </section>
 
     <aside id="painel-notificacoes-popup" class="painel-notificacoes-popup is-hidden" aria-live="polite">
-        <button type="button" id="painel-notificacoes-mini" class="painel-notificacoes-mini" aria-label="Abrir notificações">
+        <button type="button" id="painel-notificacoes-mini" class="painel-notificacoes-mini" aria-label="Abrir notifica&ccedil;ões">
             <i class="fas fa-bell" aria-hidden="true"></i>
             <span id="painel-notificacoes-mini-badge" class="painel-notificacoes-mini-badge">0</span>
         </button>
         <div class="painel-notificacoes-head">
-            <h3>Notificações</h3>
+            <h3>Notifica&ccedil;ões</h3>
             <div class="painel-notificacoes-head-actions">
                 <button type="button" id="painel-notificacoes-clear-all" class="painel-notificacoes-clear-all">
                     Apagar todas
                 </button>
-                <button type="button" id="painel-notificacoes-close" class="painel-notificacoes-close" aria-label="Fechar notificações">
+                <button type="button" id="painel-notificacoes-close" class="painel-notificacoes-close" aria-label="Fechar notifica&ccedil;ões">
                     <i class="fas fa-times" aria-hidden="true"></i>
                 </button>
             </div>
         </div>
         <p class="painel-notificacoes-sub">Cita&ccedil;&otilde;es em BOU, AIT, patrulha, relat&oacute;rio aluno, Di&aacute;rio Oficial e Corregedoria.</p>
         <div id="painel-notificacoes-list" class="painel-notificacoes-list">
-            <p class="painel-notificacoes-empty">Carregando notificações...</p>
+            <p class="painel-notificacoes-empty">Carregando notifica&ccedil;ões...</p>
         </div>
     </aside>
     <footer class="diario-footer">
         <div class="container">
             <div class="diario-footer-top">
                 <div class="diario-footer-brand">
-                    <img src="assets/img/prf.png" alt="Polícia Rodoviária Federal" class="diario-footer-logo">
+                    <img src="assets/img/prf.png" alt="Pol&iacute;cia Rodovi&aacute;ria Federal" class="diario-footer-logo">
                     <div class="diario-footer-brand-text">
-                        <strong>Polícia Rodoviária Federal</strong>
-                        <span>Unidade Operacional Jaguaré</span>
-                        <span>São Paulo - SP</span>
+                        <strong>Pol&iacute;cia Rodovi&aacute;ria Federal</strong>
+                        <span>Unidade Operacional Jaguar&eacute;</span>
+                        <span>S&atilde;o Paulo - SP</span>
                     </div>
                 </div>
                 <div class="diario-footer-contact">
                     <h4>CONTATO</h4>
-                    <p>PRF — Delegacia de Jaguaré</p>
+                    <p>PRF &mdash; Delegacia de Jaguar&eacute;</p>
                     <p>Telefone: 191 (PRF)</p>
-                    <p>Emergência: 190</p>
+                    <p>Emerg&ecirc;ncia: 190</p>
                 </div>
             </div>
             <div class="diario-footer-divider" aria-hidden="true"></div>
-            <div class="diario-footer-bottom">
-                <span>© 2026 Polícia Rodoviária Federal — Todos os direitos reservados</span>
-                <img src="assets/img/gov_br.png" alt="gov.br" class="diario-footer-gov">
-            </div>
+            <div><span>Este site fornece informa&ccedil;&otilde;es fict&iacute;cias exclusivamente destinadas ao uso no jogo Grand Theft Auto V, no modo Role Play (RP). Todas as informa&ccedil;&otilde;es, personagens, eventos e situa&ccedil;&otilde;es descritas s&atilde;o puramente fict&iacute;cias e n&atilde;o t&ecirc;m conex&atilde;o com eventos ou indiv&iacute;duos reais. O prop&oacute;sito &eacute; proporcionar entretenimento aos participantes do jogo, e n&atilde;o deve ser interpretado como representa&ccedil;&atilde;o da realidade.</span></div>
         </div>
     </footer>
 
@@ -704,11 +688,11 @@
                     const file = fileInput.files && fileInput.files[0] ? fileInput.files[0] : null;
                     if (!file) return;
                     if (!/^image\//i.test(file.type)) {
-                        setEditFeedback('Selecione um arquivo de imagem válido.', true);
+                        setEditFeedback('Selecione um arquivo de imagem v&aacute;lido.', true);
                         return;
                     }
                     if (file.size > 5 * 1024 * 1024) {
-                        setEditFeedback('A imagem deve ter no máximo 5MB.', true);
+                        setEditFeedback('A imagem deve ter no m&aacute;ximo 5MB.', true);
                         return;
                     }
                     pendingPhotoFile = file;
@@ -863,7 +847,7 @@
                     const cargoImgNode = byId('profile-popup-cargo-img');
                     const rgNode = byId('profile-popup-rg');
                     const photoNode = byId('profile-popup-photo');
-                    if (nameNode) nameNode.textContent = profile.nome_guerra || user.email || 'Usuário';
+                    if (nameNode) nameNode.textContent = profile.nome_guerra || user.email || 'Usu&aacute;rio';
                     if (cargoNode) cargoNode.textContent = profile.cargo || 'Cargo';
                     setCargoImage(profile.cargo, cargoImgNode);
                     if (rgNode) rgNode.textContent = profile.rg ? ('RG: ' + profile.rg) : 'RG: -';
@@ -931,14 +915,14 @@
                             return 'assets/img/' + raw;
                         };
                         const medalConfig = {
-                            elogio_ref: { name: 'Referência elogiosa', image: 'mencaoelogio.png' },
+                            elogio_ref: { name: 'Refer&ecirc;ncia elogiosa', image: 'mencaoelogio.png' },
                             elogio: { name: 'Elogio', image: 'mencaoelogio.png' },
-                            merito: { name: 'Medalha ao Mérito', image: 'medalhamerito.png' },
+                            merito: { name: 'Medalha ao M&eacute;rito', image: 'medalhamerito.png' },
                             bravura: { name: 'Medalha Bravura', image: 'medalhabravura.png' },
-                            heroi_estradas: { name: 'Medalha Herói das Estradas', image: 'medalhaheroiestradas.png' },
-                            washington: { name: 'Medalha Washington Luís', image: 'medalhawashington.png' },
-                            antonio_felix_gracruza: { name: 'Medalha Antônio Félix Filho Grã-Cruz', image: 'medalhaantoniofelix.png' },
-                            washington_gracruza: { name: 'Medalha Washington Luís Grã Cruz', image: 'medalhagracruzwashington.png' },
+                            heroi_estradas: { name: 'Medalha Her&oacute;i das Estradas', image: 'medalhaheroiestradas.png' },
+                            washington: { name: 'Medalha Washington Lu&iacute;s', image: 'medalhawashington.png' },
+                            antonio_felix_gracruza: { name: 'Medalha Antônio F&eacute;lix Filho Gr&atilde;-Cruz', image: 'medalhaantoniofelix.png' },
+                            washington_gracruza: { name: 'Medalha Washington Lu&iacute;s Gr&atilde; Cruz', image: 'medalhagracruzwashington.png' },
                             moeda_antonio_bronze: { name: 'Moeda Antônio Felix Bronze', image: 'moedaantoniofelixbronze.png' },
                             moeda_antonio_prata: { name: 'Moeda Antônio Felix Prata', image: 'moedaantoniofelixprata.png' },
                             moeda_antonio_ouro: { name: 'Moeda Antônio Felix Ouro', image: 'moedaantoniofelixouro.png' }
@@ -952,11 +936,11 @@
 
                         const medals = medalResult && Array.isArray(medalResult.data) ? medalResult.data : [];
                         if (!medals.length) {
-                            medalNode.innerHTML = '<div class="profile-popup-empty">Nenhuma condecoração atribuída.</div>';
+                            medalNode.innerHTML = '<div class="profile-popup-empty">Nenhuma condecora&ccedil;&atilde;o atribu&iacute;da.</div>';
                         } else {
                             medalNode.innerHTML = medals.map(function (m) {
                                 const conf = medalConfig[m.medal_code] || {};
-                                const name = m.medal_name || conf.name || 'Condecoração';
+                                const name = m.medal_name || conf.name || 'Condecora&ccedil;&atilde;o';
                                 const image = m.medal_image || conf.image || 'mencaoelogio.png';
                                 const src = resolveMedalImage(image);
                                 return (
@@ -1162,7 +1146,7 @@
                         cardEl.classList.add('docs-card--locked');
                         cardEl.setAttribute('aria-disabled', 'true');
                         cardEl.setAttribute('tabindex', '-1');
-                        cardEl.setAttribute('data-lock-message', message || 'Seção indisponível para este perfil');
+                        cardEl.setAttribute('data-lock-message', message || 'Se&ccedil;&atilde;o indispon&iacute;vel para este perfil');
                         return;
                     }
                     cardEl.classList.remove('docs-card--locked');
@@ -1212,7 +1196,7 @@
                 };
 
                 if (cardNode) cardNode.style.backgroundImage = `url('${selectedBg}')`;
-                if (nameNode) nameNode.textContent = p.nome_guerra || p.email || user.email || 'Usuário';
+                if (nameNode) nameNode.textContent = p.nome_guerra || p.email || user.email || 'Usu&aacute;rio';
                 if (rgNode) rgNode.textContent = `RG: ${p.rg || '-'}`;
                 if (cargoNode) cargoNode.textContent = p.cargo || 'Cargo do agente';
                 setCargoImage(p.cargo, cargoImgNode);
@@ -1222,13 +1206,13 @@
                     const isAgenteAluno = String(p.cargo || '').trim().toLowerCase() === 'agente aluno';
                     const isAdmin = p.is_admin === true;
                     const grupos = String(p.grupamento || '').split(' || ').map(v => v.trim()).filter(Boolean);
-                    const isDoa = grupos.some(g => normalizeText(g) === normalizeText('Divisão de Operações Aéreas'));
-                    const isDgp = grupos.some(g => normalizeText(g) === normalizeText('Diretoria de Gestão de Pessoas'));
+                    const isDoa = grupos.some(g => normalizeText(g) === normalizeText('Divis&atilde;o de Opera&ccedil;ões A&eacute;reas'));
+                    const isDgp = grupos.some(g => normalizeText(g) === normalizeText('Diretoria de Gest&atilde;o de Pessoas'));
                     const hasAcesso = normalizeText(p.acesso || '').includes('acesso');
-                    setLockedCard(relatorioAlunoCard, isAgenteAluno, 'Indisponível para Agente Aluno');
+                    setLockedCard(relatorioAlunoCard, isAgenteAluno, 'Indispon&iacute;vel para Agente Aluno');
                     setLockedCard(aceResultadosCard, !(isDgp || isAdmin || hasAcesso), 'Acesso restrito à DGP ou perfil com acesso');
-                    setLockedCard(relatorioVooCard, !(isDoa || isAdmin), 'Acesso restrito à Divisão de Operações Aéreas');
-                    setLockedCard(painelDgpCard, !isAdmin, 'Indisponível para este perfil');
+                    setLockedCard(relatorioVooCard, !(isDoa || isAdmin), 'Acesso restrito à Divis&atilde;o de Opera&ccedil;ões A&eacute;reas');
+                    setLockedCard(painelDgpCard, !isAdmin, 'Indispon&iacute;vel para este perfil');
                     if (grupamentoNode) grupamentoNode.textContent = grupos.length ? grupos.join(' | ') : '-';
                     if (cursosNode) {
                         const rawCourses = String(p.cursos || '').trim();
@@ -1259,7 +1243,7 @@
                         if (medals.length) {
                             medalsNode.innerHTML = medals.map(function (medal) {
                                 const src = resolveMedalImage(medal.medal_image);
-                                const alt = medal.medal_name ? String(medal.medal_name) : 'Condecoração do usuário';
+                                const alt = medal.medal_name ? String(medal.medal_name) : 'Condecora&ccedil;&atilde;o do usu&aacute;rio';
                                 return '<img src="' + src + '" alt="' + alt + '" class="profile-brand-medal" onerror="this.src=\'assets/img/mencaoelogio.png\'">';
                             }).join('');
                             medalsNode.classList.remove('is-hidden');
@@ -1299,13 +1283,13 @@
                     .limit(1);
 
                 if (result.error) {
-                    box.innerHTML = '<h3>Mural de avisos</h3><p class="painel-latest-aviso-empty">Não foi possível carregar os avisos.</p>';
+                    box.innerHTML = '<h3>Mural de avisos</h3><p class="painel-latest-aviso-empty">N&atilde;o foi poss&iacute;vel carregar os avisos.</p>';
                     return;
                 }
 
                 const aviso = Array.isArray(result.data) && result.data.length ? result.data[0] : null;
                 if (!aviso) {
-                    box.innerHTML = '<h3>Mural de avisos</h3><p class="painel-latest-aviso-empty">Nenhum aviso publicado até o momento.</p>';
+                    box.innerHTML = '<h3>Mural de avisos</h3><p class="painel-latest-aviso-empty">Nenhum aviso publicado at&eacute; o momento.</p>';
                     return;
                 }
 
@@ -1315,7 +1299,7 @@
                 const midia = aviso.midia_url || '';
                 const createdAt = aviso.created_at ? new Date(aviso.created_at).toLocaleString('pt-BR') : '';
                 const mediaHtml = midia
-                    ? '<div class="painel-aviso-media-wrap"><img src="' + esc(midia) + '" alt="Mídia do aviso" class="painel-aviso-media"></div>'
+                    ? '<div class="painel-aviso-media-wrap"><img src="' + esc(midia) + '" alt="M&iacute;dia do aviso" class="painel-aviso-media"></div>'
                     : '';
                 const avisoId = aviso && aviso.id !== undefined && aviso.id !== null ? esc(aviso.id) : '';
 
@@ -1410,7 +1394,7 @@
             }
             function getDateLabel(row) {
                 const raw = row.created_at || row.data_criacao || row.data || '';
-                if (!raw) return 'Data não informada';
+                if (!raw) return 'Data n&atilde;o informada';
                 const d = new Date(raw);
                 if (Number.isNaN(d.getTime())) return String(raw);
                 return d.toLocaleString('pt-BR');
@@ -1531,7 +1515,7 @@
                     type: 'aluno',
                     href: '/interno/relatorio-aluno.html',
                     clickable: !isAgenteAluno,
-                    blockedText: 'Seu perfil não tem acesso ao Relatório aluno'
+                    blockedText: 'Seu perfil n&atilde;o tem acesso ao Relat&oacute;rio aluno'
                 });
                 const diario = await fetchFromTables(client, ['diarios_oficiais'], tokens, user.id, {
                     type: 'diario',
@@ -1578,7 +1562,7 @@
                     if (!visible.length) {
                         popup.classList.add('is-hidden');
                         popup.classList.remove('is-minimized');
-                        list.innerHTML = '<p class="painel-notificacoes-empty">Nenhuma citação encontrada no momento.</p>';
+                        list.innerHTML = '<p class="painel-notificacoes-empty">Nenhuma cita&ccedil;&atilde;o encontrada no momento.</p>';
                         return;
                     }
                     popup.classList.remove('is-hidden');
@@ -1592,7 +1576,7 @@
                                 '<span>' + esc(item.when) + '</span>' +
                                 extra +
                             '</a>' +
-                            '<button type="button" class="painel-notificacao-delete" title="Apagar notificação" aria-label="Apagar notificação">' +
+                            '<button type="button" class="painel-notificacao-delete" title="Apagar notifica&ccedil;&atilde;o" aria-label="Apagar notifica&ccedil;&atilde;o">' +
                                 '<i class="fas fa-trash-alt" aria-hidden="true"></i>' +
                             '</button>' +
                         '</div>';
@@ -1664,7 +1648,7 @@
             } catch (e) {
                 const list = document.getElementById('painel-notificacoes-list');
                 if (list) {
-                    list.innerHTML = '<p class="painel-notificacoes-empty">Não foi possível carregar as notificações.</p>';
+                    list.innerHTML = '<p class="painel-notificacoes-empty">N&atilde;o foi poss&iacute;vel carregar as notifica&ccedil;ões.</p>';
                 }
             }
         })();
@@ -1695,25 +1679,25 @@
 
                 if (s.status === 'active' && s.startAt) {
                     btn.classList.add('profile-shift-btn--active');
-                    btn.textContent = 'Em serviço • ' + shiftControl.formatHms(Date.now() - Number(s.startAt));
+                    btn.textContent = 'Em servi&ccedil;o &bull; ' + shiftControl.formatHms(Date.now() - Number(s.startAt));
                     return;
                 }
 
                 if (s.status === 'closed') {
                     if (!showClosedState) {
                         btn.classList.add('profile-shift-btn--idle');
-                        btn.textContent = 'Entrar em serviço';
+                        btn.textContent = 'Entrar em servi&ccedil;o';
                         return;
                     }
                     btn.classList.add('profile-shift-btn--closed');
                     btn.textContent = s.totalMs
-                        ? ('Serviço encerrado • ' + shiftControl.formatHms(s.totalMs))
-                        : 'Serviço encerrado';
+                        ? ('Servi&ccedil;o encerrado &bull; ' + shiftControl.formatHms(s.totalMs))
+                        : 'Servi&ccedil;o encerrado';
                     return;
                 }
 
                 btn.classList.add('profile-shift-btn--idle');
-                btn.textContent = 'Entrar em serviço';
+                btn.textContent = 'Entrar em servi&ccedil;o';
             };
 
             btn.addEventListener('click', async function () {
@@ -1749,14 +1733,14 @@
                 const total = items.length;
                 if (countNode) countNode.textContent = String(total);
                 if (!total) {
-                    listNode.innerHTML = '<p class="painel-on-duty-empty">Nenhum agente em serviço.</p>';
+                    listNode.innerHTML = '<p class="painel-on-duty-empty">Nenhum agente em servi&ccedil;o.</p>';
                     return;
                 }
                 listNode.innerHTML = items.map(function (agent) {
                     const nome = safe(agent.nome_guerra, 'Agente');
                     const rg = safe(agent.rg, '-');
-                    const cargo = safe(agent.cargo, 'Cargo não definido');
-                    const grupamentoRaw = safe(agent.grupamento, 'Grupamento não definido');
+                    const cargo = safe(agent.cargo, 'Cargo n&atilde;o definido');
+                    const grupamentoRaw = safe(agent.grupamento, 'Grupamento n&atilde;o definido');
                     const grupamento = grupamentoRaw.includes(' || ')
                         ? grupamentoRaw.split(' || ').map(function (g) { return g.trim(); }).filter(Boolean).join(' | ')
                         : grupamentoRaw;
@@ -1766,7 +1750,7 @@
                         '<img src="' + foto + '" alt="' + nome + '" class="painel-on-duty-avatar" onerror="this.src=\'assets/img/prf.png\'">' +
                         '<div>' +
                         '<div class="painel-on-duty-name">' + nome + '</div>' +
-                        '<div class="painel-on-duty-meta">RG: ' + rg + ' • ' + cargo + '</div>' +
+                        '<div class="painel-on-duty-meta">RG: ' + rg + ' &bull; ' + cargo + '</div>' +
                         '<div class="painel-on-duty-grupo">' + grupamento + '</div>' +
                         '</div>' +
                         '</div>'
@@ -1785,7 +1769,7 @@
                         .order('inicio_at', { ascending: true });
 
                     if (active.error || !Array.isArray(active.data)) {
-                        listNode.innerHTML = '<p class="painel-on-duty-empty">Não foi possível carregar.</p>';
+                        listNode.innerHTML = '<p class="painel-on-duty-empty">N&atilde;o foi poss&iacute;vel carregar.</p>';
                         if (countNode) countNode.textContent = '0';
                         return;
                     }
@@ -1819,7 +1803,7 @@
                     const items = orderedIds.map(function (id) { return map.get(id); }).filter(Boolean);
                     render(items);
                 } catch (e) {
-                    listNode.innerHTML = '<p class="painel-on-duty-empty">Não foi possível carregar.</p>';
+                    listNode.innerHTML = '<p class="painel-on-duty-empty">N&atilde;o foi poss&iacute;vel carregar.</p>';
                     if (countNode) countNode.textContent = '0';
                 } finally {
                     busy = false;
@@ -1846,3 +1830,8 @@
     </script>
 </body>
 </html>
+
+
+
+
+

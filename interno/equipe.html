@@ -50,73 +50,71 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <header class="top-header">
+    <header class="top-header top-header--unified" id="menu">
         <div class="container">
             <div class="top-header-content">
                 <div class="logo-governo">
-                    <a href="painel.html" class="gov-logo-link">
+                    <a href="../index.html" class="gov-logo-link">
                         <img src="assets/img/gov_br.png" alt="Governo do Brasil" class="gov-logo">
                     </a>
                     <span class="gov-divider" aria-hidden="true"></span>
                     <div class="gov-identity">
-                        <span class="gov-ministry">MINISTÉRIO DA JUSTIÇA E SEGURANÇA PÚBLICA</span>
-                        <span class="gov-agency">Polícia Rodoviária Federal</span>
+                        <span class="gov-ministry">MINIST&Eacute;RIO DA JUSTI&Ccedil;A E SEGURAN&Ccedil;A P&Uacute;BLICA</span>
+                        <span class="gov-agency">Pol&iacute;cia Rodovi&aacute;ria Federal</span>
                     </div>
                 </div>
-                <div class="top-header-right">
-                    <div class="user-auth-header">
-                        <div id="header-user-menu" class="user-menu-header">
-                            <span class="user-name-header">Equipe</span>
-                            <a href="painel.html#meu-perfil" class="auth-link" id="header-edit-profile-link">
-                                <i class="fas fa-user-edit"></i>
-                                <span>EDITAR PERFIL</span>
-                            </a>
-                            <a href="#" onclick="auth.logout(); return false;" class="auth-link">
-                                <i class="fas fa-sign-out-alt"></i>
-                                <span>SAIR</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </header>
 
-    <header class="main-header main-header--duna" id="menu">
-        <div class="container">
-            <div class="header-row">
-                <nav class="mini-nav mini-nav--left" aria-label="Páginas (esquerda)">
-                    <a href="../index.html">INÍCIO</a>
+                <nav class="mini-nav mini-nav--unified" aria-label="Navega&ccedil;&atilde;o principal">
+                    <a href="../index.html"><i class="fas fa-house"></i> IN&Iacute;CIO</a>
                     <div class="nav-dropdown">
-                        <a href="#" class="nav-link-dropdown" aria-haspopup="true" aria-expanded="false">INSTITUCIONAL</a>
+                        <a href="#" class="nav-link-dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-building-columns"></i> INSTITUCIONAL</a>
                         <div class="dropdown-menu">
                             <a href="../organograma.html">Organograma</a>
-                            <a href="../historia-valores.html">História e Valores</a>
+                            <a href="../historia-valores.html">Hist&oacute;ria e Valores</a>
                         </div>
                     </div>
                     <div class="nav-dropdown">
-                        <a href="#" class="nav-link-dropdown" aria-haspopup="true" aria-expanded="false">SERVIÇOS</a>
+                        <a href="#" class="nav-link-dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-folder-open"></i> SERVI&Ccedil;OS</a>
                         <div class="dropdown-menu">
                             <a href="../documentos.html">Documentos PRF</a>
                         </div>
                     </div>
+                    <div class="nav-dropdown">
+                        <a href="#" class="nav-link-dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-chalkboard-user"></i> UNIPRF</a>
+                        <div class="dropdown-menu">
+                            <a href="../capacitacao.html">UniPRF</a>
+                            <a href="../concursos.html">Concursos</a>
+                        </div>
+                    </div>
+                    <a href="../corregedoria.html"><i class="fas fa-scale-balanced"></i> CORREGEDORIA</a>
                 </nav>
 
-                <div class="main-header-top">
-                    <div class="brand-block">
-                        <a href="../index.html" class="brand-logo-link">
-                            <img src="assets/img/prf.png" alt="PRF Jaguaré" class="brand-logo">
+                <div class="top-header-right">
+                    <div class="user-auth-header">
+                        <a href="../login.html" id="header-login-btn" class="auth-link">
+                            <i class="fas fa-sign-in-alt"></i>
+                            <span>SIGA</span>
                         </a>
+                        <div id="header-user-menu" class="user-menu-header is-hidden">
+                            <button type="button" class="user-menu-toggle" id="header-user-toggle" aria-expanded="false" aria-controls="header-user-panel">
+                                <span class="user-name-header"></span>
+                                <i class="fas fa-chevron-down" aria-hidden="true"></i>
+                            </button>
+                            <div class="user-menu-panel" id="header-user-panel">
+                                <div class="user-menu-actions"></div>
+                                <a href="/interno/perfil.html" class="auth-link" id="header-edit-profile-link">
+                                    <i class="fas fa-user-edit"></i>
+                                    <span>Editar perfil</span>
+                                </a>
+                                <a href="#" onclick="auth.logout(); return false;" class="auth-link">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                    <span>Sair</span>
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
-
-                <nav class="mini-nav mini-nav--right" aria-label="Páginas (direita)">
-                    <a href="../concursos.html">CONCURSOS</a>
-                    <a href="../capacitacao.html">CAPACITAÇÃO E TREINAMENTO</a>
-                    <a href="../corregedoria.html">CORREGEDORIA</a>
-                </nav>
             </div>
-            <div class="red-line"></div>
         </div>
     </header>
 
@@ -145,25 +143,22 @@
         <div class="container">
             <div class="diario-footer-top">
                 <div class="diario-footer-brand">
-                    <img src="assets/img/prf.png" alt="Polícia Rodoviária Federal" class="diario-footer-logo">
+                    <img src="assets/img/prf.png" alt="Pol&iacute;cia Rodovi&aacute;ria Federal" class="diario-footer-logo">
                     <div class="diario-footer-brand-text">
-                        <strong>Polícia Rodoviária Federal</strong>
-                        <span>Unidade Operacional Jaguaré</span>
-                        <span>São Paulo - SP</span>
+                        <strong>Pol&iacute;cia Rodovi&aacute;ria Federal</strong>
+                        <span>Unidade Operacional Jaguar&eacute;</span>
+                        <span>S&atilde;o Paulo - SP</span>
                     </div>
                 </div>
                 <div class="diario-footer-contact">
                     <h4>CONTATO</h4>
-                    <p>PRF — Delegacia de Jaguaré</p>
+                    <p>PRF &mdash; Delegacia de Jaguar&eacute;</p>
                     <p>Telefone: 191 (PRF)</p>
-                    <p>Emergência: 190</p>
+                    <p>Emerg&ecirc;ncia: 190</p>
                 </div>
             </div>
             <div class="diario-footer-divider" aria-hidden="true"></div>
-            <div class="diario-footer-bottom">
-                <span>© 2026 Polícia Rodoviária Federal — Todos os direitos reservados</span>
-                <img src="assets/img/gov_br.png" alt="gov.br" class="diario-footer-gov">
-            </div>
+            <div><span>Este site fornece informa&ccedil;&otilde;es fict&iacute;cias exclusivamente destinadas ao uso no jogo Grand Theft Auto V, no modo Role Play (RP). Todas as informa&ccedil;&otilde;es, personagens, eventos e situa&ccedil;&otilde;es descritas s&atilde;o puramente fict&iacute;cias e n&atilde;o t&ecirc;m conex&atilde;o com eventos ou indiv&iacute;duos reais. O prop&oacute;sito &eacute; proporcionar entretenimento aos participantes do jogo, e n&atilde;o deve ser interpretado como representa&ccedil;&atilde;o da realidade.</span></div>
         </div>
     </footer>
 
@@ -217,8 +212,8 @@
             function cardTemplate(agent) {
                 const nome = safe(agent.nome_guerra, 'Agente');
                 const rg = safe(agent.rg);
-                const cargo = safe(agent.cargo, 'Cargo não definido');
-                const grupamentoRaw = safe(agent.grupamento, 'Grupamento não definido');
+                const cargo = safe(agent.cargo, 'Cargo n&atilde;o definido');
+                const grupamentoRaw = safe(agent.grupamento, 'Grupamento n&atilde;o definido');
                 const grupamento = grupamentoRaw.includes(' || ')
                     ? grupamentoRaw.split(' || ').map((g) => g.trim()).filter(Boolean).join(' | ')
                     : grupamentoRaw;
@@ -236,7 +231,7 @@
                             <span>${m.medal_name}</span>
                         </div>
                     `).join('')
-                    : '<div class="equipe-medal-empty">Nenhuma condecoração atribuída.</div>';
+                    : '<div class="equipe-medal-empty">Nenhuma condecora&ccedil;&atilde;o atribu&iacute;da.</div>';
 
                 return `
                     <details class="equipe-card">
@@ -274,7 +269,7 @@
                                 <div class="equipe-metric">
                                     <i class="fas fa-user-graduate"></i>
                                     <span class="equipe-metric-value">${relatorioAlunoCitados}</span>
-                                    <span class="equipe-metric-label">Relatório aluno citados</span>
+                                    <span class="equipe-metric-label">Relat&oacute;rio aluno citados</span>
                                 </div>
                                 <div class="equipe-metric">
                                     <i class="fas fa-calendar-check"></i>
@@ -283,7 +278,7 @@
                                 </div>
                             </div>
                             <div class="equipe-medals">
-                                <h4>Condecorações e Medalhas</h4>
+                                <h4>Condecora&ccedil;ões e Medalhas</h4>
                                 <div class="equipe-medal-list">
                                     ${medalsHtml}
                                 </div>
@@ -331,7 +326,7 @@
                 if (!el.status || !el.grid) return;
                 try {
                     if (!window.supabase || !window.supabase.createClient) {
-                        el.status.textContent = 'Supabase não disponível.';
+                        el.status.textContent = 'Supabase n&atilde;o dispon&iacute;vel.';
                         return;
                     }
                     const client = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
@@ -418,7 +413,7 @@
                                 if (!key) return;
                                 if (!medalsByUser[key]) medalsByUser[key] = [];
                                 medalsByUser[key].push({
-                                    medal_name: m.medal_name || 'Condecoração',
+                                    medal_name: m.medal_name || 'Condecora&ccedil;&atilde;o',
                                     medal_image: m.medal_image || 'mencaoelogio.png'
                                 });
                             });
@@ -445,4 +440,8 @@
     </script>
 </body>
 </html>
+
+
+
+
 

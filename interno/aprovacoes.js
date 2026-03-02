@@ -9,34 +9,34 @@
     let activeHistoryType = '';
 
     const CURSOS_OPTIONS = [
-        'CFP | Curso de Formação Policial',
-        'CAFIT | Curso de Fiscalização de Trânsito',
+        'CFP | Curso de Forma??o Policial',
+        'CAFIT | Curso de Fiscaliza??o de Trânsito',
         'CVP | Curso Veicular Policial',
-        'OP | Habilitação Operacional',
+        'OP | Habilita??o Operacional',
         'CDP | Curso de Direito Penal',
         'CAD | Curso de Atirador Designado',
         'COEsp | Curso de Operações Especiais',
         'CFMB | Curso de Motociclista Batedor',
-        'CFMT | Curso de Formação de Motociclista Tático',
-        'CDT | Curso de Desembarque Tático',
-        'CDD | Curso de Direção Defensiva',
-        'COA | Curso de Operador Aerotático',
+        'CFMT | Curso de Forma??o de Motociclista T?tico',
+        'CDT | Curso de Desembarque T?tico',
+        'CDD | Curso de Dire??o Defensiva',
+        'COA | Curso de Operador Aerot?tico',
         'CPPAR | Curso de Piloto Policial da Asa Rotativa',
         'ARP | Curso de Piloto Policial de Aeronave Remota'
     ];
 
     const MEDAL_OPTIONS = [
-        { code: 'elogio_ref', name: 'Referência elogiosa', image: 'mencaoelogio.png' },
+        { code: 'elogio_ref', name: 'Refer?ncia elogiosa', image: 'mencaoelogio.png' },
         { code: 'elogio', name: 'Elogio', image: 'mencaoelogio.png' },
-        { code: 'merito', name: 'Medalha ao Mérito', image: 'medalhamerito.png' },
+        { code: 'merito', name: 'Medalha ao M?rito', image: 'medalhamerito.png' },
         { code: 'bravura', name: 'Medalha Bravura', image: 'medalhabravura.png' },
-        { code: 'heroi_estradas', name: 'Medalha Herói das Estradas', image: 'medalhaheroiestradas.png' },
-        { code: 'washington', name: 'Medalha Washington Luís', image: 'medalhawashington.png' },
-        { code: 'antonio_felix_gracruza', name: 'Medalha Antônio Félix Filho Grã-Cruz', image: 'medalhaantoniofelix.png' },
-        { code: 'washington_gracruza', name: 'Medalha Washington Luís Grã Cruz', image: 'medalhagracruzwashington.png' },
-        { code: 'moeda_antonio_bronze', name: 'Moeda Antônio Felix Bronze', image: 'moedaantoniofelixbronze.png' },
-        { code: 'moeda_antonio_prata', name: 'Moeda Antônio Felix Prata', image: 'moedaantoniofelixprata.png' },
-        { code: 'moeda_antonio_ouro', name: 'Moeda Antônio Felix Ouro', image: 'moedaantoniofelixouro.png' }
+        { code: 'heroi_estradas', name: 'Medalha Her?i das Estradas', image: 'medalhaheroiestradas.png' },
+        { code: 'washington', name: 'Medalha Washington Lu?s', image: 'medalhawashington.png' },
+        { code: 'antonio_felix_gracruza', name: 'Medalha Ant?nio F?lix Filho Gr?-Cruz', image: 'medalhaantoniofelix.png' },
+        { code: 'washington_gracruza', name: 'Medalha Washington Lu?s Gr? Cruz', image: 'medalhagracruzwashington.png' },
+        { code: 'moeda_antonio_bronze', name: 'Moeda Ant?nio Felix Bronze', image: 'moedaantoniofelixbronze.png' },
+        { code: 'moeda_antonio_prata', name: 'Moeda Ant?nio Felix Prata', image: 'moedaantoniofelixprata.png' },
+        { code: 'moeda_antonio_ouro', name: 'Moeda Ant?nio Felix Ouro', image: 'moedaantoniofelixouro.png' }
     ];
 
     function byId(id) {
@@ -171,8 +171,8 @@
             : type === 'ait'
                 ? ('AIT ' + (row.numero_ait || idLabel))
                 : type === 'patrulha'
-                    ? (row.titulo || row.area || 'RelatÃ³rio de patrulha')
-                    : (row.titulo || 'RelatÃ³rio aluno');
+                    ? (row.titulo || row.area || 'Relatório de patrulha')
+                    : (row.titulo || 'Relatório aluno');
 
         const snippet = row.conteudo_completo || row.texto || row.observacoes || row.relato || '';
         const shortSnippet = String(snippet || '').slice(0, 260);
@@ -231,7 +231,7 @@
         const list = byId('history-list');
         if (!list) return;
         if (!Array.isArray(items)) {
-            list.innerHTML = '<div class="approvals-empty">Fonte de dados nÃ£o encontrada para esta consulta.</div>';
+            list.innerHTML = '<div class="approvals-empty">Fonte de dados não encontrada para esta consulta.</div>';
             return;
         }
         if (!items.length) {
@@ -242,7 +242,7 @@
             const item = formatHistoryItem(type, row);
             return '<article class="history-item">' +
                 '<h4>' + escapeHtml(item.title) + '</h4>' +
-                '<span class="history-meta">ID ' + escapeHtml(item.id) + ' â€¢ ' + escapeHtml(item.when) + '</span>' +
+                '<span class="history-meta">ID ' + escapeHtml(item.id) + ' � ' + escapeHtml(item.when) + '</span>' +
                 (item.snippet ? '<p>' + escapeHtml(item.snippet) + '</p>' : '') +
             '</article>';
         }).join('');
@@ -277,9 +277,9 @@
         byId('history-user-name').textContent = profile.nome_guerra || profile.email || profile.id;
         byId('history-user-email').textContent = profile.email || '-';
         byId('history-title').textContent =
-            type === 'bou' ? 'HistÃ³rico de BOU' :
-            type === 'ait' ? 'HistÃ³rico de AIT' :
-            type === 'patrulha' ? 'HistÃ³rico de Patrulha' : 'HistÃ³rico de RelatÃ³rio Aluno';
+            type === 'bou' ? 'Histórico de BOU' :
+            type === 'ait' ? 'Histórico de AIT' :
+            type === 'patrulha' ? 'Histórico de Patrulha' : 'Histórico de Relatório Aluno';
 
         const filtersNode = byId('history-filters');
         if (filtersNode) {
@@ -461,7 +461,7 @@
             mode === 'cargo' ? 'Editar cargo' :
             mode === 'grupamento' ? 'Editar grupamento' :
             mode === 'acesso' ? 'Editar acesso' :
-            mode === 'medalhas' ? 'Editar condecorações e medalhas' : 'Editar cursos';
+            mode === 'medalhas' ? 'Editar condecora??es e medalhas' : 'Editar cursos';
         byId('roles-field-cargo').style.display = mode === 'cargo' ? 'flex' : 'none';
         byId('roles-field-grupamento').style.display = mode === 'grupamento' ? 'flex' : 'none';
         byId('roles-field-acesso').style.display = mode === 'acesso' ? 'flex' : 'none';
@@ -500,14 +500,14 @@
                 .map(function (node) { return node.value; })
                 .filter(Boolean);
 
-            setStatus('Salvando condecorações...');
+            setStatus('Salvando condecora??es...');
             const currentResult = await supabaseClient
                 .from('profile_medals')
                 .select('medal_code')
                 .eq('user_id', userId);
 
             if (currentResult.error) {
-                setStatus('Falha ao carregar condecorações: ' + currentResult.error.message, true);
+                setStatus('Falha ao carregar condecora??es: ' + currentResult.error.message, true);
                 return;
             }
 
@@ -527,7 +527,7 @@
                 });
                 const insertResult = await supabaseClient.from('profile_medals').insert(rows);
                 if (insertResult.error) {
-                    setStatus('Falha ao adicionar condecorações: ' + insertResult.error.message, true);
+                    setStatus('Falha ao adicionar condecora??es: ' + insertResult.error.message, true);
                     return;
                 }
             }
@@ -539,26 +539,26 @@
                     .eq('user_id', userId)
                     .in('medal_code', toRemove);
                 if (delResult.error) {
-                    setStatus('Falha ao remover condecorações: ' + delResult.error.message, true);
+                    setStatus('Falha ao remover condecora??es: ' + delResult.error.message, true);
                     return;
                 }
             }
 
             closeRoleModal();
-            setStatus('Condecorações atualizadas com sucesso.');
+            setStatus('Condecora??es atualizadas com sucesso.');
             await loadProfiles();
             return;
         }
 
-        setStatus('Salvando ediÃ§Ã£o...');
+        setStatus('Salvando edição...');
         const result = await supabaseClient.from('profiles').update(payload).eq('id', userId);
         if (result.error) {
-            setStatus('Falha ao salvar ediÃ§Ã£o: ' + result.error.message, true);
+            setStatus('Falha ao salvar edição: ' + result.error.message, true);
             return;
         }
 
         closeRoleModal();
-        setStatus('EdiÃ§Ã£o salva com sucesso.');
+        setStatus('Edição salva com sucesso.');
         await loadProfiles();
     }
 
@@ -573,7 +573,7 @@
         const photo = profile.foto_url ? escapeHtml(profile.foto_url) : 'assets/img/prf.png';
         const shiftStatusRaw = String(profile.shift_status || '').toLowerCase();
         const shiftStatus = shiftStatusRaw === 'em_servico'
-            ? 'Em serviço'
+            ? 'Em servi?o'
             : shiftStatusRaw === 'encerrado'
                 ? 'Serviço encerrado'
                 : 'Sem registro';
@@ -593,13 +593,13 @@
                         '<span><strong>RG:</strong> ' + escapeHtml(profile.rg || '-') + '</span>' +
                         '<span><strong>Cargo:</strong> ' + escapeHtml(profile.cargo || '-') + '</span>' +
                         '<span><strong>Grupamento principal:</strong> ' + escapeHtml(groupedPrimary) + '</span>' +
-                        '<span><strong>Grupamento secundário:</strong> ' + escapeHtml(groupedSecondary) + '</span>' +
+                        '<span><strong>Grupamento secund?rio:</strong> ' + escapeHtml(groupedSecondary) + '</span>' +
                         '<span><strong>Acesso:</strong> ' + escapeHtml(acessoLabel) + '</span>' +
                         '<span><strong>Cursos:</strong> ' + escapeHtml(coursesText) + '</span>' +
                         '<span><strong>Admin:</strong> ' + (profile.is_admin ? 'Sim' : 'Não') + '</span>' +
                         '<span><strong>Ponto:</strong> ' + escapeHtml(shiftStatus) + '</span>' +
-                        '<span><strong>Tempo de serviço:</strong> ' + escapeHtml(shiftTime) + '</span>' +
-                        '<span><strong>Último bate-ponto:</strong> ' + escapeHtml(shiftLastAt) + '</span>' +
+                        '<span><strong>Tempo de servi?o:</strong> ' + escapeHtml(shiftTime) + '</span>' +
+                        '<span><strong>?ltimo bate-ponto:</strong> ' + escapeHtml(shiftLastAt) + '</span>' +
                         '<span><strong>Criado em:</strong> ' + escapeHtml(formatDate(profile.created_at)) + '</span>' +
                     '</div>' +
                 '</div>' +
@@ -615,7 +615,7 @@
                 '<button class="approvals-btn" data-action="edit-grupamento" data-id="' + escapeHtml(profile.id) + '">Editar grupamento</button>' +
                 '<button class="approvals-btn" data-action="edit-acesso" data-id="' + escapeHtml(profile.id) + '">Editar acesso</button>' +
                 '<button class="approvals-btn" data-action="edit-cursos" data-id="' + escapeHtml(profile.id) + '">Editar cursos</button>' +
-                '<button class="approvals-btn" data-action="edit-medalhas" data-id="' + escapeHtml(profile.id) + '">Editar condecorações</button>' +
+                '<button class="approvals-btn" data-action="edit-medalhas" data-id="' + escapeHtml(profile.id) + '">Editar condecora??es</button>' +
             '</div>' +
             '<div class="approvals-history-actions">' +
                 '<button class="approvals-btn" data-action="history-bou" data-id="' + escapeHtml(profile.id) + '">BOU (realizado/citado)</button>' +
@@ -666,7 +666,7 @@
         const node = byId('aprovacoes-cards');
         if (!node) return;
         if (!Array.isArray(list) || !list.length) {
-            node.innerHTML = '<div class="approvals-empty">Nenhum usuÃ¡rio encontrado.</div>';
+            node.innerHTML = '<div class="approvals-empty">Nenhum usuário encontrado.</div>';
             return;
         }
         node.innerHTML = list.map(buildProfileCard).join('');
@@ -874,7 +874,7 @@
                 return acc + calcDurationMinutes(item);
             }, 0);
             const hasOpen = list.some(function (item) { return String(item.status || '').toLowerCase() === 'em_servico' || !item.fim_at; });
-            const statusLabel = hasOpen ? 'Em serviço' : 'Encerrado';
+            const statusLabel = hasOpen ? 'Em servi?o' : 'Encerrado';
             const statusClass = hasOpen ? 'badge-pending' : 'badge-ok';
 
             return '<tr>' +
@@ -896,7 +896,7 @@
     }
 
     async function loadPontosCalendar() {
-        setPontosStatus('Carregando calendário...');
+        setPontosStatus('Carregando calend?rio...');
         const input = byId('pontos-date');
         const selectedDate = input && input.value ? input.value : new Date().toISOString().slice(0, 10);
         const range = getDateRangeIso(selectedDate);
@@ -910,7 +910,7 @@
             .limit(2000);
 
         if (pointsResult.error) {
-            setPontosStatus('Falha ao carregar calendário: ' + pointsResult.error.message, true);
+            setPontosStatus('Falha ao carregar calend?rio: ' + pointsResult.error.message, true);
             renderPontos([], {});
             return;
         }
@@ -976,14 +976,14 @@
         const status = byId('logs-incongruencias-status');
         if (!node) return;
         if (!list || !list.length) {
-            node.innerHTML = '<div class="approvals-empty">Nenhuma incongruência identificada.</div>';
+            node.innerHTML = '<div class="approvals-empty">Nenhuma incongru?ncia identificada.</div>';
             if (status) status.textContent = '';
             return;
         }
         node.innerHTML = list.map(function (item) {
             return '<div class="history-item"><p>' + escapeHtml(item) + '</p></div>';
         }).join('');
-        if (status) status.textContent = 'Incongruências detectadas: ' + list.length;
+        if (status) status.textContent = 'Incongru?ncias detectadas: ' + list.length;
     }
 
     async function loadAllLogs() {
@@ -1076,6 +1076,9 @@
         await loadPontosCalendar();
     });
 })();
+
+
+
 
 
 

@@ -1,4 +1,4 @@
-const $ = (id) => document.getElementById(id);
+﻿const $ = (id) => document.getElementById(id);
 
 const el = {
   avaliador: $('aluno-avaliador'),
@@ -271,7 +271,7 @@ function buildPayload() {
   const titulo = `Relatório aluno - ${campos.data || 'sem data'} ${campos.horario || ''}`.trim();
 
   const texto = [
-    '# RELATÓRIO DE AVALIAÇÃO DE ALUNO',
+    '# RELAT?RIO DE AVALIA??O DE ALUNO',
     '',
     `Policial responsável: ${campos.policial_responsavel || 'N/A'}`,
     `Data: ${campos.data || 'N/A'}`,
@@ -281,7 +281,7 @@ function buildPayload() {
     '',
     `Disciplina e postura: ${campos.disciplina_postura || 'N/A'}`,
     `Conhecimento e aprendizado: ${campos.conhecimento_aprendizado || 'N/A'}`,
-    `Trabalho em equipe e comunicação: ${campos.equipe_comunicacao || 'N/A'}`,
+    `Trabalho em equipe e comunica??o: ${campos.equipe_comunicacao || 'N/A'}`,
     `Avaliação geral: ${campos.avaliacao_geral || 'N/A'}`,
     '',
     'Observações:',
@@ -307,7 +307,7 @@ function buildPayload() {
 
 async function saveRelatorio(payload) {
   const { client, user, error } = await getCurrentUser();
-  if (!client || !user) throw new Error(error || 'Sem sessão válida.');
+  if (!client || !user) throw new Error(error || 'Sem sess?o válida.');
 
   if (currentEditId) {
     const upd = await client
@@ -354,7 +354,7 @@ async function submitRelatorio() {
     }
 
     if (!campos.disciplina_postura || !campos.conhecimento_aprendizado || !campos.equipe_comunicacao || !campos.avaliacao_geral) {
-      setStatus('Preencha todas as avaliações (Disciplina, Conhecimento, Equipe e Geral).', true);
+      setStatus('Preencha todas as avalia??es (Disciplina, Conhecimento, Equipe e Geral).', true);
       return;
     }
 
@@ -386,7 +386,7 @@ async function loadForEdit() {
 
   const { client, user, error } = await getCurrentUser();
   if (!client || !user) {
-    setStatus(error || 'Sessão inválida para edição.', true);
+    setStatus(error || 'Sess?o inválida para edição.', true);
     return;
   }
 
@@ -411,7 +411,7 @@ async function loadForEdit() {
   }
 
   if (!campos) {
-    setStatus('Conteúdo do relatório inválido para edição.', true);
+    setStatus('Conte?do do relatório inválido para edição.', true);
     return;
   }
 
@@ -462,3 +462,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   await loadAlunosOptions();
   await loadForEdit();
 });
+
+
+

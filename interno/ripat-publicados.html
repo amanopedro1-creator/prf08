@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -53,86 +53,73 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <header class="top-header">
+    <header class="top-header top-header--unified" id="menu">
         <div class="container">
             <div class="top-header-content">
                 <div class="logo-governo">
-                    <a href="painel.html" class="gov-logo-link">
+                    <a href="../index.html" class="gov-logo-link">
                         <img src="assets/img/gov_br.png" alt="Governo do Brasil" class="gov-logo">
                     </a>
                     <span class="gov-divider" aria-hidden="true"></span>
                     <div class="gov-identity">
-                        <span class="gov-ministry">MINISTÉRIO DA JUSTIÇA E SEGURANÇA PÚBLICA</span>
-                        <span class="gov-agency">Polícia Rodoviária Federal</span>
+                        <span class="gov-ministry">MINIST&Eacute;RIO DA JUSTI&Ccedil;A E SEGURAN&Ccedil;A P&Uacute;BLICA</span>
+                        <span class="gov-agency">Pol&iacute;cia Rodovi&aacute;ria Federal</span>
                     </div>
                 </div>
+
+                <nav class="mini-nav mini-nav--unified" aria-label="Navega&ccedil;&atilde;o principal">
+                    <a href="../index.html"><i class="fas fa-house"></i> IN&Iacute;CIO</a>
+                    <div class="nav-dropdown">
+                        <a href="#" class="nav-link-dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-building-columns"></i> INSTITUCIONAL</a>
+                        <div class="dropdown-menu">
+                            <a href="../organograma.html">Organograma</a>
+                            <a href="../historia-valores.html">Hist&oacute;ria e Valores</a>
+                        </div>
+                    </div>
+                    <div class="nav-dropdown">
+                        <a href="#" class="nav-link-dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-folder-open"></i> SERVI&Ccedil;OS</a>
+                        <div class="dropdown-menu">
+                            <a href="../documentos.html">Documentos PRF</a>
+                        </div>
+                    </div>
+                    <div class="nav-dropdown">
+                        <a href="#" class="nav-link-dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-chalkboard-user"></i> UNIPRF</a>
+                        <div class="dropdown-menu">
+                            <a href="../capacitacao.html">UniPRF</a>
+                            <a href="../concursos.html">Concursos</a>
+                        </div>
+                    </div>
+                    <a href="../corregedoria.html"><i class="fas fa-scale-balanced"></i> CORREGEDORIA</a>
+                </nav>
+
                 <div class="top-header-right">
                     <div class="user-auth-header">
                         <a href="../login.html" id="header-login-btn" class="auth-link">
                             <i class="fas fa-sign-in-alt"></i>
-                            <span>LOGIN</span>
-                        </a>
-                        <a href="../criar-conta.html" id="header-register-btn" class="auth-link">
-                            <i class="fas fa-user-plus"></i>
-                            <span>CRIAR CONTA</span>
+                            <span>SIGA</span>
                         </a>
                         <div id="header-user-menu" class="user-menu-header is-hidden">
-                            <span class="user-name-header"></span>
-<a href="/interno/perfil.html" class="auth-link" id="header-edit-profile-link">
-                                <i class="fas fa-user-edit"></i>
-                                <span>EDITAR PERFIL</span>
-                            </a>
-                            <a href="#" onclick="auth.logout(); return false;" class="auth-link">
-                                <i class="fas fa-sign-out-alt"></i>
-                                <span>SAIR</span>
-                            </a>
+                            <button type="button" class="user-menu-toggle" id="header-user-toggle" aria-expanded="false" aria-controls="header-user-panel">
+                                <span class="user-name-header"></span>
+                                <i class="fas fa-chevron-down" aria-hidden="true"></i>
+                            </button>
+                            <div class="user-menu-panel" id="header-user-panel">
+                                <div class="user-menu-actions"></div>
+                                <a href="/interno/perfil.html" class="auth-link" id="header-edit-profile-link">
+                                    <i class="fas fa-user-edit"></i>
+                                    <span>Editar perfil</span>
+                                </a>
+                                <a href="#" onclick="auth.logout(); return false;" class="auth-link">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                    <span>Sair</span>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </header>
-
-    <header class="main-header main-header--duna" id="menu">
-        <div class="container">
-            <div class="header-row">
-
-            <!-- ESQUERDA: 3 pÃ¡ginas -->
-            <nav class="mini-nav mini-nav--left" aria-label="PÃ¡ginas (esquerda)">
-                <a href="../index.html">INÍCIO</a>
-                    <div class="nav-dropdown">
-                        <a href="#" class="nav-link-dropdown" aria-haspopup="true" aria-expanded="false">INSTITUCIONAL</a>
-                        <div class="dropdown-menu">
-                            <a href="../organograma.html">Organograma</a>
-<a href="../historia-valores.html">História e Valores</a>
-                        </div>
-                    </div>
-                    <div class="nav-dropdown">
-                        <a href="#" class="nav-link-dropdown" aria-haspopup="true" aria-expanded="false">SERVIÇOS</a>
-                            <div class="dropdown-menu">
-                            <a href="../documentos.html">Documentos PRF</a>
-                        </div>
-                    </div>
-            </nav>
-
-            <!-- CENTRO: informaÃ§Ã£o (logo + textos) -->
-            <div class="main-header-top">
-                <div class="brand-block">
-                <a href="../index.html" class="brand-logo-link">
-                <img src="assets/img/prf.png" alt="PRF JaguarÃ©" class="brand-logo">
-                </a>
-                </div>
-            </div>
-            <!-- DIREITA: +3 pÃ¡ginas -->
-            <nav class="mini-nav mini-nav--right" aria-label="PÃ¡ginas (direita)">
-                <a href="../concursos.html">CONCURSOS</a>
-                <a href="../capacitacao.html">CAPACITAÇÃO E TREINAMENTO</a>
-                <a href="../corregedoria.html">CORREGEDORIA</a>
-            </nav>
-            </div>
-            <div class="red-line"></div>
-        </div>
-        </header>
 
     <section class="latest-news info-section">
         <div class="container">
@@ -143,16 +130,16 @@
 
             <div class="ace-toolbar">
                 <input type="text" id="ripat-search-citado" class="equipe-search" placeholder="Filtrar por policial citado/envolvido">
-                <input type="text" id="ripat-search-relator" class="equipe-search" placeholder="Filtrar por usuário que realizou">
+                <input type="text" id="ripat-search-relator" class="equipe-search" placeholder="Filtrar por usu&aacute;rio que realizou">
             </div>
 
             <div id="ripat-admin-actions" class="ace-admin-actions is-hidden">
-                <button type="button" id="ripat-select-page" class="bou-btn bou-btn-secondary">Selecionar todos desta página</button>
+                <button type="button" id="ripat-select-page" class="bou-btn bou-btn-secondary">Selecionar todos desta p&aacute;gina</button>
                 <button type="button" id="ripat-delete-selected" class="bou-btn bou-btn-danger">Apagar selecionados</button>
                 <span id="ripat-selected-count" class="bou-status">0 selecionados</span>
             </div>
 
-            <div id="ripat-status" class="bou-status">Carregando relatórios...</div>
+            <div id="ripat-status" class="bou-status">Carregando relat&oacute;rios...</div>
             <div id="ripat-grid" class="ace-results-grid"></div>
             <div id="ripat-pagination" class="ace-pagination"></div>
 
@@ -168,25 +155,22 @@
         <div class="container">
             <div class="diario-footer-top">
                 <div class="diario-footer-brand">
-                    <img src="assets/img/prf.png" alt="Polícia Rodoviária Federal" class="diario-footer-logo">
+                    <img src="assets/img/prf.png" alt="Pol&iacute;cia Rodovi&aacute;ria Federal" class="diario-footer-logo">
                     <div class="diario-footer-brand-text">
-                        <strong>Polícia Rodoviária Federal</strong>
-                        <span>Unidade Operacional Jaguaré</span>
-                        <span>São Paulo - SP</span>
+                        <strong>Pol&iacute;cia Rodovi&aacute;ria Federal</strong>
+                        <span>Unidade Operacional Jaguar&eacute;</span>
+                        <span>S&atilde;o Paulo - SP</span>
                     </div>
                 </div>
                 <div class="diario-footer-contact">
                     <h4>CONTATO</h4>
-                    <p>PRF — Delegacia de Jaguaré</p>
+                    <p>PRF &mdash; Delegacia de Jaguar&eacute;</p>
                     <p>Telefone: 191 (PRF)</p>
-                    <p>Emergência: 190</p>
+                    <p>Emerg&ecirc;ncia: 190</p>
                 </div>
             </div>
             <div class="diario-footer-divider" aria-hidden="true"></div>
-            <div class="diario-footer-bottom">
-                <span>© 2026 Polícia Rodoviária Federal — Todos os direitos reservados</span>
-                <img src="assets/img/gov_br.png" alt="gov.br" class="diario-footer-gov">
-            </div>
+            <div><span>Este site fornece informa&ccedil;&otilde;es fict&iacute;cias exclusivamente destinadas ao uso no jogo Grand Theft Auto V, no modo Role Play (RP). Todas as informa&ccedil;&otilde;es, personagens, eventos e situa&ccedil;&otilde;es descritas s&atilde;o puramente fict&iacute;cias e n&atilde;o t&ecirc;m conex&atilde;o com eventos ou indiv&iacute;duos reais. O prop&oacute;sito &eacute; proporcionar entretenimento aos participantes do jogo, e n&atilde;o deve ser interpretado como representa&ccedil;&atilde;o da realidade.</span></div>
         </div>
     </footer>
 
@@ -292,27 +276,27 @@
                     <details class="ace-result-card">
                         <summary class="ace-result-summary">
                             <div class="ace-result-summary-main">
-                                <strong>${esc(row.titulo || 'Relat�rio de Patrulha')}</strong>
+                                <strong>${esc(row.titulo || 'Relat&oacute;rio de Patrulha')}</strong>
                                 <span>Motorista: ${esc(row.motorista || 'N/A')}</span>
                                 <span>Chefe: ${esc(row.chefe || 'N/A')}</span>
                                 <span>Auxiliares: ${esc(auxiliares)}</span>
                                 <span>Unidade: ${esc(row.unidade || 'N/A')}</span>
-                                <span>Data de in�cio: ${esc(row.data_inicio || 'N/A')}</span>
-                                <span>Hora in�cio: ${esc(row.hora_inicio || 'N/A')}</span>
-                                <span>Hora t�rmino: ${esc(row.hora_termino || 'N/A')}</span>
+                                <span>Data de in&iacute;cio: ${esc(row.data_inicio || 'N/A')}</span>
+                                <span>Hora in&iacute;cio: ${esc(row.hora_inicio || 'N/A')}</span>
+                                <span>Hora t&eacute;rmino: ${esc(row.hora_termino || 'N/A')}</span>
                             </div>
                             ${selectHtml}
                             <i class="fas fa-chevron-down ace-result-arrow" aria-hidden="true"></i>
                         </summary>
                         <div class="ace-result-body">
-                            <p><strong>Relator:</strong> ${esc(row.relator_nome || 'Usu�rio n�o identificado')}</p>
+                            <p><strong>Relator:</strong> ${esc(row.relator_nome || 'Usu&aacute;rio n&atilde;o identificado')}</p>
                             <p><strong>Unidade:</strong> ${esc(row.unidade || 'N/A')}</p>
-                            <p><strong>�rea:</strong> ${esc(row.area || 'N/A')}</p>
-                            <p><strong>Per�odo:</strong> ${esc((row.data_inicio || 'N/A') + ' ' + (row.hora_inicio || '') + ' - ' + (row.data_termino || 'N/A') + ' ' + (row.hora_termino || ''))}</p>
-                            <p><strong>Ocorr�ncias:</strong> ${esc(row.ocorrencias || 'N/A')}</p>
+                            <p><strong>&Aacute;rea:</strong> ${esc(row.area || 'N/A')}</p>
+                            <p><strong>Per&iacute;odo:</strong> ${esc((row.data_inicio || 'N/A') + ' ' + (row.hora_inicio || '') + ' - ' + (row.data_termino || 'N/A') + ' ' + (row.hora_termino || ''))}</p>
+                            <p><strong>Ocorr&ecirc;ncias:</strong> ${esc(row.ocorrencias || 'N/A')}</p>
                             <p><strong>Abordagens:</strong> ${esc(row.abordagens || 'N/A')}</p>
-                            <p><strong>Pris�es:</strong> ${esc(row.prisoes || 'N/A')}</p>
-                            <p><strong>Observa��es:</strong></p>
+                            <p><strong>Pris?es:</strong> ${esc(row.prisoes || 'N/A')}</p>
+                            <p><strong>Observa&ccedil;?es:</strong></p>
                             <div class="ace-result-text">${esc(row.observacoes || 'N/A').replace(/\n/g, '<br>')}</div>
                         </div>
                     </details>
@@ -334,8 +318,8 @@
                 const nextDisabled = currentPage >= totalPages ? 'disabled' : '';
                 el.pagination.innerHTML =
                     `<button type="button" class="ace-page-btn" data-page="prev" ${prevDisabled}>Anterior</button>` +
-                    `<span class="ace-page-info">Página ${currentPage} de ${totalPages}</span>` +
-                    `<button type="button" class="ace-page-btn" data-page="next" ${nextDisabled}>Próxima</button>`;
+                    `<span class="ace-page-info">P&aacute;gina ${currentPage} de ${totalPages}</span>` +
+                    `<button type="button" class="ace-page-btn" data-page="next" ${nextDisabled}>Pr&oacute;xima</button>`;
 
                 el.pagination.querySelectorAll('.ace-page-btn').forEach((btn) => {
                     btn.addEventListener('click', () => {
@@ -371,7 +355,7 @@
                 if (!el.grid) return;
                 const rows = Array.isArray(filteredRows) ? filteredRows : [];
                 if (!rows.length) {
-                    el.grid.innerHTML = '<div class="info-card"><p>Nenhum relatório encontrado.</p></div>';
+                    el.grid.innerHTML = '<div class="info-card"><p>Nenhum relat&oacute;rio encontrado.</p></div>';
                     if (el.pagination) el.pagination.innerHTML = '';
                     return;
                 }
@@ -425,12 +409,12 @@
                 const ids = Array.from(selectedIds).map((v) => Number(v)).filter((v) => Number.isFinite(v));
                 if (!ids.length) {
                     if (el.status) {
-                        el.status.textContent = 'Selecione ao menos um relatório para apagar.';
+                        el.status.textContent = 'Selecione ao menos um relat&oacute;rio para apagar.';
                         el.status.style.color = '#b42318';
                     }
                     return;
                 }
-                const ok = window.confirm(`Deseja apagar ${ids.length} relatório(s) selecionado(s)?`);
+                const ok = window.confirm(`Deseja apagar ${ids.length} relat&oacute;rio(s) selecionado(s)?`);
                 if (!ok) return;
 
                 const client = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
@@ -452,7 +436,7 @@
                 ids.forEach((id) => selectedIds.delete(String(id)));
                 applyFilters();
                 if (el.status) {
-                    el.status.textContent = `${ids.length} relatório(s) apagado(s) com sucesso.`;
+                    el.status.textContent = `${ids.length} relat&oacute;rio(s) apagado(s) com sucesso.`;
                     el.status.style.color = '#166534';
                 }
             }
@@ -461,7 +445,7 @@
                 if (!el.status || !el.grid) return;
                 try {
                     if (!window.supabase || !window.supabase.createClient) {
-                        el.status.textContent = 'Supabase não disponível.';
+                        el.status.textContent = 'Supabase n&atilde;o dispon&iacute;vel.';
                         return;
                     }
                     const client = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
@@ -546,5 +530,11 @@
     </script>
 </body>
 </html>
+
+
+
+
+
+
 
 

@@ -1,4 +1,4 @@
-'use strict';
+﻿'use strict';
 
 (function () {
     const el = {
@@ -80,10 +80,18 @@
         return Math.floor((e - s) / 60000);
     }
 
+    function isChefeDivisao(cargoNorm) {
+        return /chefe d[ae] divisao/.test(cargoNorm);
+    }
+
+    function isChefeServico(cargoNorm) {
+        return /chefe d[ae] servico/.test(cargoNorm);
+    }
+
     function rolePriority(cargo) {
         const c = normalize(cargo);
-        if (c.includes('chefe de divisao')) return 1;
-        if (c.includes('chefe de serviço') || c.includes('chefe de servico')) return 2;
+        if (isChefeDivisao(c)) return 1;
+        if (isChefeServico(c)) return 2;
         return 3;
     }
 
@@ -171,8 +179,8 @@
         const isDiretor = cargoNorm.includes('diretor');
         const isSuperintendente = cargoNorm.includes('superintendente');
         const isCoordenador = cargoNorm.includes('coordenador');
-        const isChefeDiv = cargoNorm.includes('chefe de divisao');
-        const isChefeServ = cargoNorm.includes('chefe de serviço') || cargoNorm.includes('chefe de servico');
+        const isChefeDiv = isChefeDivisao(cargoNorm);
+        const isChefeServ = isChefeServico(cargoNorm);
 
         const canAccess = isAdmin || isDiretor || isSuperintendente || isCoordenador || isChefeDiv || isChefeServ;
         if (!canAccess) {
@@ -392,3 +400,6 @@
 
     init();
 })();
+
+
+

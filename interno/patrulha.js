@@ -75,11 +75,11 @@ function getSupabaseClient() {
 
 async function getCurrentUser() {
   const client = getSupabaseClient();
-  if (!client) return { client: null, user: null, error: 'Supabase nao disponivel na p?gina.' };
+  if (!client) return { client: null, user: null, error: 'Supabase não disponivel na página.' };
   const sessionResult = await client.auth.getSession();
   const session = sessionResult && sessionResult.data ? sessionResult.data.session : null;
   const user = session ? session.user : null;
-  return { client, user, error: user ? null : 'Usuario nao autenticado.' };
+  return { client, user, error: user ? null : 'Usuario não autenticado.' };
 }
 
 function normalizeText(value) {
@@ -553,7 +553,7 @@ function buildPayload() {
     `Auxiliar 1: ${campos.auxiliar_1 || 'N/A'}`,
     `Auxiliar 2: ${campos.auxiliar_2 || 'N/A'}`,
     '',
-    '# Atuação',
+    '# Atua??o',
     '',
     `Ocorrências atendidas: ${campos.ocorrencias || 'N/A'}`,
     `Abordagens realizadas: ${campos.abordagens || 'N/A'}`,
@@ -610,7 +610,7 @@ async function submitPatrulha() {
     setStatus('Salvando relatório...');
     const payload = buildPayload();
     if (!payload.area) {
-      setStatus('Preencha a área de patrulhamento.', true);
+      setStatus('Preencha a Área de patrulhamento.', true);
       return;
     }
 
@@ -678,7 +678,7 @@ async function applyPayloadToFields(payload) {
   if (el.horaInicio) el.horaInicio.value = c.hora_inicio || '';
   if (el.dataTermino) el.dataTermino.value = c.data_termino || '';
   if (el.horaTermino) el.horaTermino.value = c.hora_termino || '';
-  if (el.ocorrencias) el.ocorrencias.value = c.ocorrencias || c['ocorr?ncias'] || '';
+  if (el.ocorrencias) el.ocorrencias.value = c.ocorrencias || c['ocorrências'] || '';
   if (el.abordagens) el.abordagens.value = c.abordagens || '';
   if (el.prisoes) el.prisoes.value = c.prisoes || '';
   if (el.observacoes) el.observacoes.value = c.observacoes || '';
@@ -755,3 +755,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   await loadRelatedRecords({});
   await loadForEdit();
 });
+
+
+
