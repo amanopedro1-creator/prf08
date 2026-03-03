@@ -129,11 +129,11 @@
 
             <div class="ace-toolbar">
                 <input type="text" id="ait-fill-search-infrator" class="equipe-search" placeholder="Filtrar por nome/RG do infrator">
-                <input type="text" id="ait-fill-search-relator" class="equipe-search" placeholder="Filtrar por usu�rio que realizou">
+                <input type="text" id="ait-fill-search-relator" class="equipe-search" placeholder="Filtrar por usuário que realizou">
             </div>
 
             <div id="ait-fill-admin-actions" class="ace-admin-actions is-hidden">
-                <button type="button" id="ait-fill-select-page" class="bou-btn bou-btn-secondary">Selecionar todos desta p�gina</button>
+                <button type="button" id="ait-fill-select-page" class="bou-btn bou-btn-secondary">Selecionar todos desta página</button>
                 <button type="button" id="ait-fill-delete-selected" class="bou-btn bou-btn-danger">Apagar selecionados</button>
                 <span id="ait-fill-selected-count" class="bou-status">0 selecionados</span>
             </div>
@@ -282,7 +282,7 @@
                 const nextDisabled = currentPage >= totalPages ? 'disabled' : '';
                 el.pagination.innerHTML =
                     `<button type="button" class="ace-page-btn" data-page="prev" ${prevDisabled}>Anterior</button>` +
-                    `<span class="ace-page-info">P�gina ${currentPage} de ${totalPages}</span>` +
+                    `<span class="ace-page-info">Página ${currentPage} de ${totalPages}</span>` +
                     `<button type="button" class="ace-page-btn" data-page="next" ${nextDisabled}>Pr&oacute;xima</button>`;
 
                 el.pagination.querySelectorAll('.ace-page-btn').forEach((btn) => {
@@ -409,7 +409,7 @@
                 if (!el.status || !el.grid) return;
                 try {
                     if (!window.supabase || !window.supabase.createClient) {
-                        el.status.textContent = 'Supabase n&atilde;o dispon�vel.';
+                        el.status.textContent = 'Supabase não disponível.';
                         return;
                     }
                     const client = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);

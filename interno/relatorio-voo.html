@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -52,7 +52,7 @@
                 }
 
                 const grupos = String(profile.grupamento || '').split(' || ').map(v => v.trim()).filter(Boolean);
-                const isDoa = grupos.some(g => normalizeText(g) === normalizeText('Divis&atilde;o de Opera&ccedil;ões A&eacute;reas'));
+                const isDoa = grupos.some(g => normalizeText(g) === normalizeText('Divisão de Operações Aéreas'));
                 const isAdmin = profile.is_admin === true;
                 if (!isAdmin && !isDoa) {
                     window.location.replace('painel.html');

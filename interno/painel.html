@@ -1679,20 +1679,20 @@
 
                 if (s.status === 'active' && s.startAt) {
                     btn.classList.add('profile-shift-btn--active');
-                    btn.textContent = 'Em servi&atilde;§o ' + shiftControl.formatHms(Date.now() - Number(s.startAt));
+                    btn.textContent = 'Em serviço ' + shiftControl.formatHms(Date.now() - Number(s.startAt));
                     return;
                 }
 
                 if (s.status === 'closed') {
                     if (!showClosedState) {
                         btn.classList.add('profile-shift-btn--idle');
-                        btn.textContent = 'Entrar em servi&atilde;§o';
+                        btn.textContent = 'Entrar em serviço';
                         return;
                     }
                     btn.classList.add('profile-shift-btn--closed');
                     btn.textContent = s.totalMs
-                        ? ('Servi&atilde;§o encerrado ' + shiftControl.formatHms(s.totalMs))
-                        : 'Servi&atilde;§o encerrado';
+                        ? ('Serviço encerrado ' + shiftControl.formatHms(s.totalMs))
+                        : 'Serviço encerrado';
                     return;
                 }
 

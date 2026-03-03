@@ -60,18 +60,50 @@ async function getCurrentUser() {
 
 function extrairNumeroAit(row) {
   if (!row) return "";
-  let numero = row.numero_ait || "";
+  const direct = String(row.numero_ait || "").trim();
+  if (direct) return direct;
+
+  const tryExtractFromText = (text) => {
+    const s = String(text || "");
+    if (!s) return "";
+    const m =
+      s.match(/Número do AIT:\s*([A-Za-z0-9\/\-_.]+)/i) ||
+      s.match(/Numero do AIT:\s*([A-Za-z0-9\/\-_.]+)/i);
+    return m ? String(m[1]).trim() : "";
+  };
+
+  const fromTitulo = String(row.titulo || "").trim();
+  if (fromTitulo) {
+    const m = fromTitulo.match(/AIT\s*#?\s*([A-Za-z0-9\/\-_.]+)/i);
+    if (m) return String(m[1]).trim();
+  }
+
   if (row.conteudo_completo) {
     try {
       const payload = JSON.parse(row.conteudo_completo);
-      if (payload && payload.campos && payload.campos.numero_ait) {
-        numero = payload.campos.numero_ait;
-      }
+      const campos = payload && payload.campos ? payload.campos : null;
+      const payloadNumero = campos && campos.numero_ait
+        ? campos.numero_ait
+        : (payload && (payload.numero_ait || payload.ait_numero));
+      const safePayload = String(payloadNumero || "").trim();
+      if (safePayload) return safePayload;
+
+      const textoOriginal = Array.isArray(payload && payload.texto_original)
+        ? payload.texto_original.join("\n")
+        : "";
+      const fromTextoOriginal = tryExtractFromText(textoOriginal);
+      if (fromTextoOriginal) return fromTextoOriginal;
+
+      const fromTexto = tryExtractFromText(payload && (payload.texto || payload.conteudo || payload.resumo));
+      if (fromTexto) return fromTexto;
     } catch {
-      /* ignore */
+      // fallback para regex no texto bruto
+      const fromRaw = tryExtractFromText(row.conteudo_completo);
+      if (fromRaw) return fromRaw;
     }
   }
-  return String(numero || "").trim();
+
+  return "";
 }
 
 function v(inputEl, fallback = "") {
