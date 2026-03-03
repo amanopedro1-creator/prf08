@@ -1206,13 +1206,13 @@
                     const isAgenteAluno = String(p.cargo || '').trim().toLowerCase() === 'agente aluno';
                     const isAdmin = p.is_admin === true;
                     const grupos = String(p.grupamento || '').split(' || ').map(v => v.trim()).filter(Boolean);
-                    const isDoa = grupos.some(g => normalizeText(g) === normalizeText('Divis&atilde;£o de Opera&atilde;§&atilde;µes A&atilde;©reas'));
-                    const isDgp = grupos.some(g => normalizeText(g) === normalizeText('Diretoria de Gest&atilde;£o de Pessoas'));
+                    const isDoa = grupos.some(g => normalizeText(g) === normalizeText('Divisão de Operações Aéreas'));
+                    const isDgp = grupos.some(g => normalizeText(g) === normalizeText('Diretoria de Gestão de Pessoas'));
                     const hasAcesso = normalizeText(p.acesso || '').includes('acesso');
-                    setLockedCard(relatorioAlunoCard, isAgenteAluno, 'Indispon&atilde;­vel para Agente Aluno');
+                    setLockedCard(relatorioAlunoCard, isAgenteAluno, 'Indisponível para Agente Aluno');
                     setLockedCard(aceResultadosCard, !(isDgp || isAdmin || hasAcesso), 'Acesso restrito ao DGP ou perfil com acesso');
-                    setLockedCard(relatorioVooCard, !(isDoa || isAdmin), 'Acesso restrito &atilde;  Divis&atilde;£o de Opera&atilde;§&atilde;µes A&atilde;©reas');
-                    setLockedCard(painelDgpCard, !isAdmin, 'Indispon&atilde;­vel para este perfil');
+                    setLockedCard(relatorioVooCard, !(isDoa || isAdmin), 'Acesso restrito &atilde;  Divisão de Operações Aéreas');
+                    setLockedCard(painelDgpCard, !isAdmin, 'Indisponível para este perfil');
                     if (grupamentoNode) grupamentoNode.textContent = grupos.length ? grupos.join(' | ') : '-';
                     if (cursosNode) {
                         const rawCourses = String(p.cursos || '').trim();
@@ -1283,13 +1283,13 @@
                     .limit(1);
 
                 if (result.error) {
-                    box.innerHTML = '<h3>Mural de avisos</h3><p class="painel-latest-aviso-empty">N&atilde;£o foi poss&atilde;­vel carregar os avisos.</p>';
+                    box.innerHTML = '<h3>Mural de avisos</h3><p class="painel-latest-aviso-empty">Não foi possível carregar os avisos.</p>';
                     return;
                 }
 
                 const aviso = Array.isArray(result.data) && result.data.length ? result.data[0] : null;
                 if (!aviso) {
-                    box.innerHTML = '<h3>Mural de avisos</h3><p class="painel-latest-aviso-empty">Nenhum aviso publicado at&atilde;© o momento.</p>';
+                    box.innerHTML = '<h3>Mural de avisos</h3><p class="painel-latest-aviso-empty">Nenhum aviso publicado até o momento.</p>';
                     return;
                 }
 
