@@ -84,7 +84,7 @@
         const complemento = (row.texto || "").trim();
         const meta = buildMetaLine(row);
         const decreto = buildDecretoTitle(row);
-        const assinaturaData = "S?o Paulo, " + formatLongPt(row.created_at) + ".";
+        const assinaturaData = "São Paulo, " + formatLongPt(row.created_at) + ".";
         const assinante = "**" + (currentUserCargo || "Cargo") + " " + (currentUserName || "Usuário") + "**";
         const prefixo = "O DIRETOR-GERAL da Polícia Rodoviária Federal, no uso das atribuições que lhe conferem ";
         const marcacao = "||@?????| Polícia Rodoviária Federal ||"
@@ -177,26 +177,26 @@
 
     function buildMetaLine(row) {
         return "Publicado em: " + formatPtDate(row.created_at)
-            + " | Edi\u00e7\u00e3o: " + String(row.edicao_num || "-")
-            + " | Se\u00e7\u00e3o: " + String(row.secao_num || "-")
-            + " | P\u00e1gina: " + String(row.pagina_num || "-");
+            + " | Edição: " + String(row.edicao_num || "-")
+            + " | Seção: " + String(row.secao_num || "-")
+            + " | Página: " + String(row.pagina_num || "-");
     }
 
     function buildDecretoTitle(row) {
-        return "DECRETO N\u00daMERO " + String(row.numero_decreto || "-") + ", DE " + formatLongUpper(row.created_at);
+        return "DECRETO NÚMERO " + String(row.numero_decreto || "-") + ", DE " + formatLongUpper(row.created_at);
     }
 
     function renderDiarioCard(row) {
         const complemento = escapeHtml(row.texto || "").replace(/\n/g, "<br>");
         const decreto = buildDecretoTitle(row);
         const meta = buildMetaLine(row);
-        const assinatura = "S\u00e3o Paulo, " + formatLongPt(row.created_at) + ".";
+        const assinatura = "São Paulo, " + formatLongPt(row.created_at) + ".";
 
         return "<article class=\"diario-edicao-card\">"
-            + "<img src=\"assets/img/brasao_gov.jpg\" alt=\"Bras\u00e3o do Governo\" class=\"diario-brasao\">"
-            + "<h3 class=\"diario-titulo-principal\">DI\u00c1RIO OFICIAL DA UNI\u00c3O</h3>"
+            + "<img src=\"assets/img/brasao_gov.jpg\" alt=\"Brasão do Governo\" class=\"diario-brasao\">"
+            + "<h3 class=\"diario-titulo-principal\">DIÁRIO</h3>"
             + "<p class=\"diario-meta\">" + escapeHtml(meta) + "</p>"
-            + "<p class=\"diario-orgao\"><strong>\u00d3rg\u00e3o:</strong> Atos do Poder Executivo</p>"
+            + "<p class=\"diario-orgao\"><strong>\Órgão:</strong> Atos do Poder Executivo</p>"
             + "<h4 class=\"diario-decreto\">" + escapeHtml(decreto) + "</h4>"
             + "<div class=\"diario-texto\">"
             + "<p>O O DIRETOR-GERAL no uso das atribuições que lhe conferem " + complemento + "</p>"
@@ -263,7 +263,7 @@
 
         if (result.error) {
             const box = byId("diario-lista");
-            if (box) box.innerHTML = "<div class=\"approvals-empty\">Erro ao carregar Di\u00e1rio Oficial: " + escapeHtml(result.error.message) + "</div>";
+            if (box) box.innerHTML = "<div class=\"approvals-empty\">Erro ao carregar Diário Oficial: " + escapeHtml(result.error.message) + "</div>";
             return;
         }
         renderList(result.data || []);
@@ -272,7 +272,7 @@
     async function publishDiario(event) {
         event.preventDefault();
         if (!canPublish) {
-            setStatus("Somente administradores ou perfis com acesso podem publicar Di\u00e1rio Oficial.", true);
+            setStatus("Somente administradores ou perfis com acesso podem publicar Diário Oficial.", true);
             return;
         }
 
@@ -282,7 +282,7 @@
             return;
         }
 
-        setStatus("Publicando Di\u00e1rio Oficial...");
+        setStatus("Publicando Diário Oficial...");
 
         const now = new Date();
         const dayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
@@ -364,6 +364,7 @@
         }
     });
 })();
+
 
 
 
