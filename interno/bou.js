@@ -547,10 +547,10 @@ function gerarTexto() {
     '',
     `Material Apreendido: ${v(el.material, 'NIHIL')}`,
     '',
-    `Ve?culo Apreendido: ${v(el.veiculo)}`,
-    `Colora??oo: ${v(el.corVeiculo)}`,
+    `Veículo Apreendido: ${v(el.veiculo)}`,
+    `Coloração: ${v(el.corVeiculo)}`,
     '',
-    'Assinatura do respons?vel:',
+    'Assinatura do responsável:',
     `${v(el.assinatura)}`,
     ''
   );
@@ -685,8 +685,8 @@ function aplicarTextoCompletoNosCampos(textoCompleto) {
     { id: 'resultado', labels: ['Resultado da abordagem'] },
     { id: 'material', labels: ['Material Apreendido'] },
     { id: 'veiculo', labels: ['Veiculo Apreendido'] },
-    { id: 'corVeiculo', labels: ['Coloracao', 'Colora??o'] },
-    { id: 'assinatura', labels: ['Assinatura do responsavel', 'Assinatura do respons?vel'] }
+    { id: 'corVeiculo', labels: ['Coloração', 'Coloração'] },
+    { id: 'assinatura', labels: ['Assinatura do responsável', 'Assinatura do responsável'] }
   ];
 
   mapa.forEach((item) => {
@@ -1001,5 +1001,6 @@ sincronizarAcoesCombinadas();
   await carregarBouParaEdicao();
 })();
 setInterval(carregarUltimoTituloBou, 30000);
+
 
 
