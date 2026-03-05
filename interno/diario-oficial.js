@@ -86,12 +86,12 @@
         const decreto = buildDecretoTitle(row);
         const assinaturaData = "S?o Paulo, " + formatLongPt(row.created_at) + ".";
         const assinante = "**" + (currentUserCargo || "Cargo") + " " + (currentUserName || "Usuário") + "**";
-        const prefixo = "O DIRETOR-GERAL da Pol?cia Rodovi?ria Federal, no uso das atribui??es que lhe conferem ";
-        const marcacao = "||@?????| Pol?cia Rodovi?ria Federal ||"
+        const prefixo = "O DIRETOR-GERAL da Polícia Rodoviária Federal, no uso das atribuições que lhe conferem ";
+        const marcacao = "||@?????| Polícia Rodoviária Federal ||"
         const body = [
-            "**DI?RIO OFICIAL DA UNI?O**",
+            "**DIÁRIO OFICIAL DA UNIÃO**",
             meta,
-            "**?rg?o:** Atos do Poder Executivo",
+            "**Órgão:** Atos do Poder Executivo",
             "",
             "#", decreto,
             prefixo + complemento,
@@ -199,7 +199,7 @@
             + "<p class=\"diario-orgao\"><strong>\u00d3rg\u00e3o:</strong> Atos do Poder Executivo</p>"
             + "<h4 class=\"diario-decreto\">" + escapeHtml(decreto) + "</h4>"
             + "<div class=\"diario-texto\">"
-            + "<p>O DIRETOR-GERAL da Pol\u00edcia Rodovi\u00e1ria Federal, no uso das atribui\u00e7\u00f5es que lhe conferem " + complemento + "</p>"
+            + "<p>O O DIRETOR-GERAL no uso das atribuições que lhe conferem " + complemento + "</p>"
             + "</div>"
             + "<div class=\"diario-assinatura\">"
             + "<p>" + escapeHtml(assinatura) + "</p>"
@@ -364,6 +364,7 @@
         }
     });
 })();
+
 
 
 
