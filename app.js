@@ -824,7 +824,7 @@
       const existingPanel = node.querySelector('.user-panel-link');
       if (existingPanel) existingPanel.remove();
 
-      const painelHref = window.location.pathname.includes('/interno/') ? 'painel.html' : 'interno/painel.html';
+      const painelHref = window.location.pathname.includes('/interno/') ? 'inicio.html' : 'interno/inicio.html';
       const painelLink = document.createElement('a');
       painelLink.className = 'user-panel-link';
       painelLink.href = painelHref;
@@ -868,7 +868,7 @@
       if (registerLink) registerLink.classList.add('is-hidden');
       if (userMenu) userMenu.classList.remove('is-hidden');
       if (userNameNode) {
-        const painelHref = window.location.pathname.includes('/interno/') ? 'painel.html' : 'interno/painel.html';
+        const painelHref = window.location.pathname.includes('/interno/') ? 'inicio.html' : 'interno/inicio.html';
         userNameNode.textContent = '';
         if (avatarUrl) {
           const avatar = document.createElement('img');
@@ -1029,7 +1029,7 @@
         }
 
         setFeedback('Login realizado com sucesso. Redirecionando...');
-        window.location.href = 'interno/painel.html';
+        window.location.href = 'interno/inicio.html';
       } catch (err) {
         setFeedback('Falha ao autenticar. Tente novamente.', true);
       } finally {
@@ -1571,6 +1571,276 @@
     window.registerScrollFades = registerScrollFades;
   };
 
+  const setupRavopAccess = async () => {
+    const ravopLinks = Array.from(document.querySelectorAll('.relatorios-subnav-item[href="ravop.html"]'));
+    if (!ravopLinks.length) return;
+
+    const lockRavop = () => {
+      ravopLinks.forEach((link) => {
+        link.classList.remove('is-active');
+        link.classList.add('is-locked');
+        link.setAttribute('aria-disabled', 'true');
+        link.setAttribute('title', 'Acesso restrito');
+        if (!link.querySelector('.relatorios-subnav-lock')) {
+        const lock = document.createElement('span');
+        lock.className = 'relatorios-subnav-lock';
+        lock.innerHTML = '<i class="fas fa-lock" aria-hidden="true"></i>';
+        link.appendChild(lock);
+      }
+        link.addEventListener('click', (event) => {
+          event.preventDefault();
+        });
+      });
+
+      if (window.location.pathname.includes('ravop.html')) {
+        const lockPanel = document.getElementById('ravop-lock');
+        if (lockPanel) lockPanel.classList.remove('is-hidden');
+      }
+    };
+
+    const client = await createSupabaseClient();
+    if (!client) {
+      lockRavop();
+      return;
+    }
+    const sessionResult = await client.auth.getSession();
+    const session = sessionResult && sessionResult.data ? sessionResult.data.session : null;
+    const user = session ? session.user : null;
+    if (!user || !user.id) {
+      lockRavop();
+      return;
+    }
+
+    const profileResult = await client
+      .from('profiles')
+      .select('is_admin,cargo,grupamento,grupamento_principal,grupamento_secundario')
+      .eq('id', user.id)
+      .maybeSingle();
+    const profile = profileResult && profileResult.data ? profileResult.data : null;
+    if (!profile) {
+      lockRavop();
+      return;
+    }
+
+    const normalize = (value) => String(value || '')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase();
+    const isAdmin = Boolean(profile.is_admin);
+    const cargo = normalize(profile.cargo);
+    const gp = normalize(profile.grupamento_principal);
+    const gs = normalize(profile.grupamento_secundario);
+    const legacy = normalize(profile.grupamento);
+    const allowed =
+      isAdmin ||
+      cargo.includes('divisao de operacoes aereas') ||
+      gp.includes('divisao de operacoes aereas') ||
+      gs.includes('divisao de operacoes aereas') ||
+      legacy.includes('divisao de operacoes aereas');
+
+    if (!allowed) {
+      lockRavop();
+    }
+  };
+
+  const setupInternalNotifications = async () => {
+    if (window.__internalNotificationsSetup) return;
+    window.__internalNotificationsSetup = true;
+    const controls = document.querySelector('.inicio-menu-footer');
+    if (!controls) return;
+
+    const wrapper = document.createElement('div');
+    wrapper.className = 'inicio-notify is-menu';
+    wrapper.innerHTML = `
+      <button class="inicio-notify-btn" type="button" aria-label="Notificações">
+        <i class="fas fa-bell"></i>
+      </button>
+      <div class="inicio-notify-panel is-hidden is-menu">
+        <div class="inicio-notify-head">
+          <h4>Notificações</h4>
+          <button class="inicio-notify-clear" type="button">Limpar notificações</button>
+        </div>
+        <div class="inicio-notify-section" data-section="bou"><strong>BOU citados</strong><div class="inicio-notify-list"></div></div>
+        <div class="inicio-notify-section" data-section="ait"><strong>AIT citados</strong><div class="inicio-notify-list"></div></div>
+        <div class="inicio-notify-section" data-section="ripat"><strong>RIPAT citados</strong><div class="inicio-notify-list"></div></div>
+        <div class="inicio-notify-section" data-section="diario"><strong>Diário oficial citados</strong><div class="inicio-notify-list"></div></div>
+        <div class="inicio-notify-section" data-section="corregedoria"><strong>Corregedoria citados</strong><div class="inicio-notify-list"></div></div>
+      </div>
+    `;
+    controls.appendChild(wrapper);
+
+    const btn = wrapper.querySelector('.inicio-notify-btn');
+    const panel = wrapper.querySelector('.inicio-notify-panel');
+    const clearBtn = wrapper.querySelector('.inicio-notify-clear');
+    btn.addEventListener('click', (event) => {
+      event.stopPropagation();
+      panel.classList.toggle('is-hidden');
+      btn.setAttribute('aria-expanded', panel.classList.contains('is-hidden') ? 'false' : 'true');
+    });
+    if (clearBtn) {
+      clearBtn.addEventListener('click', (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        btn.classList.remove('has-alert');
+      });
+    }
+    panel.addEventListener('click', (event) => {
+      event.stopPropagation();
+    });
+    document.addEventListener('click', (event) => {
+      if (!wrapper.contains(event.target)) {
+        panel.classList.add('is-hidden');
+        btn.setAttribute('aria-expanded', 'false');
+      }
+    });
+
+    const client = await createSupabaseClient();
+    if (!client) return;
+    const sessionResult = await client.auth.getSession();
+    const session = sessionResult && sessionResult.data ? sessionResult.data.session : null;
+    const user = session ? session.user : null;
+    if (!user) return;
+
+    const profileResult = await client
+      .from('profiles')
+      .select('nome_guerra,rg,email')
+      .eq('id', user.id)
+      .maybeSingle();
+    const profile = profileResult && profileResult.data ? profileResult.data : {};
+    const nome = profile.nome_guerra ? String(profile.nome_guerra) : '';
+    const rg = profile.rg ? String(profile.rg) : '';
+    const email = profile.email ? String(profile.email) : '';
+
+    const matchText = (text) => {
+      const hay = String(text || '').toLowerCase();
+      return (nome && hay.includes(nome.toLowerCase()))
+        || (rg && hay.includes(rg.toLowerCase()))
+        || (email && hay.includes(email.toLowerCase()));
+    };
+
+    const setList = (key, item) => {
+      const section = wrapper.querySelector(`.inicio-notify-section[data-section="${key}"] .inicio-notify-list`);
+      if (!section) return;
+      if (!item) {
+        section.innerHTML = '<span class="inicio-notify-empty">Nenhum registro.</span>';
+        return;
+      }
+      section.innerHTML = `<a class="inicio-notify-item" href="${item.href}">${item.title}</a>`;
+    };
+
+    const pickLatest = (items) => (Array.isArray(items) && items.length ? items[0] : null);
+
+    // BOU
+    const bousRes = await client.rpc('list_recent_bous_for_user', { p_days: 2 });
+    const bous = Array.isArray(bousRes.data) ? bousRes.data : [];
+    const bouItems = bous
+      .filter((b) => b.user_id !== user.id && matchText(b.conteudo_completo))
+      .map((b) => ({
+        id: `bou:${b.id}`,
+        title: b.titulo || `BOU #${b.id}`,
+        href: `relatoriospublicados.html?highlight=${b.id}`
+      }));
+    setList('bou', pickLatest(bouItems));
+
+    // AIT
+    const aitsRes = await client.rpc('list_recent_aits_for_user', { p_days: 2 });
+    const aits = Array.isArray(aitsRes.data) ? aitsRes.data : [];
+    const aitItems = aits
+      .filter((a) => a.user_id !== user.id && matchText(a.conteudo_completo))
+      .map((a) => ({
+        id: `ait:${a.id}`,
+        title: a.numero_ait || `AIT #${a.id}`,
+        href: `aitpublicados.html?highlight=${a.id}`
+      }));
+    setList('ait', pickLatest(aitItems));
+
+    // RIPAT (best-effort: only own due to RLS)
+    const ripatRes = await client
+      .from('patrulhas')
+      .select('id,user_id,conteudo_completo,created_at')
+      .order('created_at', { ascending: false })
+      .limit(50);
+    const ripats = Array.isArray(ripatRes.data) ? ripatRes.data : [];
+    const ripatItems = ripats
+      .filter((r) => r.user_id !== user.id && matchText(r.conteudo_completo))
+      .map((r) => ({ id: `ripat:${r.id}`, title: `RIPAT #${r.id}`, href: `ripatpublicados.html?highlight=${r.id}` }));
+    setList('ripat', pickLatest(ripatItems));
+
+    // Diario oficial cited (best-effort: name/rg/email in texto)
+    const diariosRes = await client
+      .from('diarios_oficiais')
+      .select('id,texto,numero_decreto,created_at')
+      .order('created_at', { ascending: false })
+      .limit(50);
+    const diarios = Array.isArray(diariosRes.data) ? diariosRes.data : [];
+    const diarioItems = diarios
+      .filter((d) => matchText(d.texto))
+      .map((d) => ({
+        id: `diario:${d.id}`,
+        title: d.numero_decreto ? `Decreto Nº ${d.numero_decreto}` : `Diário #${d.id}`,
+        href: `diario-oficial.html?highlight=${d.id}`
+      }));
+    setList('diario', pickLatest(diarioItems));
+
+    // Corregedoria
+    const corRes = await client
+      .from('corregedoria_posts')
+      .select('id,title,mentioned_user_ids')
+      .eq('is_public', true)
+      .order('created_at', { ascending: false })
+      .limit(50);
+    const cors = Array.isArray(corRes.data) ? corRes.data : [];
+    const corregedoriaItems = cors
+      .filter((c) => Array.isArray(c.mentioned_user_ids) && c.mentioned_user_ids.includes(user.id))
+      .map((c) => ({ id: `corregedoria:${c.id}`, title: c.title || `Corregedoria #${c.id}`, href: `corregedoria.html?highlight=${c.id}` }));
+    setList('corregedoria', pickLatest(corregedoriaItems));
+
+    const latestMap = {
+      bou: (pickLatest(bouItems) || {}).id || '',
+      ait: (pickLatest(aitItems) || {}).id || '',
+      ripat: (pickLatest(ripatItems) || {}).id || '',
+      diario: (pickLatest(diarioItems) || {}).id || '',
+      corregedoria: (pickLatest(corregedoriaItems) || {}).id || ''
+    };
+    // Estado global: bolinha baseada apenas nas citações atuais vindas do banco.
+    const hasUnread = Object.keys(latestMap).some((key) => Boolean(latestMap[key]));
+    btn.classList.toggle('has-alert', hasUnread);
+  };
+
+  const applyHighlightFromQuery = () => {
+    const params = new URLSearchParams(window.location.search);
+    const highlight = params.get('highlight');
+    if (!highlight) return;
+    const targetId = String(highlight);
+    const escapeSelector = (value) => value.replace(/([ #;?%&,.+*~\':"!^$[\]()=>|/@])/g, '\\$1');
+    let tries = 0;
+    const timer = setInterval(() => {
+      const safeId = escapeSelector(targetId);
+      const openBtn = document.querySelector(`.publicados-card-open[data-id="${safeId}"]`);
+      if (openBtn) {
+        const card = openBtn.closest('.publicados-card');
+        if (card) card.classList.add('is-highlight');
+        openBtn.click();
+        if (card && card.scrollIntoView) {
+          card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        clearInterval(timer);
+        return;
+      }
+      const card = document.querySelector(`[data-highlight-id="${safeId}"]`);
+      if (card) {
+        card.classList.add('is-highlight');
+        if (card.scrollIntoView) {
+          card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        clearInterval(timer);
+        return;
+      }
+      tries += 1;
+      if (tries > 25) clearInterval(timer);
+    }, 300);
+  };
+
   document.addEventListener('DOMContentLoaded', async () => {
     rewriteNavLinks();
     setupGlobals();
@@ -1590,10 +1860,13 @@
     setupPasswordToggles();
     setupAuthPageTransitions();
     setupScrollFades();
+    setupRavopAccess();
     setupHeaderAuthState();
     setupModalClose();
     setupInfoCardDropdowns();
     setupAvisoDismissals();
+    setupInternalNotifications();
+    applyHighlightFromQuery();
     window.addEventListener('resize', updateNumbersGridLayout);
   });
 })();
